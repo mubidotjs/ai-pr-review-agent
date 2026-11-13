@@ -1,0 +1,591 @@
+{
+  "timestamp": "2026-11-13T06:16:46.692Z",
+  "node": "v24.22.1",
+  "v8": "13.6.233.17-node.58",
+  "platform": "win32",
+  "arch": "x64",
+  "cpu": "Intel(R) Core(TM) i7-6600U CPU @ 2.60GHz",
+  "method": "Isolated Node process.cpuUsage user+system around diff parsing, Babel analysis, evidence validation, and JSON serialization; 3 fresh-process cold samples and 30 warm samples after 5 warmups. Inputs prepared outside timing. Not Cloudflare invocation CPU or deployment verification.",
+  "results": [
+    {
+      "kib": 16,
+      "files": 1,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16152,
+      "coldCpu": {
+        "median": 63,
+        "p95": 63,
+        "max": 63
+      },
+      "coldWall": {
+        "median": 31.4263,
+        "p95": 34.4799,
+        "max": 34.4799
+      },
+      "warmCpu": {
+        "median": 0,
+        "p95": 46,
+        "max": 63
+      },
+      "warmWall": {
+        "median": 4.025,
+        "p95": 8.1597,
+        "max": 8.2814
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 16,
+      "files": 1,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16203,
+      "coldCpu": {
+        "median": 78,
+        "p95": 94,
+        "max": 94
+      },
+      "coldWall": {
+        "median": 38.1675,
+        "p95": 41.3068,
+        "max": 41.3068
+      },
+      "warmCpu": {
+        "median": 0,
+        "p95": 62,
+        "max": 63
+      },
+      "warmWall": {
+        "median": 3.7092,
+        "p95": 9.7012,
+        "max": 11.8432
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 16,
+      "files": 1,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16168,
+      "coldCpu": {
+        "median": 94,
+        "p95": 156,
+        "max": 156
+      },
+      "coldWall": {
+        "median": 60.8712,
+        "p95": 63.0776,
+        "max": 63.0776
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 31,
+        "max": 32
+      },
+      "warmWall": {
+        "median": 8.9409,
+        "p95": 14.2269,
+        "max": 18.3788
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 16,
+      "files": 6,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16152,
+      "coldCpu": {
+        "median": 172,
+        "p95": 187,
+        "max": 187
+      },
+      "coldWall": {
+        "median": 77.0509,
+        "p95": 77.1223,
+        "max": 77.1223
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 47,
+        "max": 62
+      },
+      "warmWall": {
+        "median": 14.5272,
+        "p95": 23.1252,
+        "max": 29.0347
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 16,
+      "files": 6,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16203,
+      "coldCpu": {
+        "median": 187,
+        "p95": 249,
+        "max": 249
+      },
+      "coldWall": {
+        "median": 94.3563,
+        "p95": 101.1332,
+        "max": 101.1332
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 32,
+        "max": 47
+      },
+      "warmWall": {
+        "median": 16.3234,
+        "p95": 31.3922,
+        "max": 33.542
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 16,
+      "files": 6,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 16168,
+      "coldCpu": {
+        "median": 391,
+        "p95": 532,
+        "max": 532
+      },
+      "coldWall": {
+        "median": 192.9596,
+        "p95": 195.6604,
+        "max": 195.6604
+      },
+      "warmCpu": {
+        "median": 47,
+        "p95": 110,
+        "max": 125
+      },
+      "warmWall": {
+        "median": 49.8997,
+        "p95": 88.6911,
+        "max": 106.6532
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 1,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65418,
+      "coldCpu": {
+        "median": 108,
+        "p95": 140,
+        "max": 140
+      },
+      "coldWall": {
+        "median": 60.5247,
+        "p95": 62.7424,
+        "max": 62.7424
+      },
+      "warmCpu": {
+        "median": 15,
+        "p95": 16,
+        "max": 16
+      },
+      "warmWall": {
+        "median": 8.5409,
+        "p95": 10.8833,
+        "max": 12.8855
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 1,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65308,
+      "coldCpu": {
+        "median": 172,
+        "p95": 234,
+        "max": 234
+      },
+      "coldWall": {
+        "median": 79.7439,
+        "p95": 96.8583,
+        "max": 96.8583
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 16,
+        "max": 31
+      },
+      "warmWall": {
+        "median": 11.559,
+        "p95": 18.4808,
+        "max": 20.2595
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 1,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65378,
+      "coldCpu": {
+        "median": 312,
+        "p95": 328,
+        "max": 328
+      },
+      "coldWall": {
+        "median": 126.4101,
+        "p95": 128.0917,
+        "max": 128.0917
+      },
+      "warmCpu": {
+        "median": 31,
+        "p95": 78,
+        "max": 78
+      },
+      "warmWall": {
+        "median": 28.4045,
+        "p95": 31.9777,
+        "max": 33.3983
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 6,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65418,
+      "coldCpu": {
+        "median": 376,
+        "p95": 437,
+        "max": 437
+      },
+      "coldWall": {
+        "median": 165.3074,
+        "p95": 179.4209,
+        "max": 179.4209
+      },
+      "warmCpu": {
+        "median": 62,
+        "p95": 63,
+        "max": 94
+      },
+      "warmWall": {
+        "median": 54.1086,
+        "p95": 58.8675,
+        "max": 63.9064
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 6,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65308,
+      "coldCpu": {
+        "median": 562,
+        "p95": 578,
+        "max": 578
+      },
+      "coldWall": {
+        "median": 205.2679,
+        "p95": 208.5969,
+        "max": 208.5969
+      },
+      "warmCpu": {
+        "median": 63,
+        "p95": 94,
+        "max": 109
+      },
+      "warmWall": {
+        "median": 68.2914,
+        "p95": 92.0637,
+        "max": 135.9898
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 6,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 65378,
+      "coldCpu": {
+        "median": 875,
+        "p95": 906,
+        "max": 906
+      },
+      "coldWall": {
+        "median": 396.0766,
+        "p95": 421.6601,
+        "max": 421.6601
+      },
+      "warmCpu": {
+        "median": 219,
+        "p95": 297,
+        "max": 360
+      },
+      "warmWall": {
+        "median": 207.6551,
+        "p95": 274.4478,
+        "max": 321.5738
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 1,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130902,
+      "coldCpu": {
+        "median": 250,
+        "p95": 281,
+        "max": 281
+      },
+      "coldWall": {
+        "median": 98.1004,
+        "p95": 99.7765,
+        "max": 99.7765
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 32,
+        "max": 63
+      },
+      "warmWall": {
+        "median": 18.6251,
+        "p95": 20.3647,
+        "max": 20.6929
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 1,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130835,
+      "coldCpu": {
+        "median": 297,
+        "p95": 328,
+        "max": 328
+      },
+      "coldWall": {
+        "median": 142.0124,
+        "p95": 142.0753,
+        "max": 142.0753
+      },
+      "warmCpu": {
+        "median": 16,
+        "p95": 62,
+        "max": 62
+      },
+      "warmWall": {
+        "median": 21.8032,
+        "p95": 27.1906,
+        "max": 28.4525
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 1,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130947,
+      "coldCpu": {
+        "median": 484,
+        "p95": 515,
+        "max": 515
+      },
+      "coldWall": {
+        "median": 226.73,
+        "p95": 228.0751,
+        "max": 228.0751
+      },
+      "warmCpu": {
+        "median": 63,
+        "p95": 109,
+        "max": 109
+      },
+      "warmWall": {
+        "median": 60.6214,
+        "p95": 64.9882,
+        "max": 67.879
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 6,
+      "extension": "js",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130902,
+      "coldCpu": {
+        "median": 625,
+        "p95": 657,
+        "max": 657
+      },
+      "coldWall": {
+        "median": 261.1862,
+        "p95": 271.7164,
+        "max": 271.7164
+      },
+      "warmCpu": {
+        "median": 110,
+        "p95": 141,
+        "max": 172
+      },
+      "warmWall": {
+        "median": 112.7092,
+        "p95": 136.789,
+        "max": 143.9966
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 6,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130835,
+      "coldCpu": {
+        "median": 781,
+        "p95": 844,
+        "max": 844
+      },
+      "coldWall": {
+        "median": 317.7173,
+        "p95": 368.283,
+        "max": 368.283
+      },
+      "warmCpu": {
+        "median": 140,
+        "p95": 187,
+        "max": 187
+      },
+      "warmWall": {
+        "median": 134.6855,
+        "p95": 164.0912,
+        "max": 191.8422
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 6,
+      "extension": "tsx",
+      "pathological": false,
+      "largeDiff": false,
+      "sourceBytes": 130947,
+      "coldCpu": {
+        "median": 1344,
+        "p95": 1438,
+        "max": 1438
+      },
+      "coldWall": {
+        "median": 693.4775,
+        "p95": 704.5826,
+        "max": 704.5826
+      },
+      "warmCpu": {
+        "median": 468,
+        "p95": 625,
+        "max": 641
+      },
+      "warmWall": {
+        "median": 378.6798,
+        "p95": 426.6168,
+        "max": 498.2515
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 128,
+      "files": 6,
+      "extension": "ts",
+      "pathological": true,
+      "largeDiff": false,
+      "sourceBytes": 130868,
+      "coldCpu": {
+        "median": 672,
+        "p95": 734,
+        "max": 734
+      },
+      "coldWall": {
+        "median": 304.4841,
+        "p95": 309.5077,
+        "max": 309.5077
+      },
+      "warmCpu": {
+        "median": 187,
+        "p95": 312,
+        "max": 344
+      },
+      "warmWall": {
+        "median": 174.8625,
+        "p95": 399.7831,
+        "max": 531.2727
+      },
+      "adjustmentRequired": true
+    },
+    {
+      "kib": 64,
+      "files": 6,
+      "extension": "ts",
+      "pathological": false,
+      "largeDiff": true,
+      "sourceBytes": 65308,
+      "coldCpu": {
+        "median": 688,
+        "p95": 702,
+        "max": 702
+      },
+      "coldWall": {
+        "median": 330.4307,
+        "p95": 337.7492,
+        "max": 337.7492
+      },
+      "warmCpu": {
+        "median": 63,
+        "p95": 79,
+        "max": 79
+      },
+      "warmWall": {
+        "median": 66.1586,
+        "p95": 73.6019,
+        "max": 80.3378
+      },
+      "adjustmentRequired": true
+    }
+  ]
+}

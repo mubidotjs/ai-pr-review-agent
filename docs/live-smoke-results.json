@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-11-13T06:13:41.489Z",
+  "url": "https://github.com/honojs/hono/pull/5620",
+  "headSha": "f9736d85b13dacb3225191b6f20f11c919a8c225",
+  "baseSha": "61f7c59e50244ab4d2dd83c151928cf7ea448510",
+  "coverage": {
+    "total": 4,
+    "inventoried": 4,
+    "analyzed": 4,
+    "skipped": 0,
+    "uninventoried": 0
+  },
+  "status": "complete",
+  "snapshotVerified": true,
+  "budget": {
+    "requests": 8,
+    "bytes": 68548,
+    "contextFiles": 4,
+    "diffLines": 278,
+    "durationMs": 3624
+  },
+  "rateLimit": {
+    "limit": 60,
+    "remaining": 48,
+    "used": 12,
+    "resetAt": 1794552449,
+    "resource": "core"
+  },
+  "findings": 0,
+  "ai": "disabled",
+  "flow": "Headless Chromium form → same-origin built preview → local workerd → unauthenticated GitHub REST → pinned context → validated JSON → rendered PR heading"
+}

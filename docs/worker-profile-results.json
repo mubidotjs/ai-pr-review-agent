@@ -1,0 +1,146 @@
+{
+  "timestamp": "2026-11-13T06:15:01.367Z",
+  "method": "Local workerd inspector V8 sampling at requested 100 us interval over complete mocked /api/review invocations; 5 sequential runs, first cold. Attributed sample time excludes idle/program/root leaf frames. Sampling is diagnostic, not authoritative invocation CPU. Network uses in-Worker fixtures, no GitHub or cloud calls. Do not compare wall time directly to Cloudflare CPU enforcement.",
+  "results": [
+    {
+      "scenario": "normal",
+      "runs": [
+        {
+          "wallMs": 113.15459999999996,
+          "attributedSampleMs": 82.475,
+          "samples": 136,
+          "coverage": {
+            "total": 8,
+            "inventoried": 8,
+            "analyzed": 5,
+            "skipped": 3,
+            "uninventoried": 0
+          },
+          "requests": 9
+        },
+        {
+          "wallMs": 33.315099999999916,
+          "attributedSampleMs": 17.274,
+          "samples": 40,
+          "coverage": {
+            "total": 8,
+            "inventoried": 8,
+            "analyzed": 5,
+            "skipped": 3,
+            "uninventoried": 0
+          },
+          "requests": 9
+        },
+        {
+          "wallMs": 26.457400000000007,
+          "attributedSampleMs": 16.34,
+          "samples": 26,
+          "coverage": {
+            "total": 8,
+            "inventoried": 8,
+            "analyzed": 5,
+            "skipped": 3,
+            "uninventoried": 0
+          },
+          "requests": 9
+        },
+        {
+          "wallMs": 26.323300000000017,
+          "attributedSampleMs": 16.886,
+          "samples": 25,
+          "coverage": {
+            "total": 8,
+            "inventoried": 8,
+            "analyzed": 5,
+            "skipped": 3,
+            "uninventoried": 0
+          },
+          "requests": 9
+        },
+        {
+          "wallMs": 27.10900000000015,
+          "attributedSampleMs": 19.982,
+          "samples": 26,
+          "coverage": {
+            "total": 8,
+            "inventoried": 8,
+            "analyzed": 5,
+            "skipped": 3,
+            "uninventoried": 0
+          },
+          "requests": 9
+        }
+      ]
+    },
+    {
+      "scenario": "large",
+      "runs": [
+        {
+          "wallMs": 323.3044,
+          "attributedSampleMs": 301.875,
+          "samples": 445,
+          "coverage": {
+            "total": 6,
+            "inventoried": 6,
+            "analyzed": 6,
+            "skipped": 0,
+            "uninventoried": 0
+          },
+          "requests": 10
+        },
+        {
+          "wallMs": 169.44640000000004,
+          "attributedSampleMs": 152.837,
+          "samples": 252,
+          "coverage": {
+            "total": 6,
+            "inventoried": 6,
+            "analyzed": 6,
+            "skipped": 0,
+            "uninventoried": 0
+          },
+          "requests": 10
+        },
+        {
+          "wallMs": 161.7349999999999,
+          "attributedSampleMs": 150.79,
+          "samples": 246,
+          "coverage": {
+            "total": 6,
+            "inventoried": 6,
+            "analyzed": 6,
+            "skipped": 0,
+            "uninventoried": 0
+          },
+          "requests": 10
+        },
+        {
+          "wallMs": 207.13010000000008,
+          "attributedSampleMs": 193.253,
+          "samples": 286,
+          "coverage": {
+            "total": 6,
+            "inventoried": 6,
+            "analyzed": 6,
+            "skipped": 0,
+            "uninventoried": 0
+          },
+          "requests": 10
+        },
+        {
+          "wallMs": 172.28290000000015,
+          "attributedSampleMs": 159.759,
+          "samples": 262,
+          "coverage": {
+            "total": 6,
+            "inventoried": 6,
+            "analyzed": 6,
+            "skipped": 0,
+            "uninventoried": 0
+          },
+          "requests": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ai-pr-review-agent-local-test-only",
+  "main": "tests/worker-harness.ts",
+  "compatibility_date": "2026-11-13",
+  "send_metrics": false,
+}
