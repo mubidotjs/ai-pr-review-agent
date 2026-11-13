@@ -12,6 +12,7 @@
     "build:node": "tsx scripts/build-node.ts && npm run verify:node",
     "verify:node": "tsx scripts/verify-node-artifact.ts",
     "prepare:transport-probe": "tsx scripts/vercel-transport/prepare.ts",
+    "agent:demo": "tsx scripts/agent-demo.ts",
     "preview:node": "node dist/node/server/local.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",

@@ -3,7 +3,7 @@ const backend = JSON.parse(
   readFileSync('dist/ai_pr_review_agent/index.js.map', 'utf8'),
 ) as { sources: string[] };
 const forbidden = backend.sources.filter((path) =>
-  /(@babel|src\/analysis|shared\/report|client\/)/.test(
+  /(@babel|src\/analysis|shared\/report|client\/|server\/agent(?:\/|\.))/.test(
     path.replaceAll('\\', '/'),
   ),
 );

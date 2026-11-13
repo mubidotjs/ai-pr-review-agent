@@ -25,6 +25,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run agent:demo
       - run: npm run prepare:transport-probe
       - run: npm audit --audit-level=high
   browser:

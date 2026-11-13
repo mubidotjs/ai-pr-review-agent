@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Milestone 4: Hono ingestion now has a locally verified Node adapter with binary streaming through 12 MiB. Deployed Vercel compatibility is unverified. The browser Worker and review limits are unchanged; application AI remains disabled.**
+**Milestone 5: a bounded local agent workflow now investigates backend-owned evidence using mocked model responses, independently validates proposals and requires human review. No real inference is active. The browser Worker and review limits are unchanged; application AI remains disabled.**
 
 [M4.5's isolated Vercel experiment](docs/MILESTONE-4.5-VERCEL-STREAMING.md) remains **NOT VERIFIED** after client and deployment-environment setup failures. Both authorized temporary deployments and secrets were removed. These results establish no Vercel payload or streaming limit.
 
@@ -37,6 +37,16 @@ npm run preview
 ```
 
 “Offline demo” means the locally served app works with all external network access blocked. It does not install a service worker or promise availability after the local server stops.
+
+## Local mock agent
+
+```sh
+npm run agent:demo
+# Optional interactive human approval for manual copy only:
+npm run agent:demo -- --approve
+```
+
+This separate Node workflow uses synthetic GitHub fixtures and scripted model decisions, with no network or inference. It investigates through five scoped tools, produces three supported mock drafts, refuses comment/string lookalikes, and reports partial coverage. Independent backend checks require pinned source, actual added lines and a supported AST predicate. Model output cannot approve or publish anything. The browser application remains deterministic-only. See [M5 contracts, budgets, approval and limitations](docs/MILESTONE-5-LOCAL-AGENT.md).
 
 ## What works
 
@@ -113,13 +123,14 @@ Profiling uses synthetic inputs, not GitHub or AI. Browser results include start
 ## Architecture and next milestone
 
 - [Architecture and tool contracts](docs/ARCHITECTURE.md)
+- [M5 local mock agent and real-AI enablement requirements](docs/MILESTONE-5-LOCAL-AGENT.md)
 - [M4 Node streaming evidence and remaining platform gate](docs/MILESTONE-4-NODE-STREAMING.md)
 - [Security and limitations](docs/SECURITY.md)
 - [M3 actual native provider result and cleanup](docs/MILESTONE-3-PROVIDER.md)
 - [Historical M3 Node ingestion assessment](docs/M3-INGESTION-HOSTING.md)
 - [Next transport verification proposal](docs/NEXT-MILESTONE.md)
 
-The future agent has typed backend tool interfaces and an explicitly disabled adapter. There is no provider SDK, LangGraph, MCP server, database, or distributed orchestration.
+The local agent has a strict state machine, scoped backend tools, a versioned model contract, scripted mock adapter and independent backend evidence checks. Real adapters are explicitly disabled. There is no provider SDK, LangGraph, MCP server, database or distributed orchestration.
 
 Workers AI quota is shared at the account level. A future Project 3 inference may consume allowance shared with Projects 1 and 2. The next experiment requires a shared-quota check and a separately authorized small inference budget; there is no promise of zero impact.
 

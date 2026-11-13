@@ -1,4 +1,4 @@
-# PRISM architecture through Milestone 4
+# PRISM architecture through Milestone 5
 
 ## Selected split
 
@@ -44,7 +44,9 @@ ASTs and full contexts never return to React. React holds only the current bound
 
 Browser findings are **client-computed and not server-attested**. `snapshotVerified` describes backend capture consistency and does not certify a browser-produced explanation or export. A browser owner can forge client output. No backend endpoint accepts findings or promotes them into server authority.
 
-`src/server/agent.ts` preserves typed future `getPullRequest`, `listChangedFiles`, `readFileContext`, `createReviewFinding`, and `validateReviewFinding` contracts without importing Babel into ingestion. A future bounded agent must use inventory-scoped backend capabilities and independently reacquire/validate trusted evidence server-side. Client JSON, flags, counters, and explanations are not a substitute. The current adapter remains disabled and calls no tools or model.
+`src/server/agent/engine.ts` now implements a separate **local Node, mock-only agent**. It acquires its own trusted capture through the existing ingestion logic and exposes only inventory-scoped `getPullRequest`, `listChangedFiles`, `readFileContext`, `createReviewFinding` and `validateReviewFinding` decisions. The private capture factory cannot accept browser snapshots through the engine API. Independent backend AST checks validate observed added-line hypotheses and canonical fact cards; final model proposals are revalidated again. This heavy validation code is excluded from both ingestion bundles. The React/browser deterministic path is unchanged.
+
+The model transport is a portable versioned JSON request/decision protocol; only a scripted mock is implemented and all real adapters are refused. A future Cloudflare binding service would execute one bounded model decision only. GitHub tools, canonical evidence, budgets and human approval stay on Node. No browser flags/counters/explanations are accepted as attestations. The human gate retains canonical output privately, binds a selected draft to a digest and expires after five minutes; it unlocks manual-copy text only. There is no publisher or write credential. [M5 details](MILESTONE-5-LOCAL-AGENT.md) document the three supported claim families, limits, partial coverage, prompt-injection boundaries and separate real-inference authorization.
 
 ## Deployment boundary
 

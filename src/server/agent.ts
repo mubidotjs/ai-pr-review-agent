@@ -1,8 +1,19 @@
 import type { LIMITS, Finding, PullRequest, ReviewFile } from '../shared/types';
 import type { GitHubClient } from './github';
 
-// Future server validation must independently reacquire/revalidate trusted evidence.
-// This milestone never accepts browser findings as server-attested evidence.
+// Local Node orchestration is deliberately not imported by either ingestion entry.
+export { runAgentReview, AGENT_LIMITS } from './agent/engine';
+export { ScriptedMockModel } from './agent/model';
+export type {
+  AgentModelAdapter,
+  ModelRequest,
+  Candidate,
+  AgentDecision,
+} from './agent/protocol';
+
+// Legacy types for the disabled MVP adapter only. Never expose raw GitHubClient
+// capabilities to a model. M5 uses its strict ToolCall protocol and backend-owned
+// capture in agent/engine.ts instead.
 export interface ReviewTools {
   getPullRequest: GitHubClient['getPullRequest'];
   listChangedFiles: GitHubClient['listChangedFiles'];

@@ -1,8 +1,16 @@
-# Next milestone: isolated Vercel Hobby transport acceptance
+# Next milestone: verify the real agent model contract
 
-[M4.5 attempted that acceptance gate](MILESTONE-4.5-VERCEL-STREAMING.md), including one separately authorized replacement. **The result is NOT VERIFIED:** the first client failed before dispatch; the replacement received fail-closed 503 responses because effective deployment target and environment scopes differed. Both deployments and secrets were deleted. The corrected operator now checks the effective target and matching bindings before test dispatch, but has not been redeployed. A new experiment requires new explicit authorization; no agent or production launch is authorized.
+[M5 implements the bounded local agent workflow](MILESTONE-5-LOCAL-AGENT.md) with scripted model responses, backend-owned evidence, independent validation and a human manual-copy gate. Run `npm run agent:demo`. Real adapters are explicitly disabled; no inference or cloud experiment was performed.
 
-M3 completed its one authorized native Workers AI probe: **provider path viable**, output `PRISM_PROBE_OK`, 24 prompt / 8 completion tokens. The temporary Worker, binding, secret and CLI authorization were removed. See [actual provider evidence](MILESTONE-3-PROVIDER.md). **No second inference or full agent implementation is authorized.** The application still shows AI disabled.
+The smallest next AI milestone, **with separate explicit authorization**, is to implement the narrow Node-to-Cloudflare JSON decision transport behind that disabled gate, then test one synthetic decision through the actual authenticated native binding path. First verify current Free plan/model eligibility, deprecation status, available shared Neurons and the request/response contract. Agree an explicit token/call/Neuron experiment budget; M3's one-call permission and tiny prompt budget do not carry over to this larger protocol. Keep a strict timeout, no retries and no paid fallback, and preserve response/usage evidence without credentials or PR content. A successful single decision would still need separately authorized bounded multi-turn synthetic evaluation before real AI is enabled.
+
+The Cloudflare service must own no GitHub tools or approval/publication capability. Node retains capture, investigation, budgets and validation. Browser findings and approval flags remain untrusted. Shared AI usage may affect Projects 1 and 2; no zero-impact promise applies to future calls. Novel bug categories require additional validation support rather than accepting unsupported prose.
+
+## Separate public hosting gate — not repeated in M5
+
+[M4.5 attempted the transport acceptance gate](MILESTONE-4.5-VERCEL-STREAMING.md), including one separately authorized replacement. **The result is NOT VERIFIED:** the first client failed before dispatch; the replacement received fail-closed 503 responses because effective deployment target and environment scopes differed. Both deployments and secrets were deleted. The corrected operator now checks the effective target and matching bindings before test dispatch, but has not been redeployed. Another cloud experiment requires new explicit authorization. M5 authorizes the local mock workflow, not a real-inference or public-production launch.
+
+M3 completed its one authorized native Workers AI probe: **provider path viable for that synthetic prompt**, output `PRISM_PROBE_OK`, 24 prompt / 8 completion tokens. The temporary Worker, binding, secret and CLI authorization were removed. See [actual provider evidence](MILESTONE-3-PROVIDER.md). That result does not verify M5's multi-turn protocol. The application still shows AI disabled.
 
 The remaining hosting blocker is independently established: full GitHub ingestion exceeds Workers Free CPU limits. Do not repeat the provider experiment to troubleshoot that unrelated problem.
 
@@ -10,7 +18,7 @@ The remaining hosting blocker is independently established: full GitHub ingestio
 
 M4 completed the local adapter and HTTP tests, preserving all limits. See [Node streaming implementation and evidence](MILESTONE-4-NODE-STREAMING.md). Its valid ingestion fixture is 4,752,446 bytes; the maximum synthetic transport frame is exactly 12,582,912 bytes. The packaged Function explicitly requests streaming and disables eager body helpers. **Vercel platform compatibility remains unverified.**
 
-The smallest subsequent work, with separate authorization:
+The independent hosting acceptance work, with separate authorization:
 
 1. Confirm current Hobby eligibility, terms, remaining shared allowances, Node 24 support and cancellation opt-in, without a plan change.
 2. Create one temporary, secret-protected synthetic transport harness with this exact Node adapter and Build Output API settings. Include no public frontend, live ingestion endpoint, GitHub credentials or AI binding. Keep application lifetime at 30 seconds, with the requested 40-second platform ceiling only providing termination margin.

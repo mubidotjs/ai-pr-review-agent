@@ -86,7 +86,7 @@ for (const name of await readdir('dist/node/server')) {
   ) as { sources: string[] };
   if (
     map.sources.some((path) =>
-      /(@babel|src\/analysis|shared\/report|client\/)/.test(
+      /(@babel|src\/analysis|shared\/report|client\/|server\/agent(?:\/|\.))/.test(
         path.replaceAll('\\', '/'),
       ),
     )
