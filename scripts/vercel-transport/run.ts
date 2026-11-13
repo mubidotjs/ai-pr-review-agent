@@ -3,7 +3,11 @@ import { spawn } from 'node:child_process';
 import { randomBytes, createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
-import { DELAY_MS, PREFIX, TAIL } from './harness';
+import {
+  probe as transportProbe,
+  transferSecondsFor,
+  type ClientCase,
+} from './client';
 
 // Operator-only, explicit one-deployment experiment. Never imported by the app/CI.
 const TEAM = 'team_YxkjSyqiyTtrcBTA8pfTNhpD',
@@ -92,184 +96,22 @@ function jsonObject(text: string) {
   return JSON.parse(text.slice(text.indexOf('{')));
 }
 
-// Only bounded fixed metadata is persisted. Cookies and protection headers are discarded.
+// The deployment operator uses the same tested, side-effect-free client as local checks.
 async function probe(
   url: string,
-  scenario: string,
-  maxSeconds = 35,
+  scenario: ClientCase,
+  maxSeconds = transferSecondsFor(scenario),
   authenticated = true,
   path = '/api/transport-probe',
 ) {
-  const began = performance.now(),
-    hash = createHash('sha256');
-  let bytes = 0,
-    firstByteMs: number | undefined,
-    lastByteMs = 0,
-    headerBuffer = Buffer.alloc(0),
-    haveHeaders = false,
-    status = 0,
-    small = Buffer.alloc(0);
-  const headers: Record<string, string> = {};
-  const permitted = new Set([
-    'content-type',
-    'content-encoding',
-    'cache-control',
-    'x-content-type-options',
-    'referrer-policy',
-    'transfer-encoding',
-    'x-prism-snapshot-bytes',
-    'x-prism-case',
-    'x-prism-delay-ms',
-    'x-prism-deadline-ms',
-    'x-vercel-id',
-  ]);
-  const args = [
-    cli!,
-    'curl',
-    path,
-    '--deployment',
+  return transportProbe({
     url,
-    '--scope',
-    SCOPE,
-    '--',
-    '--config',
-    '-',
-  ];
-  return new Promise<Record<string, unknown>>((resolvePromise, reject) => {
-    const child = spawn(process.execPath, args, {
-      cwd: root,
-      windowsHide: true,
-      stdio: ['pipe', 'pipe', 'pipe'],
-      env: { ...process.env, VERCEL_TELEMETRY_DISABLED: '1', NO_COLOR: '1' },
-    });
-    const watchdog = setTimeout(
-      () => {
-        child.kill();
-        reject(new Error('CLIENT_WATCHDOG'));
-      },
-      (maxSeconds + 25) * 1000,
-    );
-    const body = (data: Buffer) => {
-      if (!data.length) return;
-      firstByteMs ??= Math.round(performance.now() - began);
-      lastByteMs = Math.round(performance.now() - began);
-      bytes += data.length;
-      hash.update(data);
-      if (small.length < 2048)
-        small = Buffer.concat([small, data.subarray(0, 2048 - small.length)]);
-      if (bytes > 12582912) child.kill();
-    };
-    child.stdout.on('data', (chunk: Buffer) => {
-      if (haveHeaders) return body(chunk);
-      headerBuffer = Buffer.concat([headerBuffer, chunk]);
-      const end = headerBuffer.indexOf('\r\n\r\n');
-      if (end < 0) {
-        if (headerBuffer.length > 16384) child.kill();
-        return;
-      }
-      const lines = headerBuffer
-        .subarray(0, end)
-        .toString('latin1')
-        .split('\r\n');
-      status = Number(lines[0].match(/^HTTP\/\S+ (\d+)/)?.[1] ?? 0);
-      // The request sends an empty body, so no interim 100 response is expected.
-      for (const line of lines.slice(1)) {
-        const colon = line.indexOf(':');
-        const name = line.slice(0, colon).toLowerCase();
-        if (permitted.has(name)) headers[name] = line.slice(colon + 1).trim();
-      }
-      haveHeaders = true;
-      body(headerBuffer.subarray(end + 4));
-      headerBuffer = Buffer.alloc(0);
-    });
-    // CLI/curl stderr may contain auth diagnostics. Never persist or print it.
-    let clientError: string | undefined;
-    child.stderr.on('data', (chunk) => {
-      const text = String(chunk);
-      if (/curl: option .* is unknown/.test(text))
-        clientError = 'CLIENT_OPTION_REJECTED';
-      else if (/curl: \(28\)/.test(text)) clientError = 'CLIENT_TIMEOUT';
-      else if (
-        /No existing credentials|not authenticated|login required/i.test(text)
-      )
-        clientError = 'CLI_AUTH_UNAVAILABLE';
-    });
-    child.once('error', reject);
-    child.once('close', (exitCode) => {
-      clearTimeout(watchdog);
-      const digest = hash.digest('hex');
-      const expected = manifest.cases[scenario];
-      const success =
-        status === 200 &&
-        exitCode === 0 &&
-        headers['cache-control'] === 'no-store';
-      let pass = false;
-      if (expected)
-        pass =
-          success && bytes === expected.bytes && digest === expected.sha256;
-      else if (scenario === 'delayed')
-        pass =
-          success &&
-          small.toString() === PREFIX + TAIL &&
-          firstByteMs !== undefined &&
-          firstByteMs < DELAY_MS &&
-          lastByteMs - firstByteMs >= DELAY_MS - 100;
-      else if (scenario === 'error')
-        pass =
-          status === 200 &&
-          bytes === 4 &&
-          digest ===
-            createHash('sha256')
-              .update(new Uint8Array([0, 0, 4, 0]))
-              .digest('hex') &&
-          bytes < Number(headers['x-prism-snapshot-bytes']);
-      else if (scenario === 'abort')
-        pass =
-          status === 200 && exitCode === 28 && bytes > 0 && bytes < 40 * 65536;
-      else if (scenario === 'unauthorized')
-        pass = status === 401 && bytes === 0;
-      else if (scenario === 'real-route-absent') pass = status === 404;
-      resolvePromise({
-        scenario,
-        clientError,
-        pass,
-        status,
-        exitCode,
-        bytes,
-        sha256: digest,
-        firstByteMs,
-        lastByteMs,
-        elapsedMs: Math.round(performance.now() - began),
-        headers,
-        eof: exitCode === 0,
-        ...(expected
-          ? {
-              expectedBytes: expected.bytes,
-              expectedSha256: expected.sha256,
-              exactIntegrity:
-                bytes === expected.bytes && digest === expected.sha256,
-            }
-          : {}),
-      });
-    });
-    child.stdin.on('error', () => {});
-    child.stdin.end(
-      [
-        'request = "POST"',
-        'data = ""',
-        'include',
-        'no-buffer',
-        'silent',
-        'show-error',
-        'suppress-connect-headers',
-        `max-time = ${maxSeconds}`,
-        'retry = 0',
-        'header = "Accept-Encoding: identity"',
-        'header = "Expect:"',
-        `header = "X-Prism-Case: ${scenario}"`,
-        ...(authenticated ? [`header = "X-Prism-Probe: ${secret}"`] : []),
-      ].join('\n') + '\n',
-    );
+    scenario,
+    transferSeconds: maxSeconds,
+    expected: manifest.cases[scenario],
+    secret: authenticated ? secret : undefined,
+    path,
+    transport: { kind: 'vercel', cli: cli!, scope: SCOPE, cwd: root },
   });
 }
 
@@ -442,11 +284,11 @@ try {
     'maximum',
     'error',
     'abort',
-  ]) {
+  ] as const) {
     const result = await probe(
       deploymentUrl,
       scenario,
-      scenario === 'abort' ? 2 : 35,
+      transferSecondsFor(scenario),
     );
     tests.push(result);
     await save();

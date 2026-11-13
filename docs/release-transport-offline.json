@@ -1,0 +1,49 @@
+{
+  "method": "Offline bounds and constructed fixtures through unchanged ingestion; no network or inference.",
+  "bound": {
+    "filePages": 4194304,
+    "initialMetadata": 2097152,
+    "rawSources": 786432,
+    "expansion": {
+      "contextReasons": 614400,
+      "notices": 24576,
+      "contextDescriptors": 80244,
+      "derivedPrReference": 13122,
+      "verificationIdentities": 2652,
+      "rateResource": 600,
+      "scalarAndStructuralAllowance": 16384
+    },
+    "generatedFieldBound": 751978,
+    "generatedFieldAllowance": 1048576,
+    "conservativeFrameBound": 8126464,
+    "configuredFrameCeiling": 12582912,
+    "ceilingReachableByValidIngestion": false,
+    "qualifications": [
+      "Counts a single retained PR metadata response; final metadata only verifies identity.",
+      "Upstream 8-MiB aggregate, request/time and diff limits can only tighten this bound.",
+      "Valid browser snapshots constrain rateLimit.resource to 100 characters. Oversized headers/malformed upstream data are not valid reviews.",
+      "The 12-MiB fixture bypasses acquisition and remains a required transport stress test."
+    ]
+  },
+  "validExample": {
+    "bytes": 4752446,
+    "requests": 11,
+    "upstreamBytes": 5008596,
+    "inventoried": 100,
+    "contexts": 6,
+    "verified": true
+  },
+  "escapedMetadataExample": {
+    "bytes": 6161427,
+    "requests": 11,
+    "upstreamBytes": 7826558,
+    "verified": true
+  },
+  "stress": {
+    "bytes": 12582912,
+    "bypassesAcquisition": true,
+    "hypotheticalFilePageBytes": [5772045, 6558001],
+    "perPageLimit": 2097152,
+    "aggregateUpstreamLimit": 8388608
+  }
+}

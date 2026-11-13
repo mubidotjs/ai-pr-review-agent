@@ -4,6 +4,8 @@ An evidence-grounded AI pull request review agent that investigates GitHub diffs
 
 **Release BLOCKED by transport acceptance.** The authorized replacement run on `eba8400790f3b28245efddca6ca13231f8b1475a` verified incremental Vercel streaming and the complete 4,752,446-byte fixture. The 12-MiB transfer timed out before EOF, so the run stopped before inference or live GitHub access. All new resources, secrets and temporary CLI authorization were removed. Real agent and production acceptance remain **NOT VERIFIED**. Mock tests are not live AI evidence. [Actual results and cleanup](docs/release-acceptance-result.json) · [Release controls and limitations](docs/RELEASE.md).
 
+The offline assessment proves a conservative **8,126,464-byte** bound for valid ingestion; the 12-MiB fixture bypasses upstream limits. The corrected operator client allows **120 seconds** for that stress transfer while preserving the **30-second server deadline**. Focused local checks pass; cloud acceptance still requires explicit authorization. [Evidence, reproduction and consolidated final scope](docs/FINAL-RELEASE-ACCEPTANCE.md).
+
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)

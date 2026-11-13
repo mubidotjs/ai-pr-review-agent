@@ -2,6 +2,8 @@
 
 Status: **release BLOCKED by incomplete 12-MiB end-to-end transport acceptance.** The explicitly authorized replacement run tested `eba8400790f3b28245efddca6ca13231f8b1475a`, whose [exact-SHA CI passed](https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43467049297). It verified incremental streaming and the complete 4,752,446-byte fixture. The maximum fixture timed out before EOF, so inference and production release were not attempted. [Sanitized actual evidence](release-acceptance-result.json).
 
+The subsequent **offline-only** assessment and client correction are documented in [Final release acceptance](FINAL-RELEASE-ACCEPTANCE.md). It proves the 12-MiB stress ceiling is unreachable by valid bounded ingestion, separates the operator's 120-second maximum transfer timeout from the unchanged 30-second server lifetime, and defines the **current consolidated authorization scope**. Its three outstanding transport cases replace the five-case repetition in the historical plan below. No additional cloud run or inference has occurred.
+
 The initial attempt on `3915484b12ae6319f2e473d4224d2cd711c418bd` stopped at the operator harness's empty-body header guard (HTTP 400). The correction in `eba8400` checks actual empty bytes while accepting omitted Content-Length and chunked framing; nonempty bodies remain rejected. That guard passed during the replacement run. [Initial attempt and cleanup](release-acceptance-initial-result.json). Neither correction nor documentation changes alter the application, adapter, agent rules, budgets or UI.
 
 ## Replacement run results — November 13, 2026
