@@ -2,8 +2,8 @@ import { cpuUsage, hrtime, versions } from 'node:process';
 import { cpus, platform, arch } from 'node:os';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { analyzeFile } from '../src/server/rules';
-import { parseDiff } from '../src/server/diff';
+import { analyzeFile } from '../src/analysis/rules';
+import { parseDiff } from '../src/analysis/diff';
 import { addition, benchmarkSource, pr } from '../tests/fixtures';
 
 const child = process.argv.includes('--child');
@@ -119,7 +119,7 @@ if (child) {
   });
   mkdirSync('docs', { recursive: true });
   writeFileSync(
-    'docs/benchmark-results.json',
+    'docs/milestone-2-analysis-node.json',
     JSON.stringify(
       {
         timestamp: new Date().toISOString(),

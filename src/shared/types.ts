@@ -11,6 +11,9 @@ export const LIMITS = {
   contextFiles: 6,
   diffLines: 10000,
   findings: 100,
+  snapshotBytes: 12 * 1024 * 1024,
+  analysisResultBytes: 24 * 1024 * 1024,
+  analysisMs: 30000,
 } as const;
 
 export interface PullRequestRef {
@@ -86,6 +89,7 @@ export type ReviewStage =
   | 'partial'
   | 'failed';
 export interface Review {
+  provenance?: { analysis: 'browser-worker'; serverAttested: false };
   pr: PullRequest;
   files: ReviewFile[];
   findings: Finding[];
@@ -116,3 +120,25 @@ export const AI_DISABLED = {
   reason:
     'No model configured. No inference performed. Deterministic findings only.',
 };
+export interface SnapshotIdentity {
+  baseSha: string;
+  headSha: string;
+  changedFiles: number;
+  headRepo: string | null;
+}
+export interface ReviewInputFile extends ChangedFile {
+  patchOmitted?: 'oversized';
+  contextReason?: string;
+  context?: { repository: string; sha: string; path: string; text: string };
+}
+export interface ReviewInputSnapshot {
+  schemaVersion: 1;
+  id: string;
+  pr: PullRequest;
+  files: ReviewInputFile[];
+  verification: { before: SnapshotIdentity; after: SnapshotIdentity | null };
+  notices: string[];
+  budget: Review['budget'];
+  rateLimit: RateLimit;
+  synthetic?: boolean;
+}

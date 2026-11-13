@@ -1,7 +1,7 @@
 import { parse } from '@babel/parser';
 import type { Finding, PullRequest, ReviewFile } from '../shared/types';
 import { LIMITS } from '../shared/types';
-import { sourceUrl } from './security';
+import { sourceUrl } from '../shared/source';
 
 // A deliberately small structural AST view: no downloaded code is evaluated.
 interface Node {

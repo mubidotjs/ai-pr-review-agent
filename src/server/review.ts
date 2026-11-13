@@ -1,68 +1,29 @@
-import {
-  AI_DISABLED,
-  LIMITS,
-  type Review,
-  type ReviewFile,
-} from '../shared/types';
-import { parseDiff } from './diff';
+import { LIMITS, type ReviewInputSnapshot } from '../shared/types';
+import { ineligibleReason, identity } from '../shared/eligibility';
+import { scanPatch } from '../shared/patch';
+import { byteLength, parsePullRequestUrl, ReviewError } from './security';
 import { GitHubClient } from './github';
-import {
-  analyzeFile,
-  createReviewFinding,
-  validateReviewFinding,
-} from './rules';
-import {
-  parsePullRequestUrl,
-  ReviewError,
-  safePath,
-  sourceFileUrl,
-} from './security';
 
-export interface ReviewTools {
-  getPullRequest: GitHubClient['getPullRequest'];
-  listChangedFiles: GitHubClient['listChangedFiles'];
-  readFileContext: GitHubClient['readFileContext'];
-  createReviewFinding: typeof createReviewFinding;
-  validateReviewFinding: typeof validateReviewFinding;
-}
-export interface FutureAiAdapter {
-  review(
-    tools: ReviewTools,
-    budget: typeof LIMITS,
-  ): Promise<{ status: 'disabled'; findings: never[] }>;
-}
-export const disabledAiAdapter: FutureAiAdapter = {
-  async review() {
-    return { status: 'disabled', findings: [] };
-  },
-};
 const message = (error: unknown) =>
   error instanceof ReviewError
     ? `${error.code}: ${error.message}`
-    : 'Unexpected analysis failure; no speculative findings.';
+    : 'Source unavailable; no speculative findings.';
 
-export async function reviewPullRequest(
+// No Babel, findings, report generation, or AST analysis on the backend path.
+export async function ingestPullRequest(
   url: string,
   client = new GitHubClient(),
-): Promise<Review> {
+): Promise<ReviewInputSnapshot> {
   const ref = parsePullRequestUrl(url);
   await client.verifyPublicRepository(ref);
   const pr = await client.getPullRequest(ref);
-  const review: Review = {
+  const snapshot: ReviewInputSnapshot = {
+    schemaVersion: 1,
+    id: crypto.randomUUID(),
     pr,
     files: [],
-    findings: [],
-    coverage: {
-      total: pr.changedFiles,
-      inventoried: 0,
-      analyzed: 0,
-      skipped: 0,
-      uninventoried: pr.changedFiles,
-    },
-    status: 'partial',
-    snapshotVerified: false,
+    verification: { before: identity(pr), after: null },
     notices: [],
-    stages: ['validate', 'fetch'],
     budget: {
       requests: 0,
       bytes: 0,
@@ -71,160 +32,148 @@ export async function reviewPullRequest(
       durationMs: 0,
     },
     rateLimit: {},
-    ai: AI_DISABLED,
   };
-  const rawFiles = [];
   try {
-    for (let page = 1; page <= 2 && rawFiles.length < pr.changedFiles; page++) {
+    for (
+      let page = 1;
+      page <= 2 && snapshot.files.length < pr.changedFiles;
+      page++
+    ) {
       const files = await client.listChangedFiles(ref, page);
-      rawFiles.push(...files);
+      snapshot.files.push(...files);
       if (files.length < 50) break;
     }
   } catch (error) {
-    review.notices.push(message(error));
+    snapshot.notices.push(message(error));
   }
   if (
-    rawFiles.length > pr.changedFiles ||
-    new Set(rawFiles.map((f) => f.path)).size !== rawFiles.length
+    snapshot.files.length > pr.changedFiles ||
+    new Set(snapshot.files.map((f) => f.path)).size !== snapshot.files.length
   )
     throw new ReviewError(
       'INCONSISTENT_INVENTORY',
       'File inventory is inconsistent; retry a fresh snapshot.',
       409,
     );
-  review.stages.push('parse');
-  for (const raw of rawFiles) {
-    const parsed = parseDiff(
-      raw.patch,
-      raw.additions,
-      raw.deletions,
-      LIMITS.diffLines - review.budget.diffLines,
+  let lines = 0;
+  for (const file of snapshot.files) {
+    const preflight = scanPatch(
+      file.patch,
+      file.additions,
+      file.deletions,
+      LIMITS.diffLines - lines,
     );
-    review.budget.diffLines += parsed.lineCount;
-    const file: ReviewFile = {
-      githubUrl:
-        safePath(raw.path) && pr.headRepo && raw.status !== 'removed'
-          ? sourceFileUrl(pr.headRepo, pr.headSha, raw.path)
-          : `${pr.url}/files`,
-      path: raw.path,
-      previousPath: raw.previousPath,
-      status: raw.status,
-      additions: raw.additions,
-      deletions: raw.deletions,
-      rows: parsed.rows,
-      reviewStatus: 'skipped',
-      reason: parsed.reason,
-    };
-    if (!safePath(file.path)) file.reason = 'Unsupported or unsafe file path.';
-    else if (file.status === 'removed')
-      file.reason = 'Deleted file; no head source or added-line analysis.';
-    else if (
-      !['added', 'modified', 'renamed', 'copied', 'changed'].includes(
-        file.status,
-      )
-    )
-      file.reason = 'Unsupported GitHub file status.';
-    else if (!/\.[cm]?[jt]sx?$/.test(file.path))
-      file.reason = 'Language unsupported by the current JS/TS rules.';
-    else if (!pr.headRepo)
-      file.reason =
-        'Head repository unavailable; pinned context cannot be retrieved.';
-    else if (!file.rows.some((r) => r.kind === 'add'))
-      file.reason = 'No added lines available for these rules.';
-    review.files.push(file);
-  }
-  review.stages.push('analyze');
-  for (const file of review.files) {
-    if (file.reason) continue;
-    if (review.budget.contextFiles >= LIMITS.contextFiles) {
-      file.reason = 'Six-file source-context budget reached.';
+    lines += preflight.lineCount;
+    const reason = ineligibleReason(file, pr, preflight.reason);
+    if (byteLength(file.patch ?? '') > LIMITS.patchBytes) {
+      file.patch = undefined;
+      file.patchOmitted = 'oversized';
+    }
+    if (reason) continue;
+    if (snapshot.budget.contextFiles >= LIMITS.contextFiles) {
+      file.contextReason = 'Six-file source-context budget reached.';
       continue;
     }
     try {
       client.assertBudget();
-      // Preserve the last known quota unit for mandatory snapshot verification.
       if (
         client.rateLimit.remaining !== undefined &&
         client.rateLimit.remaining <= 1
       ) {
-        file.reason =
+        file.contextReason =
           'Remaining GitHub quota reserved for snapshot verification.';
         continue;
       }
-      review.budget.contextFiles++;
-      const source = await client.readFileContext(pr, file.path);
-      const result = analyzeFile(file, source, pr);
-      if (result.reason) file.reason = result.reason;
-      else {
-        file.reviewStatus = 'analyzed';
-        const slots = LIMITS.findings - review.findings.length;
-        if (result.findings.length >= slots && result.findings.length > 0)
-          review.notices.push(
-            'Finding output capped at 100; additional findings may have been omitted.',
-          );
-        review.findings.push(...result.findings.slice(0, slots));
-      }
+      snapshot.budget.contextFiles++;
+      const text = await client.readFileContext(pr, file.path);
+      file.context = {
+        repository: pr.headRepo!.fullName,
+        sha: pr.headSha,
+        path: file.path,
+        text,
+      };
     } catch (error) {
-      file.reason = message(error);
+      file.contextReason = message(error);
     }
   }
-  review.stages.push('validate-findings');
   try {
     const current = await client.getPullRequest(ref, true);
+    const before = snapshot.verification.before,
+      after = identity(current);
     if (
-      current.baseSha !== pr.baseSha ||
-      current.headSha !== pr.headSha ||
-      current.changedFiles !== pr.changedFiles ||
-      current.headRepo?.fullName !== pr.headRepo?.fullName
+      before.baseSha !== after.baseSha ||
+      before.headSha !== after.headSha ||
+      before.changedFiles !== after.changedFiles ||
+      before.headRepo !== after.headRepo
     )
       throw new ReviewError(
         'PR_CHANGED',
         'PR snapshot changed during review. Run a fresh review.',
         409,
       );
-    review.snapshotVerified = true;
+    snapshot.verification.after = after;
   } catch (error) {
     if (error instanceof ReviewError && error.code === 'PR_CHANGED')
       throw error;
-    review.notices.push(
+    snapshot.notices.push(
       `Final snapshot verification unavailable. ${message(error)}`,
     );
-    review.findings = [];
-    for (const file of review.files)
-      if (file.reviewStatus === 'analyzed') {
-        file.reviewStatus = 'skipped';
-        file.reason =
-          'Final snapshot consistency could not be verified; findings suppressed.';
-      }
+    for (const file of snapshot.files) delete file.context;
   }
-  const inventoried = review.files.length;
-  const analyzed = review.files.filter(
-    (f) => f.reviewStatus === 'analyzed',
-  ).length;
-  review.coverage = {
-    total: pr.changedFiles,
-    inventoried,
-    analyzed,
-    skipped: inventoried - analyzed,
-    uninventoried: pr.changedFiles - inventoried,
-  };
-  if (review.coverage.uninventoried)
-    review.notices.push(
-      `${review.coverage.uninventoried} changed files were not inventoried within the request/file budgets.`,
-    );
-  review.status =
-    review.snapshotVerified &&
-    analyzed === pr.changedFiles &&
-    !review.notices.length
-      ? 'complete'
-      : 'partial';
-  review.stages.push(review.status);
-  review.budget = {
-    ...review.budget,
+  snapshot.budget = {
+    ...snapshot.budget,
     requests: client.requests,
     bytes: client.bytes,
     durationMs: Date.now() - client.started,
   };
-  review.rateLimit = { ...client.rateLimit };
-  return review;
+  snapshot.rateLimit = { ...client.rateLimit };
+  return snapshot;
+}
+export function serializeSnapshot(snapshot: ReviewInputSnapshot): {
+  body: ReadableStream<Uint8Array>;
+  bytes: number;
+} {
+  // Framed v1: uint32 JSON metadata length, metadata, then raw UTF-8 source frames.
+  // Avoid escaping and re-serializing up to six large source strings into JSON.
+  const encoder = new TextEncoder();
+  const sources: Uint8Array[] = [];
+  const metadata = {
+    ...snapshot,
+    files: snapshot.files.map(({ context, ...file }) => {
+      if (!context) return file;
+      const bytes = encoder.encode(context.text);
+      sources.push(bytes);
+      return {
+        ...file,
+        context: {
+          repository: context.repository,
+          sha: context.sha,
+          path: context.path,
+          bytes: bytes.byteLength,
+        },
+      };
+    }),
+  };
+  const json = encoder.encode(JSON.stringify(metadata));
+  const bytes =
+    4 + json.byteLength + sources.reduce((sum, b) => sum + b.byteLength, 0);
+  if (bytes > LIMITS.snapshotBytes)
+    throw new ReviewError(
+      'SNAPSHOT_BYTE_LIMIT',
+      'Review input exceeds the bounded snapshot response limit.',
+      413,
+    );
+  const header = new Uint8Array(4);
+  new DataView(header.buffer).setUint32(0, json.byteLength);
+  return {
+    bytes,
+    body: new ReadableStream({
+      start(controller) {
+        controller.enqueue(header);
+        controller.enqueue(json);
+        for (const source of sources) controller.enqueue(source);
+        controller.close();
+      },
+    }),
+  };
 }

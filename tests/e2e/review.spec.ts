@@ -1,5 +1,163 @@
 import { expect, test } from '@playwright/test';
-import { createDemo, PR_URL } from '../fixtures';
+import { createDemoInput, PR_URL } from '../fixtures';
+import { benchmarkCases, makePerformanceInput } from '../performance-fixtures';
+
+test('runs a large review off-thread, paginates without losing rows, and persists no PR data', async ({
+  page,
+  context,
+}) => {
+  const snapshot = makePerformanceInput(
+    benchmarkCases.find((s) => s.name === '6x64-large-diff')!,
+  );
+  await page.route('**/api/review', (route) =>
+    route.fulfill({ json: snapshot }),
+  );
+  await page.goto('/');
+  await expect(page.getByLabel('Public pull request URL')).toBeEnabled();
+  await page.getByLabel('Public pull request URL').fill(PR_URL);
+  await page
+    .getByRole('button', { name: 'Review pull request', exact: true })
+    .click();
+  await expect(
+    page.getByRole('heading', { name: snapshot.pr.title, exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.locator('.diff-table tbody tr').count(),
+  ).toBeLessThanOrEqual(200);
+  await expect(
+    page.getByRole('navigation', { name: 'Diff pages' }),
+  ).toContainText('Rows 1–200 of');
+  await page.getByRole('button', { name: 'Next lines', exact: true }).click();
+  await expect(
+    page.getByRole('navigation', { name: 'Diff pages' }),
+  ).toContainText('Rows 201–');
+  await page
+    .getByRole('button', {
+      name: 'NaN comparison cannot test for NaN',
+      exact: true,
+    })
+    .first()
+    .click();
+  await expect(page.locator('tr.marked')).toBeVisible();
+  await page
+    .getByRole('button', { name: 'View Markdown', exact: true })
+    .click();
+  await expect(
+    page.getByRole('textbox', { name: /Markdown report/ }),
+  ).toContainText('no server attestation');
+  const storage = await page.evaluate(async () => ({
+    local: localStorage.length,
+    session: sessionStorage.length,
+    databases: await indexedDB.databases(),
+    caches: await caches.keys(),
+    registrations: await navigator.serviceWorker.getRegistrations(),
+  }));
+  expect(storage).toEqual({
+    local: 0,
+    session: 0,
+    databases: [],
+    caches: [],
+    registrations: [],
+  });
+  expect(await context.cookies()).toEqual([]);
+});
+
+test('terminates CPU-bound Worker analysis and recovers with a fresh demo', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const Native = window.Worker;
+    class Observed extends Native {
+      constructor(url: string | URL, options?: WorkerOptions) {
+        super(url, options);
+        this.addEventListener('message', ({ data }) => {
+          if (data.kind === 'progress' && data.stage === 'analyze')
+            (
+              window as unknown as { analysisStarted: boolean }
+            ).analysisStarted = true;
+        });
+      }
+    }
+    window.Worker = Observed;
+  });
+  const snapshot = makePerformanceInput(
+    benchmarkCases.find((s) => s.name === '6x128-nested')!,
+  );
+  await page.route('**/api/review', (route) =>
+    route.fulfill({ json: snapshot }),
+  );
+  await page.goto('/');
+  await expect(page.getByLabel('Public pull request URL')).toBeEnabled();
+  await page.evaluate(() => {
+    (window as unknown as { analysisStarted: boolean }).analysisStarted = false;
+  });
+  await page.getByLabel('Public pull request URL').fill(PR_URL);
+  await page
+    .getByRole('button', { name: 'Review pull request', exact: true })
+    .click();
+  await page.waitForFunction(
+    () => (window as unknown as { analysisStarted: boolean }).analysisStarted,
+  );
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Review cancelled');
+  await expect.poll(() => page.workers().length).toBe(0);
+  await page.getByRole('button', { name: 'Explore synthetic demo' }).click();
+  await expect(page.getByText('SYNTHETIC DEMO', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', {
+      name: 'NaN comparison cannot test for NaN',
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect.poll(() => page.workers().length).toBe(0);
+});
+
+test('rejects malformed snapshot identity and permits recovery', async ({
+  page,
+}) => {
+  const snapshot = createDemoInput();
+  snapshot.files[0].context!.sha = 'c'.repeat(40);
+  await page.route('**/api/review', (route) =>
+    route.fulfill({ json: snapshot }),
+  );
+  await page.goto('/');
+  await page.getByLabel('Public pull request URL').fill(PR_URL);
+  await page
+    .getByRole('button', { name: 'Review pull request', exact: true })
+    .click();
+  await expect(page.getByRole('alert')).toContainText(
+    'malformed, oversized, or inconsistent',
+  );
+  await page.getByRole('button', { name: 'Explore synthetic demo' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Copy Markdown', exact: true }),
+  ).toBeVisible();
+});
+
+test('worker startup errors have no main-thread fallback and recover', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    (window as unknown as { nativeWorker: typeof Worker }).nativeWorker =
+      window.Worker;
+    window.Worker = class {
+      constructor() {
+        throw new Error('Test unavailable');
+      }
+    } as never;
+  });
+  await page.goto('/');
+  await expect(page.getByRole('alert')).toContainText('Web Worker unavailable');
+  await page.evaluate(() => {
+    window.Worker = (
+      window as unknown as { nativeWorker: typeof Worker }
+    ).nativeWorker;
+  });
+  await page.getByRole('button', { name: 'Explore synthetic demo' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Copy Markdown', exact: true }),
+  ).toBeVisible({ timeout: 15000 });
+});
 
 test('offline synthetic demo renders evidence and exact coverage without API requests', async ({
   page,
@@ -33,6 +191,9 @@ test('offline synthetic demo renders evidence and exact coverage without API req
     }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Explore synthetic demo' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Copy Markdown', exact: true }),
+  ).toBeVisible();
   expect(api).toEqual([]);
   expect(external).toEqual([]);
   expect(errors).toEqual([]);
@@ -123,7 +284,7 @@ test('copies the actual Markdown report and offers a selectable preview', async 
 test('loads API data and renders untrusted metadata without HTML execution', async ({
   page,
 }) => {
-  const review = createDemo();
+  const review = createDemoInput();
   delete review.synthetic;
   review.pr.title = '<img src=x onerror="window.__xss=1">';
   review.pr.description = '<script>window.__xss=1</script>';
@@ -184,7 +345,7 @@ test('shows loading and supports cancellation without stale results', async ({
     await new Promise<void>((resolve) => {
       finish = resolve;
     });
-    await route.fulfill({ json: createDemo() }).catch(() => {});
+    await route.fulfill({ json: createDemoInput() }).catch(() => {});
   });
   await page.goto('/');
   await page.getByLabel('Public pull request URL').fill(PR_URL);
@@ -206,6 +367,7 @@ test('supports keyboard interaction and remains contained at tablet width', asyn
   page,
 }) => {
   await page.goto('/');
+  await expect(page.getByLabel('Public pull request URL')).toBeEnabled();
   await page.getByLabel('Public pull request URL').focus();
   await expect(page.getByLabel('Public pull request URL')).toBeFocused();
   await page.keyboard.press('Tab');

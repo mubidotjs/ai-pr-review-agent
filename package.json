@@ -1,6 +1,6 @@
 {
   "name": "ai-pr-review-agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build && tsx scripts/verify-boundaries.ts",
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
@@ -19,7 +19,10 @@
     "benchmark": "tsx scripts/benchmark.ts",
     "benchmark:worker": "tsx scripts/profile-worker.ts",
     "smoke": "tsx scripts/smoke.ts",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build",
+    "benchmark:browser": "tsx scripts/benchmark-browser.ts",
+    "benchmark:ui": "tsx scripts/benchmark-ui.ts",
+    "benchmark:ingestion": "tsx scripts/benchmark-ingestion.ts"
   },
   "dependencies": {
     "@babel/parser": "8.1.2",

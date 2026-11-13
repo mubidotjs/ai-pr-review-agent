@@ -1,0 +1,469 @@
+{
+  "timestamp": "2026-11-13T07:00:15.042Z",
+  "node": "v24.22.1",
+  "platform": "win32",
+  "cpu": "Intel(R) Core(TM) i7-6600U CPU @ 2.60GHz",
+  "method": "Hono request validation, mocked public GitHub reads, preflight selection and snapshot serialization; no ASTs or analysis. One cold sample; 3 warmups; 10 batches of 10 requests. CPU is process user+system divided by batch size to mitigate coarse Windows accounting. Includes synthetic upstream JSON creation; excludes real network/TLS, not Cloudflare invocation CPU.",
+  "results": [
+    {
+      "name": "1x16-js",
+      "kib": 16,
+      "files": 1,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 17549,
+      "cold": {
+        "cpuMs": 63,
+        "elapsedMs": 49.9675
+      },
+      "cpu": {
+        "median": 3.2,
+        "p95": 6.3,
+        "max": 6.3
+      },
+      "elapsed": {
+        "median": 1.25519,
+        "p95": 3.03859,
+        "max": 3.03859
+      }
+    },
+    {
+      "name": "1x16-ts",
+      "kib": 16,
+      "files": 1,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 17607,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.7228
+      },
+      "cpu": {
+        "median": 1.5,
+        "p95": 1.6,
+        "max": 1.6
+      },
+      "elapsed": {
+        "median": 0.81344,
+        "p95": 1.14108,
+        "max": 1.14108
+      }
+    },
+    {
+      "name": "1x16-tsx",
+      "kib": 16,
+      "files": 1,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 17575,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.6314
+      },
+      "cpu": {
+        "median": 1.5,
+        "p95": 3.1,
+        "max": 3.1
+      },
+      "elapsed": {
+        "median": 0.77857,
+        "p95": 1.05051,
+        "max": 1.05051
+      }
+    },
+    {
+      "name": "6x16-js",
+      "kib": 16,
+      "files": 6,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 99669,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.122
+      },
+      "cpu": {
+        "median": 3.1,
+        "p95": 3.2,
+        "max": 3.2
+      },
+      "elapsed": {
+        "median": 1.51842,
+        "p95": 1.594,
+        "max": 1.594
+      }
+    },
+    {
+      "name": "6x16-ts",
+      "kib": 16,
+      "files": 6,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 100023,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.3988
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 3.1,
+        "max": 3.1
+      },
+      "elapsed": {
+        "median": 1.3939,
+        "p95": 1.87008,
+        "max": 1.87008
+      }
+    },
+    {
+      "name": "6x16-tsx",
+      "kib": 16,
+      "files": 6,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 99826,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.1256
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 6.2,
+        "max": 6.2
+      },
+      "elapsed": {
+        "median": 1.32007,
+        "p95": 1.57523,
+        "max": 1.57523
+      }
+    },
+    {
+      "name": "1x64-js",
+      "kib": 64,
+      "files": 1,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 66814,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.5276
+      },
+      "cpu": {
+        "median": 1.5,
+        "p95": 1.6,
+        "max": 1.6
+      },
+      "elapsed": {
+        "median": 0.75222,
+        "p95": 0.88874,
+        "max": 0.88874
+      }
+    },
+    {
+      "name": "1x64-ts",
+      "kib": 64,
+      "files": 1,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 66712,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.4764
+      },
+      "cpu": {
+        "median": 1.5,
+        "p95": 1.6,
+        "max": 1.6
+      },
+      "elapsed": {
+        "median": 0.80521,
+        "p95": 0.86907,
+        "max": 0.86907
+      }
+    },
+    {
+      "name": "1x64-tsx",
+      "kib": 64,
+      "files": 1,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 66785,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.4665
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 3.2,
+        "max": 3.2
+      },
+      "elapsed": {
+        "median": 1.58768,
+        "p95": 2.75116,
+        "max": 2.75116
+      }
+    },
+    {
+      "name": "6x64-js",
+      "kib": 64,
+      "files": 6,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 395266,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.9987
+      },
+      "cpu": {
+        "median": 3.1,
+        "p95": 4.7,
+        "max": 4.7
+      },
+      "elapsed": {
+        "median": 3.23209,
+        "p95": 4.51255,
+        "max": 4.51255
+      }
+    },
+    {
+      "name": "6x64-ts",
+      "kib": 64,
+      "files": 6,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 394654,
+      "cold": {
+        "cpuMs": 47,
+        "elapsedMs": 3.8689
+      },
+      "cpu": {
+        "median": 3.2,
+        "p95": 9.4,
+        "max": 9.4
+      },
+      "elapsed": {
+        "median": 2.96028,
+        "p95": 3.89922,
+        "max": 3.89922
+      }
+    },
+    {
+      "name": "6x64-tsx",
+      "kib": 64,
+      "files": 6,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 395087,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 3.133
+      },
+      "cpu": {
+        "median": 3.2,
+        "p95": 11,
+        "max": 11
+      },
+      "elapsed": {
+        "median": 5.1502,
+        "p95": 5.42724,
+        "max": 5.42724
+      }
+    },
+    {
+      "name": "1x128-js",
+      "kib": 128,
+      "files": 1,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 132301,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.5237
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 6.3,
+        "max": 6.3
+      },
+      "elapsed": {
+        "median": 1.91429,
+        "p95": 2.44545,
+        "max": 2.44545
+      }
+    },
+    {
+      "name": "1x128-ts",
+      "kib": 128,
+      "files": 1,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 132242,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 2.3735
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 1.6,
+        "max": 1.6
+      },
+      "elapsed": {
+        "median": 1.43815,
+        "p95": 1.83251,
+        "max": 1.83251
+      }
+    },
+    {
+      "name": "1x128-tsx",
+      "kib": 128,
+      "files": 1,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 132357,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 1.6909
+      },
+      "cpu": {
+        "median": 1.6,
+        "p95": 3.1,
+        "max": 3.1
+      },
+      "elapsed": {
+        "median": 1.17564,
+        "p95": 1.6592,
+        "max": 1.6592
+      }
+    },
+    {
+      "name": "6x128-js",
+      "kib": 128,
+      "files": 6,
+      "extension": "js",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 788177,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 8.3669
+      },
+      "cpu": {
+        "median": 6.3,
+        "p95": 10.9,
+        "max": 10.9
+      },
+      "elapsed": {
+        "median": 5.52524,
+        "p95": 6.11852,
+        "max": 6.11852
+      }
+    },
+    {
+      "name": "6x128-ts",
+      "kib": 128,
+      "files": 6,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 787823,
+      "cold": {
+        "cpuMs": 15,
+        "elapsedMs": 4.8168
+      },
+      "cpu": {
+        "median": 4.7,
+        "p95": 4.8,
+        "max": 4.8
+      },
+      "elapsed": {
+        "median": 4.37075,
+        "p95": 5.16344,
+        "max": 5.16344
+      }
+    },
+    {
+      "name": "6x128-tsx",
+      "kib": 128,
+      "files": 6,
+      "extension": "tsx",
+      "nested": false,
+      "largeDiff": false,
+      "responseBytes": 788508,
+      "cold": {
+        "cpuMs": 16,
+        "elapsedMs": 3.8769
+      },
+      "cpu": {
+        "median": 6.3,
+        "p95": 12.5,
+        "max": 12.5
+      },
+      "elapsed": {
+        "median": 5.50004,
+        "p95": 7.52291,
+        "max": 7.52291
+      }
+    },
+    {
+      "name": "6x128-nested",
+      "kib": 128,
+      "files": 6,
+      "extension": "ts",
+      "nested": true,
+      "largeDiff": false,
+      "responseBytes": 788025,
+      "cold": {
+        "cpuMs": 0,
+        "elapsedMs": 5.924
+      },
+      "cpu": {
+        "median": 6.3,
+        "p95": 15.6,
+        "max": 15.6
+      },
+      "elapsed": {
+        "median": 5.82354,
+        "p95": 6.8134,
+        "max": 6.8134
+      }
+    },
+    {
+      "name": "6x64-large-diff",
+      "kib": 64,
+      "files": 6,
+      "extension": "ts",
+      "nested": false,
+      "largeDiff": true,
+      "responseBytes": 791091,
+      "cold": {
+        "cpuMs": 16,
+        "elapsedMs": 9.8405
+      },
+      "cpu": {
+        "median": 12.5,
+        "p95": 20.2,
+        "max": 20.2
+      },
+      "elapsed": {
+        "median": 10.64386,
+        "p95": 14.55588,
+        "max": 14.55588
+      }
+    }
+  ]
+}

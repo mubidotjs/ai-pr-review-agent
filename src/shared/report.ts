@@ -21,6 +21,7 @@ export function reviewReport(review: Review): string {
     `PR: ${pr.url}`,
     `Head: ${pr.headSha} · Base: ${pr.baseSha}`,
     `Snapshot verified: ${review.snapshotVerified ? 'yes' : 'no'}. AI disabled; no inference performed.`,
+    'Deterministic findings are computed in a browser Web Worker. They have no server attestation and must be independently revalidated before external use.',
     `Coverage: ${c.total} total; ${c.inventoried} inventoried; ${c.analyzed} analyzed; ${c.skipped} skipped; ${c.uninventoried} uninventoried.`,
     '**This is a limited rule review, not a security clearance. Zero findings does not mean the code is safe.**',
     '## Findings',

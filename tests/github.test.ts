@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { GitHubClient, type Transport } from '../src/server/github';
 import { LIMITS } from '../src/shared/types';
-import { reviewPullRequest } from '../src/server/review';
+import { reviewPullRequest } from './review';
 import {
   addition,
   apiPr,

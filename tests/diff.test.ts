@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseDiff } from '../src/server/diff';
+import { parseDiff } from '../src/analysis/diff';
 
 describe('bounded unified diff parser', () => {
   it('maps additions, deletions, context and multiple hunks', () => {

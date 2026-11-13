@@ -11,6 +11,19 @@
   --border: #dce3db;
   --amber: #8a5918;
 }
+.diff-pages {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+}
+.diff-pages .secondary-button {
+  padding: 0 8px;
+  font-size: 10px;
+}
 .file-github-link {
   display: inline-flex;
   margin-left: 12px;

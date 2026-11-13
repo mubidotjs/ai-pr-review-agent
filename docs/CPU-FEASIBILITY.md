@@ -1,4 +1,6 @@
-# CPU feasibility: local functionality, production gate
+# Milestone 1 CPU evidence (historical)
+
+Milestone 2 moved analysis to a browser Web Worker. This document and its raw measurements preserve the verified baseline. Use [the current performance report](MILESTONE-2-PERFORMANCE.md) for the selected architecture and remaining deployment gate.
 
 **Result: the current deterministic pipeline is not established as suitable for a single Workers Free invocation. Do not deploy it under that assumption.** Full six-file analysis remains working locally.
 

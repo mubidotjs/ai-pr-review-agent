@@ -2,9 +2,9 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Milestone 1: local deterministic MVP. AI is disabled. No inference has been performed.**
+**Milestone 2: browser Web Worker analysis with bounded read-only ingestion. AI remains disabled. No cloud resources have been deployed.**
 
-PRISM reads a public GitHub PR, maps its diff, applies three narrow JavaScript/TypeScript rules, and shows exact evidence alongside honest coverage. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
+PRISM reads a public GitHub PR through a minimal Hono service, then maps its diff and applies three narrow JavaScript/TypeScript rules in a dedicated browser Web Worker. Findings have exact evidence and honest coverage, but no server attestation. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)
 
@@ -21,7 +21,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. The demonstration is loaded initially; paste a canonical `https://github.com/owner/repository/pull/123` URL for a real public review. Demo data is clearly fictional, and its illustrative source links are not presented as real PR evidence.
 
-The Vite Cloudflare plugin runs the backend in **local workerd** and serves the React frontend on the same origin. There are no AI, storage, or remote resource bindings. Do not run deployment/upload commands for this milestone.
+The Vite Cloudflare plugin runs ingestion in **local workerd** and serves React plus its bundled browser analysis Worker on the same origin. The backend never runs Babel or generates findings. A build-time module-graph check enforces this boundary. There are no AI, storage, or remote resource bindings. Do not run deployment/upload commands for this milestone.
 
 To exercise the built output:
 
@@ -39,7 +39,8 @@ npm run preview
 - Metadata, base/head SHAs, paginated file inventory, unified diffs, renamed/deleted files, and exact added-line coordinates.
 - Pinned head source checks, fork-aware source links, snapshot revalidation, and rejection of unsupported findings.
 - Three conservative rules: global `NaN` comparisons, recognized HTTPS Agent certificate-verification opt-outs, and recognized `jsonwebtoken.verify` expiration opt-outs.
-- Severity groups, file navigation, responsive diff views, explicit unknown states, copyable Markdown, and a selectable report fallback.
+- Severity groups, file navigation, responsive diff views, 200-row paging with finding jumps, explicit unknown states, copyable Markdown, and a selectable report fallback. All bounded diff rows remain available.
+- Worker cancellation/termination, stale-result rejection, bounded snapshot validation, and recovery without main-thread analysis fallback.
 - No accounts, analytics, persistent PR storage, repository code execution, automatic comments, or AI calls.
 
 ## Coverage and limits
@@ -83,11 +84,24 @@ npm run smoke -- https://github.com/owner/repository/pull/123
 
 It verifies browser → local Worker → public GitHub → rendered result, writes verification metadata only, and consumes the originating IP's GitHub quota. It never runs in CI.
 
-## CPU feasibility comes before deployment
+## CPU architecture and performance
 
-The application is **not established as deployable on Workers Free**. Its 30-second wall-time budget is separate from the Free plan's **10 ms CPU limit per invocation**. Early measurements flag the Babel workload, including the six-file/128-KiB configuration, as requiring architecture adjustment before deployment.
+CPU-heavy diff materialization, Babel parsing, rules, coordinate/evidence checks, finding construction, coverage, and Markdown generation now run in a dedicated browser Web Worker. The backend owns strict URL/API security, the 12-request logical budget, pinned source retrieval, and before/after verification. It returns a versioned bounded input, not findings.
 
-See [benchmark methodology and results](docs/CPU-FEASIBILITY.md), [raw Node measurements](docs/benchmark-results.json), and [local Worker profiles](docs/worker-profile-results.json). Local CPU estimates and V8 samples are not authoritative deployed invocation measurements.
+A small bounded hunk preflight remains on the backend to preserve which six files get source context; it creates no diff rows or ASTs. Framed metadata plus raw UTF-8 source frames avoid large source-to-JSON escaping. The UI receives the resulting review/report, never full source contexts. Each production review gets a fresh Worker, terminated on completion, cancellation, errors, replacement, or timeout.
+
+See [Milestone 2 measurements and remaining gate](docs/MILESTONE-2-PERFORMANCE.md). The AST blocker is removed from the backend. **Workers Free CPU compliance is still not established**, particularly at large response/patch limits. No deployment was used to infer compliance. The original [Milestone 1 CPU evidence](docs/CPU-FEASIBILITY.md) is preserved.
+
+```sh
+# Start the built preview first, then:
+npm run benchmark:browser
+npm run benchmark:ingestion
+# For actual local workerd profiling, start in another terminal:
+npx wrangler dev --local --config wrangler.test.jsonc --port 8787 --inspector-port 9229
+npm run benchmark:worker
+```
+
+Profiling uses synthetic inputs, not GitHub or AI. Browser results include startup/bundle size, cold/warm analysis, sampled CPU, transfer/clone costs, responsiveness, and heap observations. Exact methodology and limitations are in the report. `benchmark:ui` additionally compares an ignored export of the verified baseline; setup is documented there.
 
 ## Architecture and next milestone
 

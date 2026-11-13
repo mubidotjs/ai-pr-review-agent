@@ -3,10 +3,10 @@ import {
   analyzeFile,
   createReviewFinding,
   validateReviewFinding,
-} from '../src/server/rules';
-import { disabledAiAdapter } from '../src/server/review';
+} from '../src/analysis/rules';
+import { disabledAiAdapter } from '../src/server/agent';
 import { createDemo, parsedFile, pr, sources } from './fixtures';
-import demo from '../src/client/demo.json';
+import demo from './baseline-demo.json';
 
 function findings(source: string, path = 'src/test.ts') {
   return analyzeFile(parsedFile(path, source), source, pr);

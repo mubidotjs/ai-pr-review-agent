@@ -1,4 +1,5 @@
 import type { Finding, ReviewFile } from '../shared/types';
+import { useState } from 'react';
 
 export function Icon({
   name,
@@ -62,11 +63,24 @@ export function DiffViewer({
   file,
   findings,
   synthetic,
+  focusLine,
 }: {
   file: ReviewFile;
   findings: Finding[];
   synthetic?: boolean;
+  focusLine?: number;
 }) {
+  const pageSize = 200;
+  const [page, setPage] = useState(() =>
+    Math.floor(
+      Math.max(
+        0,
+        file.rows.findIndex((r) => r.newLine === focusLine),
+      ) / pageSize,
+    ),
+  );
+  const start = page * pageSize;
+  const visibleRows = file.rows.slice(start, start + pageSize);
   const marked = new Set(
     findings.filter((f) => f.path === file.path).map((f) => f.line),
   );
@@ -119,9 +133,9 @@ export function DiffViewer({
               </tr>
             </thead>
             <tbody>
-              {file.rows.map((row, index) => (
+              {visibleRows.map((row, index) => (
                 <tr
-                  key={index}
+                  key={start + index}
                   id={row.newLine ? `line-${row.newLine}` : undefined}
                   className={`${row.kind}${row.kind === 'add' && row.newLine && marked.has(row.newLine) ? ' marked' : ''}`}
                 >
@@ -150,6 +164,30 @@ export function DiffViewer({
           <p>This file has no safety assessment.</p>
         </div>
       )}
+      {file.rows.length > pageSize ? (
+        <nav className="diff-pages" aria-label="Diff pages">
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={page === 0}
+            onClick={() => setPage(page - 1)}
+          >
+            Previous lines
+          </button>
+          <span>
+            Rows {start + 1}–{Math.min(start + pageSize, file.rows.length)} of{' '}
+            {file.rows.length}
+          </span>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={start + pageSize >= file.rows.length}
+            onClick={() => setPage(page + 1)}
+          >
+            Next lines
+          </button>
+        </nav>
+      ) : null}
       <div className="diff-footer">
         <span className="legend-add" /> Added <span className="legend-delete" />{' '}
         Removed <span className="legend-finding" /> Finding on an added line{' '}

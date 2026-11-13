@@ -1,6 +1,9 @@
+import { decodeSnapshotWire } from '../src/analysis/snapshot-wire';
+import type { ReviewInputSnapshot } from '../src/shared/types';
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { PR_URL } from '../tests/fixtures';
+import { PR_URL } from '../tests/upstream-fixtures';
 import WebSocket from 'ws';
+import { benchmarkCases } from '../tests/performance-fixtures';
 
 // Connects only to a separately started, local synthetic Worker harness.
 const origin = 'http://127.0.0.1:8787';
@@ -46,7 +49,7 @@ try {
   await command('Profiler.setSamplingInterval', { interval: 100 });
   const results = [];
   mkdirSync('artifacts', { recursive: true });
-  for (const scenario of ['normal', 'large']) {
+  for (const scenario of ['normal', ...benchmarkCases.map((s) => s.name)]) {
     const runs = [];
     for (let i = 0; i < 5; i++) {
       await command('Profiler.start');
@@ -59,12 +62,17 @@ try {
         },
         body: JSON.stringify({ url: PR_URL }),
       });
-      const review = await response.json();
+      const wire = await response.arrayBuffer();
+      const review = decodeSnapshotWire(wire) as ReviewInputSnapshot;
       const wallMs = performance.now() - start;
       if (
         !response.ok ||
-        !review.snapshotVerified ||
-        review.coverage.analyzed !== (scenario === 'large' ? 6 : 5)
+        !review.verification.after ||
+        review.files.filter((file: { context?: unknown }) => file.context)
+          .length !==
+          (scenario === 'normal'
+            ? 5
+            : benchmarkCases.find((s) => s.name === scenario)!.files)
       )
         throw new Error(`Worker scenario failed: ${JSON.stringify(review)}`);
       const { profile } = (await command('Profiler.stop')) as {
@@ -85,7 +93,10 @@ try {
         wallMs,
         attributedSampleMs: attributedMicros / 1000,
         samples: profile.samples.length,
-        coverage: review.coverage,
+        contextFiles: review.files.filter(
+          (file: { context?: unknown }) => file.context,
+        ).length,
+        responseBytes: wire.byteLength,
         requests: review.budget.requests,
       });
     }
@@ -100,12 +111,12 @@ try {
   }
   mkdirSync('docs', { recursive: true });
   writeFileSync(
-    'docs/worker-profile-results.json',
+    'docs/milestone-2-backend-profile.json',
     JSON.stringify(
       {
         timestamp: new Date().toISOString(),
         method:
-          'Local workerd inspector V8 sampling at requested 100 us interval over complete mocked /api/review invocations; 5 sequential runs, first cold. Attributed sample time excludes idle/program/root leaf frames. Sampling is diagnostic, not authoritative invocation CPU. Network uses in-Worker fixtures, no GitHub or cloud calls. Do not compare wall time directly to Cloudflare CPU enforcement.',
+          'Local workerd inspector V8 sampling at requested 100 us interval over complete mocked ingestion/serialization-only /api/review invocations; 5 sequential runs, first cold. Attributed sample time excludes idle/program/root leaf frames. Sampling is diagnostic, not authoritative invocation CPU. Network uses in-Worker fixtures, no GitHub or cloud calls. Do not compare wall time directly to Cloudflare CPU enforcement.',
         results,
       },
       null,

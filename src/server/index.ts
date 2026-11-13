@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { LIMITS } from '../shared/types';
 import { GitHubClient, type Transport } from './github';
-import { reviewPullRequest } from './review';
+import { ingestPullRequest, serializeSnapshot } from './review';
 import { boundedText, ReviewError } from './security';
 
 export function createApp(transport?: Transport) {
@@ -95,7 +95,13 @@ export function createApp(transport?: Transport) {
           'Provide only a string url field.',
         );
       client = new GitHubClient(transport, controller.signal);
-      return c.json(await reviewPullRequest(body.url, client));
+      const response = serializeSnapshot(
+        await ingestPullRequest(body.url, client),
+      );
+      return c.body(response.body, 200, {
+        'Content-Type': 'application/vnd.prism.review-input.v1',
+        'Content-Length': String(response.bytes),
+      });
     } catch (error) {
       const known =
         error instanceof ReviewError

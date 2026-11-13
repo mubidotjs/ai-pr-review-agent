@@ -1,35 +1,102 @@
-import { useRef, useState, type FormEvent } from 'react';
-import type { Review } from '../shared/types';
-import { reviewReport } from '../shared/report';
-import demo from './demo.json';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react';
+import type { Review, ReviewInputSnapshot } from '../shared/types';
+import demo from './demo-input.json';
+import {
+  BrowserReviewError,
+  ReviewRunner,
+  type ResultReply,
+} from './review-runner';
 import { DiffViewer, FindingCard, Icon } from './components';
 
-const initialDemo = demo as Review;
+const initialDemo = demo as ReviewInputSnapshot;
 export default function App() {
   const [url, setUrl] = useState('');
-  const [review, setReview] = useState<Review | null>(initialDemo);
-  const [selectedPath, setSelectedPath] = useState(initialDemo.files[0].path);
-  const [loading, setLoading] = useState(false);
+  const [review, setReview] = useState<Review | null>(null);
+  const [markdown, setMarkdown] = useState('');
+  const [selectedPath, setSelectedPath] = useState('');
+  const [jump, setJump] = useState<{ id: number; line?: number }>({ id: 0 });
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [severity, setSeverity] = useState('all');
   const [retryAt, setRetryAt] = useState<number | null>(null);
-  const request = useRef<AbortController | null>(null);
+  const [runner] = useState(() => new ReviewRunner());
+  const generation = useRef(0);
+  const invalidate = useCallback(() => {
+    generation.current++;
+    runner.cancel();
+  }, [runner]);
+  const applyResult = useCallback((result: ResultReply) => {
+    setReview(result.review);
+    setMarkdown(result.markdown);
+    setSelectedPath(result.review.files[0]?.path ?? '');
+    setSeverity('all');
+    const rate = result.review.rateLimit;
+    if (rate.remaining === 0 || rate.retryAt)
+      setRetryAt(rate.retryAt ?? rate.resetAt ?? null);
+  }, []);
+  useEffect(() => {
+    const own = ++generation.current;
+    const service = runner;
+    void service
+      .run(initialDemo)
+      .then((result) => {
+        if (own === generation.current) {
+          applyResult(result);
+          setLoading(false);
+        }
+      })
+      .catch((cause) => {
+        if (own === generation.current) {
+          setError(
+            cause instanceof Error
+              ? cause.message
+              : 'Browser analysis unavailable.',
+          );
+          setLoading(false);
+        }
+      });
+    return () => {
+      invalidate();
+    };
+  }, [applyResult, invalidate, runner]);
   const file =
     review?.files.find((f) => f.path === selectedPath) ?? review?.files[0];
-  function loadDemo() {
-    request.current?.abort();
-    request.current = null;
-    setReview(initialDemo);
-    setSelectedPath(initialDemo.files[0].path);
+  async function begin(input: string | ReviewInputSnapshot) {
+    const own = ++generation.current;
+    setLoading(true);
     setError('');
-    setLoading(false);
     setCopied(false);
-    setSeverity('all');
     setReportOpen(false);
+    setReview(null);
+    setMarkdown('');
+    try {
+      const result = await runner.run(input);
+      if (own === generation.current) applyResult(result);
+    } catch (cause) {
+      if (own !== generation.current) return;
+      if (cause instanceof BrowserReviewError && cause.retryAt)
+        setRetryAt(cause.retryAt);
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Browser analysis unavailable.',
+      );
+    } finally {
+      if (own === generation.current) setLoading(false);
+    }
   }
-  async function submit(event: FormEvent<HTMLFormElement>) {
+  function loadDemo() {
+    void begin(initialDemo);
+  }
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (retryAt && Date.now() < retryAt * 1000) {
       setError(
@@ -37,62 +104,18 @@ export default function App() {
       );
       return;
     }
-    request.current?.abort();
-    const controller = new AbortController();
-    request.current = controller;
-    setLoading(true);
-    setError('');
-    setCopied(false);
-    setReportOpen(false);
-    setReview(null);
-    try {
-      const response = await fetch('/api/review', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-        signal: controller.signal,
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        if (
-          result.error?.code === 'RATE_LIMITED' &&
-          typeof result.error.retryAt === 'number'
-        )
-          setRetryAt(result.error.retryAt);
-        throw new Error(
-          result.error?.message ??
-            'Review unavailable. Please try again manually.',
-        );
-      }
-      if (request.current !== controller) return;
-      const next = result as Review;
-      setReview(next);
-      setSelectedPath(next.files[0]?.path ?? '');
-      setSeverity('all');
-      if (next.rateLimit.remaining === 0 || next.rateLimit.retryAt)
-        setRetryAt(next.rateLimit.retryAt ?? next.rateLimit.resetAt ?? null);
-    } catch (cause) {
-      if (request.current === controller && !controller.signal.aborted)
-        setError(
-          cause instanceof Error ? cause.message : 'Review unavailable.',
-        );
-    } finally {
-      if (request.current === controller) {
-        setLoading(false);
-        request.current = null;
-      }
-    }
+    void begin(url);
   }
   function cancel() {
-    request.current?.abort();
-    request.current = null;
+    generation.current++;
+    runner.cancel();
     setLoading(false);
     setError('Review cancelled. No automatic retry will run.');
   }
   async function copy() {
     if (!review) return;
     try {
-      await navigator.clipboard.writeText(reviewReport(review));
+      await navigator.clipboard.writeText(markdown);
       setCopied(true);
     } catch {
       setReportOpen(true);
@@ -117,7 +140,7 @@ export default function App() {
               <span />
               Local MVP
             </span>
-            <span className="header-version">v0.1</span>
+            <span className="header-version">v0.2</span>
             <a
               href="https://github.com/mubidotjs/ai-pr-review-agent"
               target="_blank"
@@ -361,7 +384,10 @@ export default function App() {
                         type="button"
                         className={`file-button${f.path === file?.path ? ' active' : ''}`}
                         key={f.path}
-                        onClick={() => setSelectedPath(f.path)}
+                        onClick={() => {
+                          setSelectedPath(f.path);
+                          setJump((j) => ({ id: j.id + 1 }));
+                        }}
                         aria-pressed={f.path === file?.path}
                       >
                         <Icon name="file" size={16} />
@@ -398,6 +424,8 @@ export default function App() {
               <div className="diff-column">
                 {file ? (
                   <DiffViewer
+                    key={`${file.path}:${jump.id}`}
+                    focusLine={jump.line}
                     file={file}
                     findings={review.findings}
                     synthetic={review.synthetic}
@@ -450,6 +478,10 @@ export default function App() {
                           selected={file?.path === finding.path}
                           onSelect={() => {
                             setSelectedPath(finding.path);
+                            setJump((j) => ({
+                              id: j.id + 1,
+                              line: finding.line,
+                            }));
                             requestAnimationFrame(() =>
                               document
                                 .getElementById(`line-${finding.line}`)
@@ -480,9 +512,10 @@ export default function App() {
             <div className="review-disclaimer">
               <Icon name="shield" />
               <p>
-                <strong>Evidence helps. Judgment decides.</strong> This limited
-                review is not a security clearance. Zero findings does not mean
-                the code is safe.
+                <strong>Evidence helps. Judgment decides.</strong> Browser
+                Worker findings have no server attestation. This limited review
+                is not a security clearance. Zero findings does not mean the
+                code is safe.
               </p>
               <button
                 type="button"
@@ -501,7 +534,7 @@ export default function App() {
                 <textarea
                   id="markdown-report"
                   readOnly
-                  value={reviewReport(review)}
+                  value={markdown}
                   rows={15}
                 />
               </section>
@@ -509,7 +542,7 @@ export default function App() {
             <div className="budget-note">
               {review.synthetic
                 ? 'Demo uses no API requests.'
-                : `${review.budget.requests}/12 GitHub requests · ${(review.budget.bytes / 1024).toFixed(1)} KiB received · ${(review.budget.durationMs / 1000).toFixed(1)} s wall time.`}{' '}
+                : `${review.budget.requests}/12 GitHub requests · ${(review.budget.bytes / 1024).toFixed(1)} KiB received · ${(review.budget.durationMs / 1000).toFixed(1)} s ingestion.`}{' '}
               Unauthenticated GitHub access shares 60 requests/hour per
               originating IP.
               {review.rateLimit.remaining !== undefined

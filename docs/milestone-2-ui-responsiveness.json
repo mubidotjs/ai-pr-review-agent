@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-11-13T07:04:41.619Z",
+  "browser": "158.0.8127.18",
+  "method": "Single direct built-UI comparison on identical 6001-line synthetic file; baseline exported from verified commit into ignored artifacts, both use mocked API results/inputs. Main CDP TaskDuration includes form events, response/Worker delivery, React rendering, and layout. One run per version, diagnostic not a stable population percentile. Cancellation begins after Worker analysis-start signal during a six-file nested workload. Target disappearance is not proof of immediate OS memory reclamation.",
+  "results": [
+    {
+      "name": "milestone-1",
+      "elapsedMs": 768.9418999999998,
+      "mainThreadTaskMs": 701.135,
+      "renderedRows": 6002,
+      "longTasksMs": [113]
+    },
+    {
+      "name": "milestone-2",
+      "elapsedMs": 426.49599999999964,
+      "mainThreadTaskMs": 114.37,
+      "renderedRows": 200,
+      "longTasksMs": []
+    }
+  ],
+  "cancellation": {
+    "terminateCallMs": 0,
+    "targetGoneMs": 240.88569999999982,
+    "remainingWorkers": 0
+  }
+}

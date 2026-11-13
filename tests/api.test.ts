@@ -1,3 +1,4 @@
+import { decodeSnapshotWire } from '../src/analysis/snapshot-wire';
 import { describe, expect, it, vi } from 'vitest';
 import { createApp } from '../src/server/index';
 import { fixtureTransport, json, PR_URL } from './fixtures';
@@ -16,9 +17,18 @@ describe('same-origin local review API', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('Cache-Control')).toBe('no-store');
     expect(response.headers.get('Access-Control-Allow-Origin')).toBeNull();
-    const review = await response.json();
-    expect(review.findings).toHaveLength(3);
-    expect(review.ai.status).toBe('disabled');
+    const review = decodeSnapshotWire(await response.arrayBuffer()) as {
+      schemaVersion: number;
+      files: { context?: unknown }[];
+      findings?: unknown;
+      verification: { after: unknown; before: unknown };
+    };
+    expect(review.schemaVersion).toBe(1);
+    expect(
+      review.files.filter((f: { context?: unknown }) => f.context),
+    ).toHaveLength(5);
+    expect(review.findings).toBeUndefined();
+    expect(review.verification.after).toEqual(review.verification.before);
   });
   it('rejects cross-origin requests before any GitHub request', async () => {
     const transport = vi.fn(fixtureTransport());
@@ -35,6 +45,7 @@ describe('same-origin local review API', () => {
   });
   it.each([
     [{ url: PR_URL, token: 'not-allowed' }, 400],
+    [{ url: PR_URL, findings: [{ source: 'ai', serverAttested: true }] }, 400],
     [{ url: 42 }, 400],
     [{}, 400],
     [null, 400],

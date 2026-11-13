@@ -1,0 +1,951 @@
+{
+  "timestamp": "2026-11-13T06:59:28.860Z",
+  "method": "Local workerd inspector V8 sampling at requested 100 us interval over complete mocked ingestion/serialization-only /api/review invocations; 5 sequential runs, first cold. Attributed sample time excludes idle/program/root leaf frames. Sampling is diagnostic, not authoritative invocation CPU. Network uses in-Worker fixtures, no GitHub or cloud calls. Do not compare wall time directly to Cloudflare CPU enforcement.",
+  "results": [
+    {
+      "scenario": "normal",
+      "runs": [
+        {
+          "wallMs": 56.85799999999995,
+          "attributedSampleMs": 31.302,
+          "samples": 44,
+          "contextFiles": 5,
+          "responseBytes": 4092,
+          "requests": 9
+        },
+        {
+          "wallMs": 18.653799999999933,
+          "attributedSampleMs": 7.166,
+          "samples": 16,
+          "contextFiles": 5,
+          "responseBytes": 4091,
+          "requests": 9
+        },
+        {
+          "wallMs": 17.25120000000004,
+          "attributedSampleMs": 12.136,
+          "samples": 12,
+          "contextFiles": 5,
+          "responseBytes": 4091,
+          "requests": 9
+        },
+        {
+          "wallMs": 18.91840000000002,
+          "attributedSampleMs": 12.361,
+          "samples": 18,
+          "contextFiles": 5,
+          "responseBytes": 4091,
+          "requests": 9
+        },
+        {
+          "wallMs": 19.176400000000058,
+          "attributedSampleMs": 5.418,
+          "samples": 17,
+          "contextFiles": 5,
+          "responseBytes": 4091,
+          "requests": 9
+        }
+      ]
+    },
+    {
+      "scenario": "1x16-js",
+      "runs": [
+        {
+          "wallMs": 13.234499999999912,
+          "attributedSampleMs": 9.349,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 17548,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.243299999999977,
+          "attributedSampleMs": 3.639,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17548,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.733100000000036,
+          "attributedSampleMs": 2.464,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17548,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.924300000000017,
+          "attributedSampleMs": 9.223,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17548,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.831699999999955,
+          "attributedSampleMs": 6.689,
+          "samples": 7,
+          "contextFiles": 1,
+          "responseBytes": 17548,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x16-ts",
+      "runs": [
+        {
+          "wallMs": 11.927900000000022,
+          "attributedSampleMs": 8.566,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17607,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.919300000000021,
+          "attributedSampleMs": 8.01,
+          "samples": 10,
+          "contextFiles": 1,
+          "responseBytes": 17607,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.683599999999956,
+          "attributedSampleMs": 9.599,
+          "samples": 5,
+          "contextFiles": 1,
+          "responseBytes": 17607,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.446199999999862,
+          "attributedSampleMs": 7.007,
+          "samples": 7,
+          "contextFiles": 1,
+          "responseBytes": 17607,
+          "requests": 5
+        },
+        {
+          "wallMs": 11.523000000000138,
+          "attributedSampleMs": 8.261,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 17607,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x16-tsx",
+      "runs": [
+        {
+          "wallMs": 11.422900000000027,
+          "attributedSampleMs": 6.624,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17575,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.317999999999984,
+          "attributedSampleMs": 0.563,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 17575,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.136400000000094,
+          "attributedSampleMs": 7.421,
+          "samples": 5,
+          "contextFiles": 1,
+          "responseBytes": 17575,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.495599999999968,
+          "attributedSampleMs": 6.76,
+          "samples": 4,
+          "contextFiles": 1,
+          "responseBytes": 17575,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.290700000000015,
+          "attributedSampleMs": 9.754,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 17575,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "6x16-js",
+      "runs": [
+        {
+          "wallMs": 15.250500000000102,
+          "attributedSampleMs": 10.145,
+          "samples": 13,
+          "contextFiles": 6,
+          "responseBytes": 99669,
+          "requests": 10
+        },
+        {
+          "wallMs": 12.51260000000002,
+          "attributedSampleMs": 8.356,
+          "samples": 11,
+          "contextFiles": 6,
+          "responseBytes": 99669,
+          "requests": 10
+        },
+        {
+          "wallMs": 17.756200000000035,
+          "attributedSampleMs": 3.468,
+          "samples": 13,
+          "contextFiles": 6,
+          "responseBytes": 99669,
+          "requests": 10
+        },
+        {
+          "wallMs": 15.662000000000035,
+          "attributedSampleMs": 9.804,
+          "samples": 14,
+          "contextFiles": 6,
+          "responseBytes": 99669,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.183399999999892,
+          "attributedSampleMs": 8.366,
+          "samples": 11,
+          "contextFiles": 6,
+          "responseBytes": 99669,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x16-ts",
+      "runs": [
+        {
+          "wallMs": 14.259499999999889,
+          "attributedSampleMs": 9.594,
+          "samples": 9,
+          "contextFiles": 6,
+          "responseBytes": 100023,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.866400000000112,
+          "attributedSampleMs": 9.368,
+          "samples": 10,
+          "contextFiles": 6,
+          "responseBytes": 100023,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.061200000000099,
+          "attributedSampleMs": 8.235,
+          "samples": 10,
+          "contextFiles": 6,
+          "responseBytes": 100023,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.888500000000022,
+          "attributedSampleMs": 8.965,
+          "samples": 11,
+          "contextFiles": 6,
+          "responseBytes": 100023,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.457400000000007,
+          "attributedSampleMs": 7.292,
+          "samples": 9,
+          "contextFiles": 6,
+          "responseBytes": 100023,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x16-tsx",
+      "runs": [
+        {
+          "wallMs": 14.148899999999912,
+          "attributedSampleMs": 3.57,
+          "samples": 9,
+          "contextFiles": 6,
+          "responseBytes": 99826,
+          "requests": 10
+        },
+        {
+          "wallMs": 18.2503999999999,
+          "attributedSampleMs": 16.013,
+          "samples": 8,
+          "contextFiles": 6,
+          "responseBytes": 99826,
+          "requests": 10
+        },
+        {
+          "wallMs": 22.00999999999999,
+          "attributedSampleMs": 13.389,
+          "samples": 15,
+          "contextFiles": 6,
+          "responseBytes": 99827,
+          "requests": 10
+        },
+        {
+          "wallMs": 14.384999999999991,
+          "attributedSampleMs": 9.121,
+          "samples": 10,
+          "contextFiles": 6,
+          "responseBytes": 99826,
+          "requests": 10
+        },
+        {
+          "wallMs": 13.69880000000012,
+          "attributedSampleMs": 2.881,
+          "samples": 8,
+          "contextFiles": 6,
+          "responseBytes": 99826,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "1x64-js",
+      "runs": [
+        {
+          "wallMs": 18.128400000000056,
+          "attributedSampleMs": 0,
+          "samples": 2,
+          "contextFiles": 1,
+          "responseBytes": 66814,
+          "requests": 5
+        },
+        {
+          "wallMs": 14.783199999999852,
+          "attributedSampleMs": 0,
+          "samples": 2,
+          "contextFiles": 1,
+          "responseBytes": 66814,
+          "requests": 5
+        },
+        {
+          "wallMs": 18.33179999999993,
+          "attributedSampleMs": 10.913,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 66814,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.603200000000015,
+          "attributedSampleMs": 8.169,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 66814,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.689900000000307,
+          "attributedSampleMs": 3.055,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 66814,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x64-ts",
+      "runs": [
+        {
+          "wallMs": 11.941200000000208,
+          "attributedSampleMs": 8.921,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 66712,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.124299999999948,
+          "attributedSampleMs": 0.991,
+          "samples": 4,
+          "contextFiles": 1,
+          "responseBytes": 66712,
+          "requests": 5
+        },
+        {
+          "wallMs": 10.236100000000079,
+          "attributedSampleMs": 6.938,
+          "samples": 4,
+          "contextFiles": 1,
+          "responseBytes": 66712,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.88989999999967,
+          "attributedSampleMs": 2.944,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 66712,
+          "requests": 5
+        },
+        {
+          "wallMs": 14.366300000000138,
+          "attributedSampleMs": 8.539,
+          "samples": 7,
+          "contextFiles": 1,
+          "responseBytes": 66712,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x64-tsx",
+      "runs": [
+        {
+          "wallMs": 13.858200000000124,
+          "attributedSampleMs": 10.947,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 66785,
+          "requests": 5
+        },
+        {
+          "wallMs": 14.406800000000203,
+          "attributedSampleMs": 9.708,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 66785,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.266700000000128,
+          "attributedSampleMs": 8.344,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 66785,
+          "requests": 5
+        },
+        {
+          "wallMs": 11.563700000000154,
+          "attributedSampleMs": 7.072,
+          "samples": 5,
+          "contextFiles": 1,
+          "responseBytes": 66785,
+          "requests": 5
+        },
+        {
+          "wallMs": 11.094500000000153,
+          "attributedSampleMs": 7.935,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 66785,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "6x64-js",
+      "runs": [
+        {
+          "wallMs": 22.70129999999972,
+          "attributedSampleMs": 12.712,
+          "samples": 15,
+          "contextFiles": 6,
+          "responseBytes": 395266,
+          "requests": 10
+        },
+        {
+          "wallMs": 21.116199999999935,
+          "attributedSampleMs": 11.875,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 395266,
+          "requests": 10
+        },
+        {
+          "wallMs": 22.71640000000025,
+          "attributedSampleMs": 11.462,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 395267,
+          "requests": 10
+        },
+        {
+          "wallMs": 18.865600000000086,
+          "attributedSampleMs": 6.502,
+          "samples": 10,
+          "contextFiles": 6,
+          "responseBytes": 395266,
+          "requests": 10
+        },
+        {
+          "wallMs": 19.259900000000016,
+          "attributedSampleMs": 9.96,
+          "samples": 8,
+          "contextFiles": 6,
+          "responseBytes": 395266,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x64-ts",
+      "runs": [
+        {
+          "wallMs": 29.049099999999726,
+          "attributedSampleMs": 19.9,
+          "samples": 26,
+          "contextFiles": 6,
+          "responseBytes": 394655,
+          "requests": 10
+        },
+        {
+          "wallMs": 23.83430000000044,
+          "attributedSampleMs": 13.53,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 394655,
+          "requests": 10
+        },
+        {
+          "wallMs": 22.034799999999905,
+          "attributedSampleMs": 7.578,
+          "samples": 12,
+          "contextFiles": 6,
+          "responseBytes": 394655,
+          "requests": 10
+        },
+        {
+          "wallMs": 23.909700000000157,
+          "attributedSampleMs": 15.315,
+          "samples": 15,
+          "contextFiles": 6,
+          "responseBytes": 394655,
+          "requests": 10
+        },
+        {
+          "wallMs": 19.09180000000015,
+          "attributedSampleMs": 9.364,
+          "samples": 11,
+          "contextFiles": 6,
+          "responseBytes": 394654,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x64-tsx",
+      "runs": [
+        {
+          "wallMs": 19.429200000000037,
+          "attributedSampleMs": 12.867,
+          "samples": 14,
+          "contextFiles": 6,
+          "responseBytes": 395087,
+          "requests": 10
+        },
+        {
+          "wallMs": 25.795100000000275,
+          "attributedSampleMs": 15.253,
+          "samples": 21,
+          "contextFiles": 6,
+          "responseBytes": 395088,
+          "requests": 10
+        },
+        {
+          "wallMs": 19.902199999999993,
+          "attributedSampleMs": 10.344,
+          "samples": 12,
+          "contextFiles": 6,
+          "responseBytes": 395087,
+          "requests": 10
+        },
+        {
+          "wallMs": 20.698399999999765,
+          "attributedSampleMs": 12.02,
+          "samples": 15,
+          "contextFiles": 6,
+          "responseBytes": 395087,
+          "requests": 10
+        },
+        {
+          "wallMs": 19.206700000000183,
+          "attributedSampleMs": 11.279,
+          "samples": 12,
+          "contextFiles": 6,
+          "responseBytes": 395087,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "1x128-js",
+      "runs": [
+        {
+          "wallMs": 14.668099999999868,
+          "attributedSampleMs": 3.121,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 132301,
+          "requests": 5
+        },
+        {
+          "wallMs": 14.561799999999948,
+          "attributedSampleMs": 3.103,
+          "samples": 13,
+          "contextFiles": 1,
+          "responseBytes": 132301,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.73219999999992,
+          "attributedSampleMs": 7.156,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 132301,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.069299999999657,
+          "attributedSampleMs": 1.986,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 132301,
+          "requests": 5
+        },
+        {
+          "wallMs": 12.833599999999933,
+          "attributedSampleMs": 6.961,
+          "samples": 5,
+          "contextFiles": 1,
+          "responseBytes": 132301,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x128-ts",
+      "runs": [
+        {
+          "wallMs": 16.53139999999985,
+          "attributedSampleMs": 10.6,
+          "samples": 10,
+          "contextFiles": 1,
+          "responseBytes": 132242,
+          "requests": 5
+        },
+        {
+          "wallMs": 15.981499999999869,
+          "attributedSampleMs": 9.014,
+          "samples": 6,
+          "contextFiles": 1,
+          "responseBytes": 132242,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.260600000000522,
+          "attributedSampleMs": 7.776,
+          "samples": 5,
+          "contextFiles": 1,
+          "responseBytes": 132242,
+          "requests": 5
+        },
+        {
+          "wallMs": 15.556300000000192,
+          "attributedSampleMs": 11.796,
+          "samples": 7,
+          "contextFiles": 1,
+          "responseBytes": 132242,
+          "requests": 5
+        },
+        {
+          "wallMs": 16.783000000000357,
+          "attributedSampleMs": 12.066,
+          "samples": 10,
+          "contextFiles": 1,
+          "responseBytes": 132242,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "1x128-tsx",
+      "runs": [
+        {
+          "wallMs": 15.366399999999885,
+          "attributedSampleMs": 9.916,
+          "samples": 8,
+          "contextFiles": 1,
+          "responseBytes": 132357,
+          "requests": 5
+        },
+        {
+          "wallMs": 15.293300000000272,
+          "attributedSampleMs": 7.963,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 132357,
+          "requests": 5
+        },
+        {
+          "wallMs": 13.432399999999689,
+          "attributedSampleMs": 9.097,
+          "samples": 3,
+          "contextFiles": 1,
+          "responseBytes": 132357,
+          "requests": 5
+        },
+        {
+          "wallMs": 15.783199999999852,
+          "attributedSampleMs": 3.31,
+          "samples": 10,
+          "contextFiles": 1,
+          "responseBytes": 132357,
+          "requests": 5
+        },
+        {
+          "wallMs": 14.869400000000496,
+          "attributedSampleMs": 3.481,
+          "samples": 9,
+          "contextFiles": 1,
+          "responseBytes": 132357,
+          "requests": 5
+        }
+      ]
+    },
+    {
+      "scenario": "6x128-js",
+      "runs": [
+        {
+          "wallMs": 30.28230000000076,
+          "attributedSampleMs": 15.743,
+          "samples": 21,
+          "contextFiles": 6,
+          "responseBytes": 788178,
+          "requests": 10
+        },
+        {
+          "wallMs": 28.963200000000143,
+          "attributedSampleMs": 15.538,
+          "samples": 22,
+          "contextFiles": 6,
+          "responseBytes": 788178,
+          "requests": 10
+        },
+        {
+          "wallMs": 27.126400000000103,
+          "attributedSampleMs": 16.893,
+          "samples": 17,
+          "contextFiles": 6,
+          "responseBytes": 788178,
+          "requests": 10
+        },
+        {
+          "wallMs": 24.987200000000485,
+          "attributedSampleMs": 6.031,
+          "samples": 12,
+          "contextFiles": 6,
+          "responseBytes": 788177,
+          "requests": 10
+        },
+        {
+          "wallMs": 25.977499999999964,
+          "attributedSampleMs": 13.822,
+          "samples": 21,
+          "contextFiles": 6,
+          "responseBytes": 788178,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x128-ts",
+      "runs": [
+        {
+          "wallMs": 27.888600000000224,
+          "attributedSampleMs": 11.328,
+          "samples": 20,
+          "contextFiles": 6,
+          "responseBytes": 787824,
+          "requests": 10
+        },
+        {
+          "wallMs": 26.888100000000122,
+          "attributedSampleMs": 13.361,
+          "samples": 16,
+          "contextFiles": 6,
+          "responseBytes": 787824,
+          "requests": 10
+        },
+        {
+          "wallMs": 29.053800000000592,
+          "attributedSampleMs": 8.366,
+          "samples": 18,
+          "contextFiles": 6,
+          "responseBytes": 787824,
+          "requests": 10
+        },
+        {
+          "wallMs": 23.536799999999857,
+          "attributedSampleMs": 8.655,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 787824,
+          "requests": 10
+        },
+        {
+          "wallMs": 26.53939999999966,
+          "attributedSampleMs": 16.696,
+          "samples": 14,
+          "contextFiles": 6,
+          "responseBytes": 787824,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x128-tsx",
+      "runs": [
+        {
+          "wallMs": 27.55159999999978,
+          "attributedSampleMs": 14.554,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 788509,
+          "requests": 10
+        },
+        {
+          "wallMs": 29.41150000000016,
+          "attributedSampleMs": 14.569,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 788509,
+          "requests": 10
+        },
+        {
+          "wallMs": 33.936499999999796,
+          "attributedSampleMs": 13.779,
+          "samples": 31,
+          "contextFiles": 6,
+          "responseBytes": 788509,
+          "requests": 10
+        },
+        {
+          "wallMs": 26.556699999999182,
+          "attributedSampleMs": 11.363,
+          "samples": 16,
+          "contextFiles": 6,
+          "responseBytes": 788509,
+          "requests": 10
+        },
+        {
+          "wallMs": 37.05230000000029,
+          "attributedSampleMs": 16.106,
+          "samples": 23,
+          "contextFiles": 6,
+          "responseBytes": 788509,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x128-nested",
+      "runs": [
+        {
+          "wallMs": 30.041699999999764,
+          "attributedSampleMs": 18.484,
+          "samples": 16,
+          "contextFiles": 6,
+          "responseBytes": 788026,
+          "requests": 10
+        },
+        {
+          "wallMs": 29.999800000000505,
+          "attributedSampleMs": 14.415,
+          "samples": 13,
+          "contextFiles": 6,
+          "responseBytes": 788026,
+          "requests": 10
+        },
+        {
+          "wallMs": 30.918799999999464,
+          "attributedSampleMs": 17.595,
+          "samples": 17,
+          "contextFiles": 6,
+          "responseBytes": 788026,
+          "requests": 10
+        },
+        {
+          "wallMs": 25.61920000000009,
+          "attributedSampleMs": 11.956,
+          "samples": 19,
+          "contextFiles": 6,
+          "responseBytes": 788026,
+          "requests": 10
+        },
+        {
+          "wallMs": 25.533900000000358,
+          "attributedSampleMs": 13.053,
+          "samples": 15,
+          "contextFiles": 6,
+          "responseBytes": 788026,
+          "requests": 10
+        }
+      ]
+    },
+    {
+      "scenario": "6x64-large-diff",
+      "runs": [
+        {
+          "wallMs": 37.91280000000006,
+          "attributedSampleMs": 22.563,
+          "samples": 36,
+          "contextFiles": 6,
+          "responseBytes": 791092,
+          "requests": 10
+        },
+        {
+          "wallMs": 33.91640000000007,
+          "attributedSampleMs": 18.273,
+          "samples": 30,
+          "contextFiles": 6,
+          "responseBytes": 791092,
+          "requests": 10
+        },
+        {
+          "wallMs": 32.793800000000374,
+          "attributedSampleMs": 13.311,
+          "samples": 33,
+          "contextFiles": 6,
+          "responseBytes": 791092,
+          "requests": 10
+        },
+        {
+          "wallMs": 42.49529999999959,
+          "attributedSampleMs": 25.336,
+          "samples": 39,
+          "contextFiles": 6,
+          "responseBytes": 791092,
+          "requests": 10
+        },
+        {
+          "wallMs": 33.188500000000204,
+          "attributedSampleMs": 19.631,
+          "samples": 17,
+          "contextFiles": 6,
+          "responseBytes": 791092,
+          "requests": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { decodeSnapshotWire } from '../src/analysis/snapshot-wire';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { unstable_dev, type Unstable_DevWorker } from 'wrangler';
 import { PR_URL } from './fixtures';
@@ -45,14 +46,16 @@ describe('actual local workerd runtime', () => {
       body: JSON.stringify({ url: PR_URL }),
     });
     expect(response.status).toBe(200);
-    const review = (await response.json()) as {
-      findings: unknown[];
-      coverage: { analyzed: number };
-      snapshotVerified: boolean;
+    const review = decodeSnapshotWire(await response.arrayBuffer()) as {
+      schemaVersion: number;
+      files: { context?: unknown }[];
+      verification: { before: unknown; after: unknown };
+      findings?: unknown;
     };
-    expect(review.findings).toHaveLength(3);
-    expect(review.coverage.analyzed).toBe(5);
-    expect(review.snapshotVerified).toBe(true);
+    expect(review.schemaVersion).toBe(1);
+    expect(review.files.filter((f) => f.context)).toHaveLength(5);
+    expect(review.verification.after).toEqual(review.verification.before);
+    expect(review.findings).toBeUndefined();
   });
   it('keeps six near-128-KiB sources functional locally', async () => {
     const response = await worker.fetch('/api/review', {
@@ -61,11 +64,11 @@ describe('actual local workerd runtime', () => {
       body: JSON.stringify({ url: PR_URL }),
     });
     expect(response.status).toBe(200);
-    const review = (await response.json()) as {
-      findings: unknown[];
-      coverage: { analyzed: number };
+    const review = decodeSnapshotWire(await response.arrayBuffer()) as {
+      files: { context?: unknown }[];
+      findings?: unknown;
     };
-    expect(review.coverage.analyzed).toBe(6);
-    expect(review.findings).toHaveLength(6);
+    expect(review.files.filter((f) => f.context)).toHaveLength(6);
+    expect(review.findings).toBeUndefined();
   });
 });

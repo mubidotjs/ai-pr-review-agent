@@ -1,4 +1,9 @@
 import { createApp } from '../src/server/index';
+import {
+  benchmarkCases,
+  makePerformanceInput,
+  performanceTransport,
+} from './performance-fixtures';
 import { GitHubClient } from '../src/server/github';
 import {
   addition,
@@ -6,7 +11,7 @@ import {
   benchmarkSource,
   fixtureTransport,
   sources,
-} from './fixtures';
+} from './upstream-fixtures';
 
 const realistic = benchmarkSource(128);
 const largeFiles = Array.from({ length: 6 }, (_, i) => ({
@@ -21,6 +26,12 @@ const largeSources = Object.fromEntries(
 const normal = createApp(fixtureTransport());
 const large = createApp(
   fixtureTransport(largeFiles, largeSources, apiPr({ changed_files: 6 })),
+);
+const scenarios = new Map(
+  benchmarkCases.map((spec) => [
+    spec.name,
+    createApp(performanceTransport(makePerformanceInput(spec))),
+  ]),
 );
 export default {
   async fetch(request: Request) {
@@ -61,8 +72,9 @@ export default {
           sourceCount: Object.keys(sources).length,
         }),
       );
+    const scenario = request.headers.get('x-benchmark');
     return (
-      request.headers.get('x-benchmark') === 'large' ? large : normal
+      scenario === 'large' ? large : (scenarios.get(scenario ?? '') ?? normal)
     ).fetch(request);
   },
 };

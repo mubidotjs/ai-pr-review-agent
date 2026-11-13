@@ -1,6 +1,6 @@
-import type { DiffRow } from '../shared/types';
-import { LIMITS } from '../shared/types';
-import { byteLength } from './security';
+import type { DiffRow } from './types';
+import { LIMITS } from './types';
+import { byteLength } from './source';
 
 export interface ParsedDiff {
   rows: DiffRow[];
@@ -8,11 +8,13 @@ export interface ParsedDiff {
   reason?: string;
   lineCount: number;
 }
-export function parseDiff(
+// Backend uses count/coordinate preflight only; the browser materializes rows.
+export function scanPatch(
   patch: string | undefined,
   additions: number,
   deletions: number,
   remaining = LIMITS.diffLines as number,
+  materialize = false,
 ): ParsedDiff {
   let attempted = 0;
   const fail = (reason: string): ParsedDiff => ({
@@ -59,34 +61,41 @@ export function parseDiff(
         next < lastNew
       )
         return fail('Invalid or overlapping source coordinates.');
-      rows.push({ kind: 'hunk', text: line });
+      if (materialize) rows.push({ kind: 'hunk', text: line });
       active = true;
       lastBody = false;
       continue;
     }
     if (!active) return fail('Patch has no supported hunk header.');
     if (line === '\\ No newline at end of file' && lastBody) {
-      rows.push({ kind: 'note', text: line });
+      if (materialize) rows.push({ kind: 'note', text: line });
       lastBody = false;
       continue;
     }
     if (line.startsWith('+')) {
       if (newLeft-- <= 0) return fail('Invalid added-line range.');
-      rows.push({ kind: 'add', text: line.slice(1), newLine: next++ });
+      if (materialize)
+        rows.push({ kind: 'add', text: line.slice(1), newLine: next });
+      next++;
       adds++;
     } else if (line.startsWith('-')) {
       if (oldLeft-- <= 0) return fail('Invalid deleted-line range.');
-      rows.push({ kind: 'delete', text: line.slice(1), oldLine: old++ });
+      if (materialize)
+        rows.push({ kind: 'delete', text: line.slice(1), oldLine: old });
+      old++;
       dels++;
     } else if (line.startsWith(' ')) {
       if (oldLeft-- <= 0 || newLeft-- <= 0)
         return fail('Invalid context range.');
-      rows.push({
-        kind: 'context',
-        text: line.slice(1),
-        oldLine: old++,
-        newLine: next++,
-      });
+      if (materialize)
+        rows.push({
+          kind: 'context',
+          text: line.slice(1),
+          oldLine: old,
+          newLine: next,
+        });
+      old++;
+      next++;
     } else return fail('Unrecognized diff row.');
     lastOld = old;
     lastNew = next;
