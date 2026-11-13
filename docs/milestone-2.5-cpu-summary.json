@@ -1,0 +1,205 @@
+{
+  "method": "Scenario join by exact server-start UTC second. CPU values are platform-returned per-second P99 sample groups, not a raw invocation ledger. Warm min/median/max summarize returned groups only; adaptive estimated request weights are not treated as extra measured invocations.",
+  "results": [
+    {
+      "scenario": "small-1",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 6,
+      "warmGroups": 6,
+      "warmCpuMs": {
+        "min": 2.396,
+        "median": 3.062,
+        "max": 3.676
+      },
+      "clientElapsedMs": {
+        "median": 18.92265000000043,
+        "max": 36.3718000000008
+      },
+      "cold": []
+    },
+    {
+      "scenario": "small-4",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 5,
+      "warmGroups": 5,
+      "warmCpuMs": {
+        "min": 2.857,
+        "median": 4.436,
+        "max": 9.855
+      },
+      "clientElapsedMs": {
+        "median": 22.011599999997998,
+        "max": 44.44410000000062
+      },
+      "cold": []
+    },
+    {
+      "scenario": "medium-6x16",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 5,
+      "warmGroups": 5,
+      "warmCpuMs": {
+        "min": 4.327,
+        "median": 4.7,
+        "max": 7.497
+      },
+      "clientElapsedMs": {
+        "median": 20.582099999999627,
+        "max": 26.18189999999595
+      },
+      "cold": []
+    },
+    {
+      "scenario": "large-6x128",
+      "attempts": 8,
+      "http": {
+        "200": 7,
+        "404": 1
+      },
+      "matchedMetricGroups": 5,
+      "warmGroups": 4,
+      "warmCpuMs": {
+        "min": 11.295,
+        "median": 12.2515,
+        "max": 17.322
+      },
+      "clientElapsedMs": {
+        "median": 70.34310000000005,
+        "max": 347.65740000000005
+      },
+      "cold": [
+        {
+          "datetime": "2026-11-13T07:53:06Z",
+          "status": "success",
+          "requests": 1,
+          "errors": 0,
+          "cpuTimeP50": 25350,
+          "cpuTimeP95": 25350,
+          "cpuTimeP99": 25350,
+          "wallTimeP50": 29609,
+          "wallTimeP99": 29609,
+          "startupCpuTimeUsP99": 61627
+        }
+      ]
+    },
+    {
+      "scenario": "large-patches",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 8,
+      "warmGroups": 8,
+      "warmCpuMs": {
+        "min": 12.021,
+        "median": 14.089,
+        "max": 18.172
+      },
+      "clientElapsedMs": {
+        "median": 61.19234999999753,
+        "max": 177.5118000000075
+      },
+      "cold": []
+    },
+    {
+      "scenario": "paginated-100",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 6,
+      "warmGroups": 6,
+      "warmCpuMs": {
+        "min": 5.876,
+        "median": 7.3605,
+        "max": 9.658
+      },
+      "clientElapsedMs": {
+        "median": 24.460500000001048,
+        "max": 62.51990000001388
+      },
+      "cold": []
+    },
+    {
+      "scenario": "malformed",
+      "attempts": 8,
+      "http": {
+        "502": 8
+      },
+      "matchedMetricGroups": 8,
+      "warmGroups": 8,
+      "warmCpuMs": {
+        "min": 1.141,
+        "median": 1.631,
+        "max": 3.878
+      },
+      "clientElapsedMs": {
+        "median": 11.928599999999278,
+        "max": 57.06010000000242
+      },
+      "cold": []
+    },
+    {
+      "scenario": "incomplete",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 4,
+      "warmGroups": 4,
+      "warmCpuMs": {
+        "min": 3.366,
+        "median": 3.716,
+        "max": 6.101
+      },
+      "clientElapsedMs": {
+        "median": 17.14194999999745,
+        "max": 25.275900000007823
+      },
+      "cold": []
+    },
+    {
+      "scenario": "missing-source",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 5,
+      "warmGroups": 5,
+      "warmCpuMs": {
+        "min": 3.401,
+        "median": 3.959,
+        "max": 8.057
+      },
+      "clientElapsedMs": {
+        "median": 17.774200000007113,
+        "max": 21.434500000003027
+      },
+      "cold": []
+    },
+    {
+      "scenario": "oversized-source",
+      "attempts": 8,
+      "http": {
+        "200": 8
+      },
+      "matchedMetricGroups": 0,
+      "warmGroups": 0,
+      "warmCpuMs": null,
+      "clientElapsedMs": {
+        "median": 21.12565000000177,
+        "max": 29.77369999999064
+      },
+      "cold": []
+    }
+  ]
+}

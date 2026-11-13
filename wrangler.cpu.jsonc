@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "prism-m25-cpu-verification-20261113",
+  "main": "tests/platform-cpu-harness.ts",
+  "compatibility_date": "2026-11-13",
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  // Fail closed until both are installed. Secret value is never committed.
+  "vars": { "CPU_PROBE_EXPIRES": "0" },
+}

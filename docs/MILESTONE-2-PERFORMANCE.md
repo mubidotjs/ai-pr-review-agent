@@ -1,5 +1,7 @@
 # Milestone 2: CPU architecture decision and measurements
 
+Historical local M2 report. [M2.5 subsequently measured actual platform CPU](MILESTONE-2.5-CPU.md) and failed the full-workload Free gate. Its temporary fixture deployment was removed. The measurements below remain unchanged; their pending on-platform gate is superseded by that result.
+
 **Selected:** dedicated browser Web Worker analysis plus one bounded read-only ingestion request. No multi-request distributed analysis, database, queue, paid plan, deployment, or inference was introduced.
 
 The backend no longer imports Babel, constructs findings, materializes diff rows, or generates Markdown. A build-time module-graph guard verifies the boundary. The only retained diff work is a bounded count/coordinate eligibility scan so malformed patches do not steal any of the six source slots. Findings and coverage match the frozen Milestone 1 fixture.

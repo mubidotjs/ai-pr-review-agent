@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Milestone 2: browser Web Worker analysis with bounded read-only ingestion. AI remains disabled. No cloud resources have been deployed.**
+**Milestone 2.5: actual Workers Free CPU verification completed. Full-workload CPU gate failed; the temporary fixture Worker was removed. The local browser Worker MVP remains functional and AI stays disabled.**
 
 PRISM reads a public GitHub PR through a minimal Hono service, then maps its diff and applies three narrow JavaScript/TypeScript rules in a dedicated browser Web Worker. Findings have exact evidence and honest coverage, but no server attestation. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
 
@@ -21,7 +21,7 @@ npm run dev
 
 Open **http://127.0.0.1:5173**. The demonstration is loaded initially; paste a canonical `https://github.com/owner/repository/pull/123` URL for a real public review. Demo data is clearly fictional, and its illustrative source links are not presented as real PR evidence.
 
-The Vite Cloudflare plugin runs ingestion in **local workerd** and serves React plus its bundled browser analysis Worker on the same origin. The backend never runs Babel or generates findings. A build-time module-graph check enforces this boundary. There are no AI, storage, or remote resource bindings. Do not run deployment/upload commands for this milestone.
+The Vite Cloudflare plugin runs ingestion in **local workerd** and serves React plus its bundled browser analysis Worker on the same origin. The backend never runs Babel or generates findings. A build-time module-graph check enforces this boundary. The application has no AI, storage, or remote resource bindings. Cloud experiment scripts are isolated operator tools; do not deploy the application or rerun cloud tests without separate authorization.
 
 To exercise the built output:
 
@@ -90,7 +90,9 @@ CPU-heavy diff materialization, Babel parsing, rules, coordinate/evidence checks
 
 A small bounded hunk preflight remains on the backend to preserve which six files get source context; it creates no diff rows or ASTs. Framed metadata plus raw UTF-8 source frames avoid large source-to-JSON escaping. The UI receives the resulting review/report, never full source contexts. Each production review gets a fresh Worker, terminated on completion, cancellation, errors, replacement, or timeout.
 
-See [Milestone 2 measurements and remaining gate](docs/MILESTONE-2-PERFORMANCE.md). The AST blocker is removed from the backend. **Workers Free CPU compliance is still not established**, particularly at large response/patch limits. No deployment was used to infer compliance. The original [Milestone 1 CPU evidence](docs/CPU-FEASIBILITY.md) is preserved.
+See [actual Milestone 2.5 platform measurements](docs/MILESTONE-2.5-CPU.md). On the verified Free account, six near-128-KiB sources used **11.295–17.322 ms in captured warm groups and 25.350 ms on the observed cold ingestion**; large patches reached **18.172 ms**. These exceed 10 ms despite successful responses. **The full workload failed the Free CPU gate.** Smaller fixtures do not prove a production envelope. The test Worker was deleted and temporary CLI authorization revoked. The proposed next correction reduces source decoding/encoding copies without reducing review limits; it is not implemented or claimed sufficient.
+
+The [Milestone 2 local performance report](docs/MILESTONE-2-PERFORMANCE.md) and original [Milestone 1 CPU evidence](docs/CPU-FEASIBILITY.md) remain available. Local samples and platform adaptive analytics have different limitations and must not be equated.
 
 ```sh
 # Start the built preview first, then:
@@ -113,6 +115,6 @@ The future agent has typed backend tool interfaces and an explicitly disabled ad
 
 Workers AI quota is shared at the account level. A future Project 3 inference may consume allowance shared with Projects 1 and 2. The next experiment requires a shared-quota check and a separately authorized small inference budget; there is no promise of zero impact.
 
-No Vercel deployment, Worker deployment, DNS changes, live AI, or changes to other portfolio projects are part of this milestone.
+M2.5 used and removed one isolated secret-protected fixture Worker. No production deployment, Vercel resource, DNS change, inference, plan upgrade or change to the other portfolio projects occurred.
 
 MIT · [mubidotjs/ai-pr-review-agent](https://github.com/mubidotjs/ai-pr-review-agent)
