@@ -1,40 +1,46 @@
 {
-  "schemaVersion": 2,
-  "testedSha": "eba8400790f3b28245efddca6ca13231f8b1475a",
+  "schemaVersion": 3,
+  "testedSha": "30bb34baecf08ab0dbc13c9b86f66edc1dc38c06",
   "ci": {
-    "runId": 43467049297,
+    "runId": 43477735935,
     "conclusion": "success"
   },
-  "acceptance": "FAILED",
+  "transportAcceptance": "PASS",
+  "realAgentAcceptance": "FAIL",
+  "release": "NOT_RELEASED",
   "failure": {
-    "code": "TRANSPORT_MAXIMUM_FAILED",
-    "scenario": "maximum",
-    "classification": "END_TO_END_CLIENT_TIMEOUT",
-    "explanation": "The client timed out after 35 seconds of curl transfer time with 5,607,418 / 12,582,912 bytes, without EOF. Safe Function events report all 12,582,912 bytes handed off in 163 ms. This establishes neither a Vercel size rejection nor a specific downstream bottleneck.",
-    "remainingTransportCases": ["error", "abort"],
-    "remainingCasesAttempted": false,
-    "realInferenceAttempts": 0,
-    "githubRequests": 0
+    "code": "SYNTHETIC_AGENT_ACCEPTANCE_FAILED",
+    "stage": "first synthetic agent model decision",
+    "safeError": "MODEL_ERROR",
+    "adapterAttempts": 1,
+    "adapterValidatedResponses": 0,
+    "nativeDispatchCounter": 1,
+    "explanation": "One adapter attempt reached the native-dispatch reservation. No schema-validated decision returned to the agent. The surfaced error is generic MODEL_ERROR; no raw provider output or precise underlying relay error was retained. The exact provider/protocol cause is not established.",
+    "secondWorkflowAttempted": false
   },
   "preflight": {
     "cloudflarePlan": "free",
     "durableObjectsFree": true,
     "sharedDailyNeurons": 0.44,
     "sharedDailyQuota": 10000,
-    "rolling24HourNeurons": 28.64,
     "vercelPlan": "hobby",
     "vercelBillingStatus": "active",
     "usage": {
-      "fastDataTransferMB": 634.4,
-      "fastOriginTransferMB": 301.51,
-      "invocations": 33279,
+      "fastDataTransferMB": 648.99,
+      "fastDataTransferIncludedGB": 100,
+      "fastOriginTransferMB": 301.92,
+      "fastOriginTransferIncludedGB": 10,
+      "invocations": 33285,
       "invocationsIncluded": 1000000,
       "fluidMemoryGBh": 13.6,
       "fluidMemoryIncludedGBh": 360,
-      "fluidCpu": "17m 10s",
+      "fluidCpu": "17m 12s",
       "fluidCpuIncluded": "4h"
     },
     "modelContract": true,
+    "remainingSharedNeuronsObserved": 9999.56,
+    "browserCheckedAt": "2026-11-13T18:08:10.088Z",
+    "personalNoncommercialPortfolio": true,
     "model": "@cf/google/gemma-4-26b-a4b-it",
     "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
     "requestParameters": {
@@ -45,10 +51,10 @@
       "temperature": 0
     },
     "maxPerDecisionNeuronEstimate": 523.633,
-    "remainingSharedNeuronsObserved": 9999.56,
     "estimatedExperimentCeiling": 2000,
-    "checkedAt": "2026-11-13T17:06:26.447Z",
-    "browserCheckedAt": "2026-11-13T17:06:26.652Z"
+    "checkedAt": "2026-11-13T18:08:46.672Z",
+    "passed": true,
+    "passedAt": "2026-11-13T18:09:39.114Z"
   },
   "cloudflare": {
     "worker": "prism-ai-review",
@@ -66,43 +72,25 @@
         "name": "REVIEW_BUDGET",
         "type": "durable_object_namespace",
         "class_name": "ReviewBudget",
-        "namespace_id": "71cd3f3faa4b4f0daa1252f224872286"
+        "namespace_id": "39b46397e4d54626837d78c3bc13c1d2"
       }
     ],
     "deploymentIds": [
       {
-        "id": "5b82c708-188d-42b1-9b01-deebd0de48dc",
+        "id": "1eac7ae0-c1ee-4c9b-8752-3f9ca2f06d4e",
         "versions": [
           {
-            "version_id": "363d8fb9-d26b-4c71-b09b-f783b883156a",
+            "version_id": "b06832ef-33ed-4e07-b682-45fe0553103b",
             "percentage": 100
           }
         ]
       }
     ],
-    "cliSuccess": true,
-    "initialStatus": {
-      "calls": 0,
-      "reservedNeurons": 0,
-      "reviews": 0,
-      "limits": {
-        "model": "@cf/google/gemma-4-26b-a4b-it",
-        "completionTokens": 2048,
-        "inputBytes": 49152,
-        "outputBytes": 32768,
-        "relayBytes": 655360,
-        "modelTimeoutMs": 18000,
-        "reviewMs": 30000,
-        "reviewsPerHour": 4,
-        "callsPerDay": 64,
-        "neuronsPerDay": 2000,
-        "draftMs": 300000
-      }
-    }
+    "cliSuccess": true
   },
-  "namespaceId": "71cd3f3faa4b4f0daa1252f224872286",
+  "namespaceId": "39b46397e4d54626837d78c3bc13c1d2",
   "vercelProject": {
-    "id": "prj_14Ob6LR0Hx7sM6pWcEsstLmepoEz",
+    "id": "prj_hb7XHeeWS86UbAGTEXxPzUfgAIaX",
     "name": "mubidotjs-prism",
     "team": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
     "nodeVersion": "24.x",
@@ -111,96 +99,28 @@
   "vercelDeployments": [
     {
       "phase": "acceptance",
-      "startedAt": "2026-11-13T17:10:08.954Z",
-      "id": "dpl_5u8YiuP4Uf58TZdsmFUS9Eoi2Ehy",
-      "url": "https://mubidotjs-prism-9c8f7yjqu-mubidotjs-projects.vercel.app",
+      "startedAt": "2026-11-13T18:10:58.409Z",
+      "id": "dpl_Cty25hgM6M8NCJRXQuJzarDNfS6J",
+      "url": "https://mubidotjs-prism-c86e1n7rt-mubidotjs-projects.vercel.app",
       "readyState": "READY",
       "target": "production",
       "nodeVersion": "24.x",
-      "metaSha": "eba8400790f3b28245efddca6ca13231f8b1475a"
+      "metaSha": "30bb34baecf08ab0dbc13c9b86f66edc1dc38c06"
     }
   ],
   "transport": [
     {
-      "scenario": "unauthorized",
-      "pass": true,
-      "status": 401,
-      "exitCode": 0,
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "lastByteMs": 0,
-      "elapsedMs": 6902,
-      "headers": {
-        "cache-control": "no-store",
-        "referrer-policy": "no-referrer",
-        "x-content-type-options": "nosniff",
-        "x-vercel-id": "sin1::iad1::kgjqt-1794589851284-c31b7c1bf08f",
-        "transfer-encoding": "chunked"
-      },
-      "eof": true
-    },
-    {
-      "scenario": "delayed",
-      "pass": true,
-      "status": 200,
-      "exitCode": 0,
-      "bytes": 24,
-      "sha256": "87bff33b7711d8700069356443e5e50bb3c65d4bdf30b7bed4d19f9646b3fd79",
-      "firstByteMs": 4489,
-      "lastByteMs": 12481,
-      "elapsedMs": 12515,
-      "headers": {
-        "cache-control": "no-store",
-        "content-type": "application/vnd.prism.review-input.v1",
-        "referrer-policy": "no-referrer",
-        "x-content-type-options": "nosniff",
-        "x-prism-case": "delayed",
-        "x-prism-deadline-ms": "30000",
-        "x-prism-delay-ms": "8000",
-        "x-prism-snapshot-bytes": "24",
-        "x-vercel-id": "sin1::iad1::dx8wq-1794589855795-a2370d191225",
-        "transfer-encoding": "chunked"
-      },
-      "eof": true
-    },
-    {
-      "scenario": "ingestion",
-      "pass": true,
-      "status": 200,
-      "exitCode": 0,
-      "bytes": 4752446,
-      "sha256": "96bd87cbd9c02cd8e04d4d626647037344301614d2240c8edb263f3ec4231de5",
-      "firstByteMs": 4436,
-      "lastByteMs": 23664,
-      "elapsedMs": 23704,
-      "headers": {
-        "cache-control": "no-store",
-        "content-type": "application/vnd.prism.review-input.v1",
-        "referrer-policy": "no-referrer",
-        "x-content-type-options": "nosniff",
-        "x-prism-case": "ingestion",
-        "x-prism-deadline-ms": "30000",
-        "x-prism-delay-ms": "8000",
-        "x-prism-snapshot-bytes": "4752446",
-        "x-vercel-id": "sin1::iad1::47xrw-1794589868301-51fa890a3716",
-        "transfer-encoding": "chunked"
-      },
-      "eof": true,
-      "expectedBytes": 4752446,
-      "expectedSha256": "96bd87cbd9c02cd8e04d4d626647037344301614d2240c8edb263f3ec4231de5",
-      "exactIntegrity": true
-    },
-    {
       "scenario": "maximum",
-      "clientError": "CLIENT_TIMEOUT",
-      "pass": false,
+      "pass": true,
+      "classification": "PASS",
       "status": 200,
-      "exitCode": 28,
-      "bytes": 5607418,
-      "sha256": "1ef8bae8b666519c538e70a54fccdf8bd5860fb220eb72335305b51e913d9eb4",
-      "firstByteMs": 4139,
-      "lastByteMs": 38340,
-      "elapsedMs": 38415,
+      "exitCode": 0,
+      "bytes": 12582912,
+      "sha256": "3438b890c3b885defdebebde8dcd7c73736bffb20961571c257f9e3eba7d2409",
+      "firstByteMs": 6689,
+      "lastByteMs": 88928,
+      "elapsedMs": 88980,
+      "transferTimeoutSeconds": 120,
       "headers": {
         "cache-control": "no-store",
         "content-type": "application/vnd.prism.review-input.v1",
@@ -210,91 +130,215 @@
         "x-prism-deadline-ms": "30000",
         "x-prism-delay-ms": "8000",
         "x-prism-snapshot-bytes": "12582912",
-        "x-vercel-id": "sin1::iad1::sgjzz-1794589891952-266dcdb16f38",
+        "x-vercel-id": "sin1::iad1::97l9d-1794593520133-23f2172bcb8f",
         "transfer-encoding": "chunked"
       },
-      "eof": false,
-      "expectedBytes": 12582912,
-      "expectedSha256": "3438b890c3b885defdebebde8dcd7c73736bffb20961571c257f9e3eba7d2409",
-      "exactIntegrity": false
+      "eof": true,
+      "exactIntegrity": true
+    },
+    {
+      "scenario": "error",
+      "pass": true,
+      "classification": "EXPECTED_INCOMPLETE_FRAME",
+      "status": 200,
+      "exitCode": 0,
+      "bytes": 4,
+      "sha256": "72034de8a594b12de51205feba7ade26899d8425e81eac7f8c296bf974a51c60",
+      "firstByteMs": 4939,
+      "lastByteMs": 4939,
+      "elapsedMs": 4992,
+      "transferTimeoutSeconds": 35,
+      "headers": {
+        "cache-control": "no-store",
+        "content-type": "application/vnd.prism.review-input.v1",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "x-prism-case": "error",
+        "x-prism-deadline-ms": "30000",
+        "x-prism-delay-ms": "8000",
+        "x-prism-snapshot-bytes": "1028",
+        "x-vercel-id": "sin1::iad1::pvpjz-1794593607217-f872189f2fe7",
+        "transfer-encoding": "chunked"
+      },
+      "eof": true
+    },
+    {
+      "scenario": "abort",
+      "pass": true,
+      "classification": "EXPECTED_CLIENT_ABORT",
+      "status": 200,
+      "exitCode": 28,
+      "bytes": 397306,
+      "sha256": "44e09e7c4bd8b6ae6a3a867fc6005d585afc96b4196dae6f9f960a56466f14a8",
+      "firstByteMs": 4363,
+      "lastByteMs": 6223,
+      "elapsedMs": 6312,
+      "transferTimeoutSeconds": 3,
+      "headers": {
+        "cache-control": "no-store",
+        "content-type": "application/vnd.prism.review-input.v1",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "x-prism-case": "abort",
+        "x-prism-deadline-ms": "30000",
+        "x-prism-delay-ms": "8000",
+        "x-prism-snapshot-bytes": "2621440",
+        "x-vercel-id": "sin1::iad1::c6fd7-1794593611790-a5be95a25990",
+        "transfer-encoding": "chunked"
+      },
+      "eof": false
     }
   ],
   "safeTransportEvents": [
     {
+      "case": "abort",
+      "event": "cancelled",
+      "bytes": 655360,
+      "elapsedMs": 2599,
+      "node": "v24.22.3"
+    },
+    {
+      "case": "abort",
+      "event": "request-aborted",
+      "bytes": 655360,
+      "elapsedMs": 2598,
+      "node": "v24.22.3"
+    },
+    {
+      "case": "abort",
+      "event": "start",
+      "bytes": 0,
+      "elapsedMs": 0,
+      "node": "v24.22.3"
+    },
+    {
+      "case": "error",
+      "event": "request-aborted",
+      "bytes": 4,
+      "elapsedMs": 104,
+      "node": "v24.22.3"
+    },
+    {
+      "case": "error",
+      "event": "controlled-error",
+      "bytes": 4,
+      "elapsedMs": 102,
+      "node": "v24.22.3"
+    },
+    {
+      "case": "error",
+      "event": "start",
+      "bytes": 0,
+      "elapsedMs": 0,
+      "node": "v24.22.3"
+    },
+    {
       "case": "maximum",
       "event": "complete",
       "bytes": 12582912,
-      "elapsedMs": 163,
+      "elapsedMs": 151,
       "node": "v24.22.3"
     },
     {
       "case": "maximum",
-      "event": "start",
-      "bytes": 0,
-      "elapsedMs": 0,
-      "node": "v24.22.3"
-    },
-    {
-      "case": "ingestion",
-      "event": "complete",
-      "bytes": 4752446,
-      "elapsedMs": 53,
-      "node": "v24.22.3"
-    },
-    {
-      "case": "ingestion",
-      "event": "start",
-      "bytes": 0,
-      "elapsedMs": 0,
-      "node": "v24.22.3"
-    },
-    {
-      "case": "delayed",
-      "event": "complete",
-      "bytes": 24,
-      "elapsedMs": 8005,
-      "node": "v24.22.3"
-    },
-    {
-      "case": "delayed",
-      "event": "tail-produced",
-      "bytes": 13,
-      "elapsedMs": 8004,
-      "node": "v24.22.3"
-    },
-    {
-      "case": "delayed",
       "event": "start",
       "bytes": 0,
       "elapsedMs": 0,
       "node": "v24.22.3"
     }
   ],
-  "finalRelayStatus": {
-    "httpStatus": 200,
+  "serverCancellationVerified": true,
+  "controlledErrorVerified": true,
+  "initialRelayStatus": {
+    "status": 200,
     "calls": 0,
     "reservedNeurons": 0,
     "reviews": 0
   },
-  "inferenceWorkflows": 0,
-  "realInferenceAttempts": 0,
+  "finalRelayStatus": {
+    "httpStatus": 200,
+    "calls": 1,
+    "reservedNeurons": 97.983,
+    "reviews": 1
+  },
+  "workflows": [
+    {
+      "kind": "synthetic",
+      "attempted": true,
+      "startedAt": "2026-11-13T18:17:15.849Z",
+      "maxDispatches": 16,
+      "passed": false,
+      "httpStatus": 200,
+      "exitCode": 0,
+      "status": "failed",
+      "ai": {
+        "mode": "workers-ai",
+        "realInference": false,
+        "attempts": 1,
+        "responses": 0
+      },
+      "budget": {
+        "steps": 1,
+        "tools": 0,
+        "modelCalls": 1,
+        "validationChecks": 0,
+        "observationBytes": 0,
+        "githubRequests": 9,
+        "upstreamBytes": 134477,
+        "sourceFiles": 5,
+        "elapsedMs": 1036
+      },
+      "rejected": [
+        {
+          "code": "MODEL_ERROR"
+        }
+      ],
+      "trace": [
+        {
+          "stage": "investigate",
+          "step": 0
+        },
+        {
+          "stage": "select-read-only-tool",
+          "step": 1
+        },
+        {
+          "stage": "finalize",
+          "step": 1
+        }
+      ],
+      "capture": {
+        "captureId": "62ec76a8-1898-4282-bc5a-4e7de5e19ceb",
+        "url": "https://github.com/example/checkout/pull/42",
+        "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "repository": "example/checkout"
+      },
+      "findings": [],
+      "clientElapsedMs": 6560,
+      "mockedGithubAcquisition": true,
+      "liveGithubRequests": 0
+    }
+  ],
+  "realInferenceAttempts": 1,
+  "confirmedStrictDecisions": 0,
   "githubRequests": 0,
   "productionDeploymentCreated": false,
   "cleanup": {
-    "startedAt": "2026-11-13T17:16:51.954Z",
+    "startedAt": "2026-11-13T18:19:13.134Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
-    "cloudflareWorkerDeleted": true,
     "cloudflareWorkerAbsent": true,
     "cloudflareNamespaceAbsent": true,
+    "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-9c8f7yjqu-mubidotjs-projects.vercel.app/api/transport-probe",
+        "url": "https://mubidotjs-prism-c86e1n7rt-mubidotjs-projects.vercel.app/api/transport-probe",
         "status": 404
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
-        "status": 401
+        "status": 404
       }
     ],
     "unrelatedVercel": [
@@ -326,18 +370,16 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-13T17:19:20.030Z",
-    "finalWorkerEndpointStatus": 404,
-    "vercelPlanAfter": "hobby",
-    "cloudflareSubscriptionsAccess": "NOT_AVAILABLE",
+    "finishedAt": "2026-11-13T18:22:25.417Z",
     "sharedDailyNeuronsBefore": 0.44,
-    "sharedDailyNeuronsAfter": 0.44,
-    "wranglerLoggedOut": true,
-    "wranglerWhoami": "NOT_AUTHENTICATED",
-    "cloudflarePlanAfter": "free",
+    "sharedDailyNeuronsAfter": 7.78,
+    "neuronDeltaObserved": 7.34,
+    "actualExperimentAttribution": "Shared account observation; not a provider per-call token/Neuron accounting record.",
+    "vercelPlanAfter": "hobby",
+    "finalWorkerEndpointStatus": 404,
     "finalEndpointChecks": [
       {
-        "url": "https://mubidotjs-prism-9c8f7yjqu-mubidotjs-projects.vercel.app/api/transport-probe",
+        "url": "https://mubidotjs-prism-c86e1n7rt-mubidotjs-projects.vercel.app/api/transport-probe",
         "status": 404
       },
       {
@@ -345,14 +387,21 @@
         "status": 404
       }
     ],
-    "localSecretFilesAbsent": true
+    "wranglerLoggedOut": true,
+    "wranglerWhoami": "NOT_AUTHENTICATED",
+    "cloudflarePlanAfter": "free",
+    "localSecretFilesAbsent": true,
+    "temporaryCliLogsRemoved": true
   },
   "measurementLimits": [
-    "Client timings include official Vercel CLI authentication/startup; curl max-time is 35 seconds.",
-    "First-byte to last-byte span for delayed case is 7,992 ms, demonstrating incremental delivery before final bytes were produced.",
-    "Function complete events measure source-to-Node-response handoff, not delivery to the remote client.",
-    "Requests used official Vercel curl protection access from the local network through sin1 to iad1. No direct-browser or alternate-path retry was performed.",
-    "Controlled error and deliberate abort cases were not attempted after maximum fixture failed. No cancellation pass is claimed."
+    "Maximum-fixture timings include official Vercel CLI startup/protection access and client-network delivery.",
+    "Function complete events measure source-to-response handoff, not remote receipt. Count/hash/EOF independently establish actual client delivery.",
+    "The controlled-error response ended HTTP successfully with only four frame-header bytes. The unchanged frame decoder rejects it; no successful review completion was claimed.",
+    "Native-dispatch counters and shared account usage do not reveal the rejected model output or the exact underlying relay error.",
+    "Daily usage changed from 0.44 to 7.78 Neurons; shared observations may include concurrent application use and are not exact per-call billing."
   ],
-  "previousAttempt": "release-acceptance-initial-result.json"
+  "previousAttempts": [
+    "release-acceptance-initial-result.json",
+    "release-acceptance-replacement-result.json"
+  ]
 }

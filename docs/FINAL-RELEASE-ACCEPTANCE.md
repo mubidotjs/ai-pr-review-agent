@@ -1,6 +1,6 @@
 # Final release blocker: offline evidence and one authorization scope
 
-Status: **local correction verified; cloud transport and real agent acceptance pending fresh authorization.** This changes only operator tooling, focused tests and documentation. Production `src/`, `api/`, app limits, server deadlines, risk categories, evidence authority and UI remain unchanged. The previous deployed results remain in [release-acceptance-result.json](release-acceptance-result.json).
+Status: **authorized scope executed: transport PASS; real-agent acceptance FAIL; all new resources removed.** The corrected 120-second client delivered the exact maximum fixture in 88.98 seconds, and controlled error/server cancellation passed. The first synthetic agent workflow stopped at `MODEL_ERROR` after one native dispatch, with no validated decision or findings. No second workflow, public GitHub request or production release followed. [Actual results and cleanup](release-acceptance-result.json). Production `src/`, `api/`, app limits, server deadlines, risk categories, evidence authority and UI remain unchanged.
 
 ## Can a valid review reach 12 MiB?
 
@@ -73,9 +73,9 @@ Failure classification is conservative:
 
 Safe platform metadata must additionally corroborate controlled error and bounded cancellation before inference. A Node source `complete` event alone does not attest remote delivery. Arbitrary stderr, provider exceptions, credentials and payload bodies are never collected.
 
-## One consolidated final authorization — not yet granted
+## One consolidated final authorization — authorized and executed
 
-This scope replaces the previous failed-run permission; no resource or model call is authorized by this document or by the local tests. Do not repeat the successful delayed/4,752,446-byte transport checks or basic Gemma probe.
+The user explicitly approved this scope for commit `30bb34baecf08ab0dbc13c9b86f66edc1dc38c06`, after [exact-SHA CI passed](https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43477735935). It was executed once and stopped at the failed first synthetic agent decision. The successful delayed/4,752,446-byte transport checks and basic Gemma probe were not repeated. The scope below is an execution record, not continuing permission for another run; neither this document nor local tests authorize cloud calls.
 
 1. **Fresh preflight:** confirm Workers Free, Durable Objects Free availability, Vercel Hobby/noncommercial portfolio eligibility and allowances, Node 24/streaming support, current Gemma native contract/account eligibility, and at least 2,000 shared Neurons remaining. Record Projects 1/2 and other existing-project fingerprints. No billing changes. Stop on a failed mandatory check.
 2. **Exact resources/deployments:** create one new Vercel project `mubidotjs-prism` in `mubidotjs-projects`; at most **two deployments on the same verified SHA**, staged-Production protected acceptance then the normal app. Verify required server variables in both Preview/Production and actual deployment target/version. Use generated `vercel.app` domains only. Unexpected name collisions cause a stop. No Git auto-deploy integration. No other project changes.
