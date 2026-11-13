@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Milestone 2.5: actual Workers Free CPU verification completed. Full-workload CPU gate failed; the temporary fixture Worker was removed. The local browser Worker MVP remains functional and AI stays disabled.**
+**Milestone 3: one native Workers AI provider probe succeeded and was removed. The full-ingestion Workers Free CPU gate remains failed. The local browser Worker MVP is unchanged and AI stays disabled in the application.**
 
 PRISM reads a public GitHub PR through a minimal Hono service, then maps its diff and applies three narrow JavaScript/TypeScript rules in a dedicated browser Web Worker. Findings have exact evidence and honest coverage, but no server attestation. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
 
@@ -109,12 +109,14 @@ Profiling uses synthetic inputs, not GitHub or AI. Browser results include start
 
 - [Architecture and tool contracts](docs/ARCHITECTURE.md)
 - [Security and limitations](docs/SECURITY.md)
-- [Provider feasibility proposal](docs/NEXT-MILESTONE.md)
+- [M3 actual native provider result and cleanup](docs/MILESTONE-3-PROVIDER.md)
+- [Vercel Hobby Node ingestion assessment — documentation only](docs/M3-INGESTION-HOSTING.md)
+- [Next transport verification proposal](docs/NEXT-MILESTONE.md)
 
 The future agent has typed backend tool interfaces and an explicitly disabled adapter. There is no provider SDK, LangGraph, MCP server, database, or distributed orchestration.
 
 Workers AI quota is shared at the account level. A future Project 3 inference may consume allowance shared with Projects 1 and 2. The next experiment requires a shared-quota check and a separately authorized small inference budget; there is no promise of zero impact.
 
-M2.5 used and removed one isolated secret-protected fixture Worker. No production deployment, Vercel resource, DNS change, inference, plan upgrade or change to the other portfolio projects occurred.
+M3 made exactly one authorized synthetic inference through an isolated native binding: `PRISM_PROBE_OK`, 24 prompt / 8 completion tokens. Shared daily usage updated from 0 to 0.44 Neurons. The temporary Worker, binding, secret and CLI authorization were removed. No production deployment, Vercel resource, hosting migration, DNS change, plan upgrade or change to the other portfolio projects occurred.
 
 MIT · [mubidotjs/ai-pr-review-agent](https://github.com/mubidotjs/ai-pr-review-agent)

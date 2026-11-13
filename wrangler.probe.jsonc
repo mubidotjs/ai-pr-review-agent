@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "prism-m3-provider-probe-20261113",
+  "main": "tests/provider-probe-worker.ts",
+  "compatibility_date": "2026-11-13",
+  "send_metrics": false,
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "ai": { "binding": "AI" },
+  "vars": { "PROBE_EXPIRES": "0" },
+}

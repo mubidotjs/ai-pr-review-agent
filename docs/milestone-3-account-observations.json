@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-13",
+  "latestUsageObservedByUtc": "2026-11-13T10:30:21Z",
+  "source": "Signed-in internal Cloudflare dashboard, read-only; account identifiers and email omitted",
+  "planBefore": "Workers Free / $0 / Current plan",
+  "planAfterCleanup": "Workers Free / $0 / Current plan",
+  "sharedDailyNeuronQuota": 10000,
+  "resetUtc": "00:00",
+  "neuronsUsedTodayBefore": 0,
+  "initialPostAttemptDisplay": 0,
+  "updatedPostAttemptDisplay": 0.44,
+  "last24HoursBefore": 53.01,
+  "last24HoursAfter": 53.45,
+  "tokenBasedUncachedNeuronEstimate": 0.436368,
+  "attributionLimit": "Rounded and delayed shared-account counters are not a private per-call billing ledger; concurrent usage may contribute",
+  "temporaryCliRevocation": {
+    "command": "wrangler logout",
+    "result": "Successfully logged out",
+    "verification": { "loggedIn": false }
+  },
+  "browserSignInPreserved": true,
+  "unrelatedSettingsAndDeploymentFingerprintsMatch": true,
+  "inferenceAttempts": 1
+}

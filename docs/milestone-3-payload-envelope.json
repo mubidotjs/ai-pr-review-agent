@@ -1,0 +1,15 @@
+{
+  "method": "Synthetic size-only example through unchanged bounded ingestion and framing; no timing or CPU measurements.",
+  "configuredSnapshotCeiling": 12582912,
+  "frameBytes": 4752446,
+  "decimal4_5MB": 4500000,
+  "binary4_5MiB": 4718592,
+  "exceedsBothInterpretations": true,
+  "filePageBytes": [1848491, 1848501],
+  "sourceBytesEach": 131072,
+  "inventory": 100,
+  "contexts": 6,
+  "verified": true,
+  "upstreamRequests": 11,
+  "upstreamBytes": 5008596
+}

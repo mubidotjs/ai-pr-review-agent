@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "baseline": "206e470e415c9d21ce25681970a6da9e2bd1d352",
+  "worker": "prism-m3-provider-probe-20261113",
+  "startedAt": "2026-11-13T10:24:31.598Z",
+  "endedAt": "2026-11-13T10:24:54.290Z",
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "preflight": {
+    "freePlan": "Verified signed-in dashboard",
+    "neuronsUsedToday": 0,
+    "neuronsDailyQuota": 10000,
+    "neuronCostEstimate": 3.200032,
+    "neuronExperimentBudget": 10,
+    "estimateIsEnforceableQuota": false,
+    "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
+    "requestValidated": true,
+    "completionCap": 32,
+    "reasoningEnabled": false,
+    "promptUtf8Bytes": 34,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly PRISM_PROBE_OK."
+        }
+      ],
+      "max_completion_tokens": 32,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "stream": false,
+      "n": 1
+    }
+  },
+  "sourceSha256": "f4357859fe9ce525a9e4c090fa86de2534224a46c173876e022d1c6115263f09",
+  "version": "13bf4af72caa4ed9bbb43f05708d647f",
+  "config": {
+    "compatibilityDate": "2026-11-13",
+    "bindings": [
+      "AI:ai",
+      "PROBE_SECRET:secret_text",
+      "PROBE_EXPIRES:plain_text"
+    ],
+    "logs": false,
+    "traces": false,
+    "publicFrontend": false,
+    "clientTimeoutMs": 20000,
+    "workerTimeoutMs": 18000
+  },
+  "inferenceDispatches": 1,
+  "clientHttpStatus": 200,
+  "clientLatencyMs": 802.664999999999,
+  "probe": {
+    "bindingInvocations": 1,
+    "bindingReturned": true,
+    "providerStatus": 200,
+    "providerRequestId": "35d47558-a1f4-47e3-8c5f-d24bc04f9df3",
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "shape": "chat.completion/choices[0].message.content",
+    "nonempty": true,
+    "output": "PRISM_PROBE_OK",
+    "finishReason": "stop",
+    "responseId": "807df77274da4b2db89ed770cf4697e2",
+    "returnedModel": "@cf/google/gemma-4-26b-a4b-it-external",
+    "usage": {
+      "promptTokens": 24,
+      "completionTokens": 8,
+      "totalTokens": 32
+    },
+    "capsViolated": false,
+    "category": "NONEMPTY_MODEL_RESPONSE"
+  },
+  "decision": "provider path viable",
+  "failure": "",
+  "unrelatedBefore": [
+    {
+      "name": "ai-release-notes-generator",
+      "settingsSha256": "9d68973bb33e992db5674847f9ca508f4f0ebec39c7c90d9f3f7ae4da1661cba",
+      "deploymentsSha256": "9da7c6953d629f9593ca572fae2fd57ea2fc5e9c900b57c7ee15b426ceadaab6"
+    },
+    {
+      "name": "ai-invoice-receipt-processor",
+      "settingsSha256": "45801c53e225fed80d333feee6900c06446004af03be7556c8babe02c93614cd",
+      "deploymentsSha256": "dfae4958c690a668b1c4c2b7853783eaf750e0d6f58ce77743fee43d0f99c47c"
+    }
+  ],
+  "unrelatedAfter": [
+    {
+      "name": "ai-release-notes-generator",
+      "settingsSha256": "9d68973bb33e992db5674847f9ca508f4f0ebec39c7c90d9f3f7ae4da1661cba",
+      "deploymentsSha256": "9da7c6953d629f9593ca572fae2fd57ea2fc5e9c900b57c7ee15b426ceadaab6"
+    },
+    {
+      "name": "ai-invoice-receipt-processor",
+      "settingsSha256": "45801c53e225fed80d333feee6900c06446004af03be7556c8babe02c93614cd",
+      "deploymentsSha256": "dfae4958c690a668b1c4c2b7853783eaf750e0d6f58ce77743fee43d0f99c47c"
+    }
+  ],
+  "unrelatedUnchanged": true,
+  "cleanup": {
+    "routeDisableStatus": 200,
+    "deleteStatus": 200,
+    "absentStatus": 404,
+    "publicStatus": 404,
+    "secretRemovedWithWorker": true
+  }
+}

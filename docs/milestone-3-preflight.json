@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-11-13T10:18:13.230Z",
+  "model": "@cf/google/gemma-4-26b-a4b-it",
+  "catalogStatus": 200,
+  "schemaStatus": 200,
+  "catalogEntries": [
+    {
+      "name": "@cf/google/gemma-4-26b-a4b-it"
+    }
+  ],
+  "schemaKeys": ["input", "output"],
+  "projects": [
+    {
+      "name": "ai-release-notes-generator",
+      "settingsSha256": "9d68973bb33e992db5674847f9ca508f4f0ebec39c7c90d9f3f7ae4da1661cba",
+      "deploymentsSha256": "9da7c6953d629f9593ca572fae2fd57ea2fc5e9c900b57c7ee15b426ceadaab6"
+    },
+    {
+      "name": "ai-invoice-receipt-processor",
+      "settingsSha256": "45801c53e225fed80d333feee6900c06446004af03be7556c8babe02c93614cd",
+      "deploymentsSha256": "dfae4958c690a668b1c4c2b7853783eaf750e0d6f58ce77743fee43d0f99c47c"
+    }
+  ],
+  "request": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Reply with exactly PRISM_PROBE_OK."
+      }
+    ],
+    "max_completion_tokens": 32,
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    },
+    "stream": false,
+    "n": 1
+  },
+  "nativeContract": {
+    "requestValidated": true,
+    "completionCap": 32,
+    "reasoningEnabled": false,
+    "promptUtf8Bytes": 34,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Reply with exactly PRISM_PROBE_OK."
+        }
+      ],
+      "max_completion_tokens": 32,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "stream": false,
+      "n": 1
+    }
+  },
+  "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
+  "plan": "Workers Free; current plan verified in signed-in dashboard",
+  "quotaObservation": {
+    "neuronsUsedToday": 0,
+    "dailyQuota": 10000,
+    "reset": "00:00 UTC"
+  },
+  "costEstimate": {
+    "inputTokens": 256,
+    "completionTokens": 32,
+    "inputNeuronsPerMillion": 9091,
+    "outputNeuronsPerMillion": 27273,
+    "neurons": 3.200032,
+    "budget": 10,
+    "enforceablePerCallQuota": false
+  },
+  "reasoningAccounting": "Native contract does not explicitly state how enabled reasoning counts toward max_completion_tokens; documented enable_thinking=false is set for this non-reasoning probe."
+}
