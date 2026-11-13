@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Release integration implemented locally. The approved acceptance deployment stopped at an empty-body header guard (HTTP 400), before streaming or inference. All temporary resources and credentials were removed. The operator-only guard is now corrected locally; Vercel streaming and real agent acceptance remain NOT VERIFIED.** Mock tests are not live AI evidence. [Actual attempt and cleanup](docs/release-acceptance-result.json) · [Release controls and authorization scope](docs/RELEASE.md).
+**Release BLOCKED by transport acceptance.** The authorized replacement run on `eba8400790f3b28245efddca6ca13231f8b1475a` verified incremental Vercel streaming and the complete 4,752,446-byte fixture. The 12-MiB transfer timed out before EOF, so the run stopped before inference or live GitHub access. All new resources, secrets and temporary CLI authorization were removed. Real agent and production acceptance remain **NOT VERIFIED**. Mock tests are not live AI evidence. [Actual results and cleanup](docs/release-acceptance-result.json) · [Release controls and limitations](docs/RELEASE.md).
 
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
@@ -62,7 +62,7 @@ GitHub unauthenticated access shares **60 requests/hour per originating IP**, in
 
 ## Release boundary
 
-`npm run build` creates the unchanged deterministic browser path, lightweight Node ingestion Function, separate Node agent Function and a **dry-run-only** Cloudflare relay build. Ingestion excludes Babel; AI evidence validation lives only in the separate Node Function. Both Functions reuse the existing streaming adapter, with raw bodies, a 30-second app deadline and 40-second platform configuration. Local HTTP tests preserve the **4,752,446-byte** ingestion fixture and **12,582,912-byte** transport fixture, with independent hash and EOF checks. They do not establish Vercel streaming compatibility.
+`npm run build` creates the unchanged deterministic browser path, lightweight Node ingestion Function, separate Node agent Function and a **dry-run-only** Cloudflare relay build. Ingestion excludes Babel; AI evidence validation lives only in the separate Node Function. Both Functions reuse the existing streaming adapter, with raw bodies, a 30-second app deadline and 40-second platform configuration. Local HTTP tests preserve the **4,752,446-byte** ingestion fixture and **12,582,912-byte** transport fixture, with independent hash and EOF checks. Deployed acceptance verified the smaller fixture's exact hash/count/EOF and incremental delivery; the 12-MiB transfer failed its client deadline. Full transport compatibility is not established.
 
 Required **server-only** variables are in [.env.example](.env.example). Both Preview and Production must be configured before deployment; actual deployment target/identity is checked, including first-deployment Production behavior. Missing configuration fails closed. The public frontend/demo needs no secret. Live ingestion/AI requires a private access code in an HttpOnly signed cookie.
 

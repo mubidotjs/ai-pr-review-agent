@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "testedSha": "3915484b12ae6319f2e473d4224d2cd711c418bd",
+  "acceptance": "NOT_VERIFIED",
+  "failure": {
+    "status": 400,
+    "responseBytes": 0,
+    "streamStarted": false,
+    "source": "scripts/vercel-transport/harness.ts:223",
+    "explanation": "After successful secret authentication, the outer guard requires literal Content-Length: 0 and no Transfer-Encoding. Its empty HTTP 400 is the observed branch; actual proxy header normalization is not exposed by this harness.",
+    "platformStreaming": "NOT VERIFIED",
+    "remainingTransportCases": "not attempted",
+    "realInferenceAttempts": 0,
+    "githubRequests": 0
+  },
+  "preflight": {
+    "cloudflarePlan": "free",
+    "durableObjectsFree": true,
+    "sharedDailyNeurons": 0.44,
+    "sharedDailyQuota": 10000,
+    "rolling24HourNeurons": 28.64,
+    "vercelPlan": "hobby",
+    "vercelBillingStatus": "active",
+    "usage": {
+      "fastDataTransferMB": 634.41,
+      "fastDataTransferIncludedGB": 100,
+      "fastOriginTransferMB": 301.66,
+      "fastOriginTransferIncludedGB": 10,
+      "invocations": 33283,
+      "invocationsIncluded": 1000000,
+      "fluidMemoryGBh": 13.6,
+      "fluidMemoryIncludedGBh": 360,
+      "fluidCpu": "17m 10s",
+      "fluidCpuIncluded": "4h"
+    },
+    "modelContract": true,
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
+    "requestParameters": {
+      "maxCompletionTokens": 2048,
+      "thinking": false,
+      "stream": false,
+      "n": 1,
+      "temperature": 0
+    },
+    "maxPerDecisionNeuronEstimate": 523.633,
+    "remainingSharedNeuronsObserved": 9999.56,
+    "estimatedExperimentCeiling": 2000,
+    "checkedAt": "2026-11-13T14:57:08.664Z"
+  },
+  "cloudflare": {
+    "worker": "prism-ai-review",
+    "origin": "https://prism-ai-review.mubikhan69.workers.dev",
+    "bindings": [
+      {
+        "name": "AI",
+        "type": "ai"
+      },
+      {
+        "name": "RELAY_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "REVIEW_BUDGET",
+        "type": "durable_object_namespace",
+        "class_name": "ReviewBudget",
+        "namespace_id": "253337eaffae439ea2b21f053339e5a0"
+      }
+    ],
+    "deploymentIds": [
+      {
+        "id": "a13b7eb0-0bd7-4fb5-98b4-299f6b384a91",
+        "versions": [
+          {
+            "version_id": "05d255a1-4677-4025-86b2-14847a99b641",
+            "percentage": 100
+          }
+        ]
+      }
+    ],
+    "cliSuccess": true,
+    "initialStatus": {
+      "calls": 0,
+      "reservedNeurons": 0,
+      "reviews": 0,
+      "limits": {
+        "model": "@cf/google/gemma-4-26b-a4b-it",
+        "completionTokens": 2048,
+        "inputBytes": 49152,
+        "outputBytes": 32768,
+        "relayBytes": 655360,
+        "modelTimeoutMs": 18000,
+        "reviewMs": 30000,
+        "reviewsPerHour": 4,
+        "callsPerDay": 64,
+        "neuronsPerDay": 2000,
+        "draftMs": 300000
+      }
+    }
+  },
+  "namespaceId": "253337eaffae439ea2b21f053339e5a0",
+  "vercelProject": {
+    "id": "prj_MlsM1RZfNLUgQtpXiibc1VKEV0ky",
+    "name": "mubidotjs-prism",
+    "team": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
+    "observedDefaults": {
+      "nodeVersion": "26.x",
+      "autoExposeSystemEnvs": true,
+      "resourceConfig": {
+        "fluid": true,
+        "functionDefaultRegions": ["iad1"],
+        "buildMachineType": "basic",
+        "buildMachineSelection": "fixed"
+      },
+      "ssoProtection": {
+        "deploymentType": "all_except_custom_domains"
+      }
+    },
+    "nodeVersion": "24.x",
+    "autoExposeSystemEnvs": true
+  },
+  "vercelDeployments": [
+    {
+      "phase": "acceptance",
+      "startedAt": "2026-11-13T15:07:44.262Z",
+      "id": "dpl_HCa2oEbSZi6VqpsDqNdqj5GU3jLA",
+      "url": "https://mubidotjs-prism-8p3bv6m5v-mubidotjs-projects.vercel.app",
+      "readyState": "READY",
+      "target": "production",
+      "nodeVersion": "24.x",
+      "metaSha": "3915484b12ae6319f2e473d4224d2cd711c418bd"
+    }
+  ],
+  "transport": [
+    {
+      "scenario": "unauthorized",
+      "pass": true,
+      "status": 401,
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lastByteMs": 0,
+      "elapsedMs": 7336,
+      "headers": {
+        "cache-control": "no-store",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "x-vercel-id": "sin1::iad1::vdnmx-1794582674770-9189beea1621",
+        "transfer-encoding": "chunked"
+      },
+      "eof": true
+    },
+    {
+      "scenario": "delayed",
+      "pass": false,
+      "status": 400,
+      "exitCode": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lastByteMs": 0,
+      "elapsedMs": 5252,
+      "headers": {
+        "cache-control": "no-store",
+        "referrer-policy": "no-referrer",
+        "x-content-type-options": "nosniff",
+        "x-vercel-id": "sin1::iad1::znsv5-1794582679651-da4ddf09db54",
+        "transfer-encoding": "chunked"
+      },
+      "eof": true
+    }
+  ],
+  "inferenceWorkflows": 0,
+  "realInferenceAttempts": 0,
+  "githubRequests": 0,
+  "cleanup": {
+    "vercelProjectDeleted": true,
+    "vercelProjectNotFound": true,
+    "cloudflareWorkerDeleted": true,
+    "cloudflareWorkerAbsent": true,
+    "cloudflareNamespaceAbsent": true,
+    "endpointChecks": [
+      {
+        "url": "https://mubidotjs-prism-8p3bv6m5v-mubidotjs-projects.vercel.app/api/transport-probe",
+        "status": 404
+      },
+      {
+        "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
+        "status": 404
+      }
+    ],
+    "unrelatedVercel": [
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      },
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "mubashirhussain",
+        "unchanged": true
+      },
+      {
+        "name": "reliable-webhook-platform-receiver",
+        "unchanged": true
+      }
+    ],
+    "unrelatedCloudflare": [
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      }
+    ],
+    "localAppSecretsRemoved": true,
+    "wranglerLoggedOut": true,
+    "sharedDailyNeuronsBefore": 0.44,
+    "sharedDailyNeuronsAfter": 0.44,
+    "cloudflarePlanAfter": "free",
+    "vercelPlanAfter": "hobby",
+    "finishedAt": "2026-11-13T16:39:30.660Z"
+  },
+  "localCorrection": {
+    "scope": "operator acceptance guards only",
+    "actualBytesRequired": 0,
+    "acceptedFraming": ["omitted Content-Length", "chunked empty body"],
+    "rejectsNonemptyBody": true,
+    "platformRetest": "NOT RUN; fresh authorization required"
+  }
+}
