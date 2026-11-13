@@ -8,6 +8,7 @@ import { runAgentReview } from '../../src/server/agent/engine';
 import { WorkersAiAdapter } from '../../src/server/agent/workers-ai';
 import { humanApprovalGate } from '../../src/server/agent/result';
 import { fixtureTransport, PR_URL } from '../../tests/upstream-fixtures';
+import { isEmptyRequest } from './empty-body';
 let handler: ReturnType<typeof createNodeHandler> | undefined;
 export default async function acceptanceAgent(
   req: IncomingMessage,
@@ -24,9 +25,7 @@ export default async function acceptanceAgent(
     !timingSafeEqual(Buffer.from(secret), Buffer.from(supplied)) ||
     !Number.isSafeInteger(expires) ||
     expires <= Date.now() ||
-    expires > Date.now() + 3600000 ||
-    req.headers['content-length'] !== '0' ||
-    req.headers['transfer-encoding']
+    expires > Date.now() + 3600000
   ) {
     res.writeHead(401, { 'Cache-Control': 'no-store', Connection: 'close' });
     res.end();
@@ -48,6 +47,11 @@ export default async function acceptanceAgent(
           );
         let grant: string | undefined;
         try {
+          if (!(await isEmptyRequest(request)))
+            return Response.json(
+              { error: { code: 'EMPTY_BODY_REQUIRED' } },
+              { status: 400 },
+            );
           const principal = new ReleaseAccess(config).principal(request);
           ({ grant } = await config.relay.call<{ grant: string }>(
             '/admit',

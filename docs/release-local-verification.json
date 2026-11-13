@@ -1,12 +1,12 @@
 {
   "baseline": "429cdba4039d3bcc7f96bd802df7609ca3f1161e",
-  "recordedAt": "2026-11-13T14:07:13.0448354Z",
+  "recordedAt": "2026-11-13T16:50:32.250Z",
   "node": "v24.22.1",
   "unitIntegration": {
     "provider": "mocked only",
     "files": 21,
     "status": "passed",
-    "tests": 260
+    "tests": 262
   },
   "playwright": {
     "localCleanup": "Stopped only the verified test server after all cases passed; runner exited 0.",
@@ -35,6 +35,7 @@
     "localHttp": "passed count/hash/EOF and packaged agent approval"
   },
   "realInferenceAttempts": 0,
-  "newCloudResources": 0,
-  "releaseAcceptance": "NOT RUN: requires fresh explicit authorization"
+  "releaseAcceptance": "NOT VERIFIED: header guard failed before streaming; corrected locally; fresh authorization required",
+  "activeCloudResources": 0,
+  "actualReleaseAttempt": "release-acceptance-result.json"
 }

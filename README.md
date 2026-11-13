@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Release integration implemented locally. Deployment, real agent acceptance and Vercel streaming remain NOT VERIFIED pending explicit authorization.** Mock tests are not live AI evidence. [Release implementation, safeguards and exact acceptance plan](docs/RELEASE.md).
+**Release integration implemented locally. The approved acceptance deployment stopped at an empty-body header guard (HTTP 400), before streaming or inference. All temporary resources and credentials were removed. The operator-only guard is now corrected locally; Vercel streaming and real agent acceptance remain NOT VERIFIED.** Mock tests are not live AI evidence. [Actual attempt and cleanup](docs/release-acceptance-result.json) · [Release controls and authorization scope](docs/RELEASE.md).
 
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 

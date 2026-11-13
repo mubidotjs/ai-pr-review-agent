@@ -7,6 +7,67 @@ import {
   PROBE_PATH,
 } from '../scripts/vercel-transport/harness';
 
+it.each(['omitted', 'chunked'] as const)(
+  'checks body bytes when proxy framing is %s, before starting a fixture',
+  async (framing) => {
+    const events: { event: string }[] = [];
+    const secret = 'a'.repeat(64);
+    const server = createServer((req, res) => {
+      // Simulate normalization after the HTTP parser has framed the real bytes.
+      delete req.headers['content-length'];
+      if (framing === 'chunked') req.headers['transfer-encoding'] = 'chunked';
+      void handler(req, res);
+    });
+    await new Promise<void>((resolve) =>
+      server.listen(0, '127.0.0.1', resolve),
+    );
+    const origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+    const handler = createTransportHandler({
+      origin,
+      secret,
+      expiresAt: Date.now() + 60000,
+      directory: '.',
+      event: (event) => events.push(event),
+    });
+    const post = (body: string) =>
+      new Promise<number>((resolve, reject) => {
+        const req = httpRequest(
+          origin + PROBE_PATH,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Length': Buffer.byteLength(body),
+              'X-Prism-Probe': secret,
+              'X-Prism-Case': 'abort',
+            },
+          },
+          (res) => {
+            if (res.statusCode === 200) {
+              resolve(200);
+              res.destroy();
+            } else {
+              res.resume();
+              res.on('end', () => resolve(res.statusCode!));
+            }
+          },
+        );
+        req.on('error', reject);
+        req.end(body);
+      });
+    try {
+      expect(await post('x')).toBe(400);
+      expect(events).toEqual([]);
+      expect(await post('')).toBe(200);
+      await vi.waitFor(() =>
+        expect(events.some((event) => event.event === 'cancelled')).toBe(true),
+      );
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  },
+);
+
 it('keeps the isolated harness authenticated, expiring, bodyless and without real ingestion or outbound fetch', async () => {
   const events: unknown[] = [],
     secret = 'a'.repeat(64);

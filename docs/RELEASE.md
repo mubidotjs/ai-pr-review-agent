@@ -1,6 +1,8 @@
 # Release implementation and acceptance authorization
 
-Status: **implemented locally; deployment and real agent acceptance NOT VERIFIED.** Prior M3 inference and M4.5 deployment permissions do not authorize this release. No new resource or real inference was used to implement it. This is the final application release plan, not another architecture milestone.
+Status: **implemented locally; real agent and streaming acceptance NOT VERIFIED.** The first approved release attempt on `3915484b12ae6319f2e473d4224d2cd711c418bd` deployed the isolated relay and protected Vercel artifact, then stopped at the transport harness's empty-body header guard (HTTP 400). No model or live GitHub review was called. All new resources, secrets and the temporary CLI credential were removed; former endpoints return 404, shared daily usage stayed at 0.44 Neurons, and unrelated project fingerprints match. [Sanitized actual evidence](release-acceptance-result.json).
+
+The local correction affects **operator acceptance guards only**: actual request bytes must still be empty, but omitted Content-Length or chunked empty framing is accepted. Both nonempty cases remain rejected before a fixture or inference can start. Two focused loopback HTTP regression cases cover these proxy-normalized representations. No platform retest was performed. The working application, ingestion adapter, agent rules, budgets and UI are unchanged by this correction. A replacement acceptance/release run requires fresh explicit authorization; this failed attempt does not authorize another deployment or model call.
 
 ## Implementation
 

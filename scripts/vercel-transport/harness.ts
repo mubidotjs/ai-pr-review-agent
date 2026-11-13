@@ -4,6 +4,7 @@ import { Readable } from 'node:stream';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { isEmptyRequest } from '../release/empty-body';
 import {
   createNodeHandler,
   SNAPSHOT_MEDIA_TYPE,
@@ -67,16 +68,11 @@ export function createTransportHandler(options: HarnessOptions) {
           { error: { code: 'ALREADY_USED' } },
           { status: 409 },
         );
-      if (request.body) {
-        const reader = request.body.getReader();
-        const item = await reader.read();
-        await reader.cancel();
-        if (!item.done)
-          return Response.json(
-            { error: { code: 'EMPTY_BODY_REQUIRED' } },
-            { status: 400 },
-          );
-      }
+      if (!(await isEmptyRequest(request)))
+        return Response.json(
+          { error: { code: 'EMPTY_BODY_REQUIRED' } },
+          { status: 400 },
+        );
       used.add(scenario);
       const started = performance.now();
       let bytes = 0,
@@ -214,17 +210,6 @@ export function createTransportHandler(options: HarnessOptions) {
       response.writeHead(401, {
         'Cache-Control': 'no-store',
         'X-Content-Type-Options': 'nosniff',
-        Connection: 'close',
-      });
-      response.end();
-      return;
-    }
-    if (
-      request.headers['content-length'] !== '0' ||
-      request.headers['transfer-encoding']
-    ) {
-      response.writeHead(400, {
-        'Cache-Control': 'no-store',
         Connection: 'close',
       });
       response.end();
