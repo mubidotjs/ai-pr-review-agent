@@ -1,4 +1,8 @@
-# PRISM architecture through Milestone 5
+# PRISM architecture
+
+**Current release addition:** the deterministic split below is retained, with a separate Node agent Function and private native Workers AI relay. [RELEASE.md](RELEASE.md) supersedes the M5-only adapter/deployment descriptions below. The live adapter is implemented but not yet accepted on deployed infrastructure. Access-code sessions, shared admission counters, strictly parsed model decisions, independent Node evidence validation and one-use human approval are implemented. Canonical drafts stay in bounded expiring RAM; only counters and opaque grants are durable. No browser finding becomes server authority. No new live inference or release deployment was performed during local implementation.
+
+## Retained deterministic architecture and historical M5 boundary
 
 ## Selected split
 

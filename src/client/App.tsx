@@ -13,6 +13,7 @@ import {
   type ResultReply,
 } from './review-runner';
 import { DiffViewer, FindingCard, Icon } from './components';
+import { AIReviewPanel } from './AIReviewPanel';
 
 const initialDemo = demo as ReviewInputSnapshot;
 export default function App() {
@@ -138,7 +139,7 @@ export default function App() {
           <div className="header-right">
             <span className="local-badge">
               <span />
-              Local MVP
+              Review workspace
             </span>
             <span className="header-version">v0.2</span>
             <a
@@ -214,7 +215,8 @@ export default function App() {
           </form>
           <div className="input-hint">
             <span>
-              Public repositories only · No sign-in · No automatic comments
+              Public repositories only · Live access code required · No
+              automatic comments
             </span>
             <button type="button" className="text-button" onClick={loadDemo}>
               Explore synthetic demo <span aria-hidden="true">↗</span>
@@ -226,11 +228,12 @@ export default function App() {
             <span className="ai-symbol">✳</span>
             <strong>AI is disabled</strong>
             <span>
-              Reviews use three deterministic rules. No model calls, no
-              generated AI claims.
+              This view uses three deterministic rules. Unlock the separate AI
+              review below for model-assisted investigation.
             </span>
           </div>
           <span className="outline-tag">DETERMINISTIC MODE</span>
+          <a href="#ai-review">Open AI review</a>
         </div>
         <div role="status" className="sr-only">
           {loading
@@ -551,6 +554,7 @@ export default function App() {
             </div>
           </>
         ) : null}
+        <AIReviewPanel url={url} />
         <footer>
           <span className="footer-brand">◈ PRISM</span>
           <span>AI PR Review Agent · Built by mubidotjs</span>

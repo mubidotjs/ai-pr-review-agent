@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && tsx scripts/verify-boundaries.ts && npm run build:node",
+    "build": "vite build && tsx scripts/verify-boundaries.ts && npm run build:node && npm run build:ai",
+    "build:ai": "tsx scripts/build-ai.ts",
+    "prepare:release-acceptance": "tsx scripts/release/prepare.ts",
     "build:node": "tsx scripts/build-node.ts && npm run verify:node",
     "verify:node": "tsx scripts/verify-node-artifact.ts",
     "prepare:transport-probe": "tsx scripts/vercel-transport/prepare.ts",

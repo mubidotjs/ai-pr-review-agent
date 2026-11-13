@@ -14,6 +14,11 @@ export class AgentFailure extends Error {
       | 'VALIDATION_LIMIT'
       | 'RESULT_LIMIT'
       | 'MODEL_ERROR'
+      | 'AI_QUOTA'
+      | 'PROVIDER_TIMEOUT'
+      | 'PROVIDER_QUOTA'
+      | 'PROVIDER_ERROR'
+      | 'PROVIDER_SHAPE'
       | 'INVALID_MODEL_RESPONSE'
       | 'SNAPSHOT_UNVERIFIED'
       | 'CAPTURE_FAILED',

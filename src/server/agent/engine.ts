@@ -37,6 +37,8 @@ function freeze<T>(value: T): T {
 }
 export interface AgentDependencies {
   model: AgentModelAdapter;
+  /** Explicit backend configuration only. Default remains mock-only. */
+  allowRealModel?: boolean;
   /** Trusted backend dependency; never accepted from a model/browser argument. */
   transport?: Transport;
   signal?: AbortSignal;
@@ -107,8 +109,10 @@ export async function runAgentReview(
         'Provide only a canonical public PR URL.',
       );
     parsePullRequestUrl(parsed.data.url);
-    // M5 is structurally mock-only: even a configured future adapter is not invoked.
-    if (dependencies.model.mode !== 'mock') {
+    if (
+      dependencies.model.mode !== 'mock' &&
+      !(dependencies.allowRealModel && dependencies.model.mode === 'workers-ai')
+    ) {
       result.status = 'disabled';
       result.ai.mode = 'disabled';
       result.rejected.push({ code: 'REAL_MODEL_DISABLED' });
@@ -211,7 +215,10 @@ export async function runAgentReview(
           result.findings.push({
             ...verdict.finding,
             id: verdict.finding.evidenceId,
-            source: 'mock-model',
+            source:
+              dependencies.model.mode === 'workers-ai'
+                ? 'workers-ai'
+                : 'mock-model',
             evidenceValidation: 'backend-pinned-supported-predicate',
           });
         }
@@ -266,6 +273,21 @@ export async function runAgentReview(
       elapsedMs: Math.round(performance.now() - budget.started),
     };
     stage('finalize');
+    if (
+      dependencies.allowRealModel &&
+      dependencies.model.mode === 'workers-ai'
+    ) {
+      const invocation = dependencies.model.diagnostics?.();
+      result.ai = {
+        mode: 'workers-ai',
+        realInference: !!invocation?.responses,
+        attempts: invocation?.attempts ?? 0,
+        responses: invocation?.responses ?? 0,
+      };
+      result.limitations[0] = result.ai.realInference
+        ? 'Native Workers AI decisions; independently checked only against the three supported predicates. No automatic publication.'
+        : 'No confirmed model response. A timed-out invocation may still consume shared quota. No automatic retry.';
+    }
   }
   if (byteLength(JSON.stringify(result)) > budget.limits.resultBytes) {
     result.status = 'failed';

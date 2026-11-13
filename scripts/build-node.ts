@@ -24,6 +24,20 @@ await build({
   },
   ssr: { noExternal: true },
 });
+// Separate bundle: only AI review needs backend Babel evidence validation.
+await build({
+  configFile: false,
+  build: {
+    ssr: true,
+    outDir: 'dist/node/agent',
+    sourcemap: true,
+    rollupOptions: {
+      input: 'api/agent.ts',
+      output: { entryFileNames: 'agent.mjs' },
+    },
+  },
+  ssr: { noExternal: true },
+});
 const output = '.vercel/output';
 // Rebuild only this generated directory; preserve any separate CLI project metadata.
 const workspace = await realpath('.');
@@ -51,6 +65,7 @@ await writeFile(
     launcherType: 'Nodejs',
     shouldAddHelpers: false,
     supportsResponseStreaming: true,
+    supportsCancellation: true,
     maxDuration: 40,
   }),
 );
@@ -64,6 +79,23 @@ const headers = Object.fromEntries(
       return [line.slice(0, colon).trim(), line.slice(colon + 1).trim()];
     }),
 );
+await mkdir(`${output}/functions/agent.func`, { recursive: true });
+await cp(
+  'dist/node/agent/agent.mjs',
+  `${output}/functions/agent.func/agent.mjs`,
+);
+await writeFile(
+  `${output}/functions/agent.func/.vc-config.json`,
+  JSON.stringify({
+    runtime: 'nodejs24.x',
+    handler: 'agent.mjs',
+    launcherType: 'Nodejs',
+    shouldAddHelpers: false,
+    supportsResponseStreaming: true,
+    supportsCancellation: true,
+    maxDuration: 40,
+  }),
+);
 await writeFile(
   `${output}/config.json`,
   JSON.stringify({
@@ -74,6 +106,7 @@ await writeFile(
         headers: { ...headers, 'Cache-Control': 'no-store' },
         continue: true,
       },
+      { src: '/api/agent(?:/.*)?', dest: '/agent' },
       { src: '/api/(.*)', dest: '/ingestion' },
       { handle: 'filesystem' },
     ],

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "prism-ai-review",
+  "main": "src/release/cloudflare.ts",
+  "compatibility_date": "2026-11-13",
+  "workers_dev": true,
+  "ai": { "binding": "AI" },
+  "durable_objects": {
+    "bindings": [{ "name": "REVIEW_BUDGET", "class_name": "ReviewBudget" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReviewBudget"] }],
+  "observability": { "enabled": false },
+}

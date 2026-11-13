@@ -1,5 +1,15 @@
 # Security model and limitations
 
+## Release additions
+
+The [current release contract](RELEASE.md) supersedes historical mock-only and undeployed-adapter descriptions below. Separate Node AI evidence validation and the native binding adapter are implemented; actual deployed agent acceptance remains unverified. All live routes require a private access code with signed HttpOnly/Secure/SameSite cookies. Origin/Host validation, raw bounded bodies, no-store responses and safe errors remain mandatory. There is no public prompt endpoint or publication capability.
+
+One global Durable Object reserves admissions and model turns before dispatch across Vercel instances. It stores counters, grant IDs and timestamps, not PR data. Daily Neuron reservations are estimates, not provider-enforced per-call quotas. Unknown outcomes keep their reservation and receive no retry. Projects 1 and 2 share the account's free allowance and may be affected by PRISM consumption. Native inference receives bounded public repository evidence as untrusted data; prompt text cannot authorize a tool, new risk category, approval or write.
+
+Canonical results remain only in expiring coordinator RAM. Approval requires the original principal/digest, uses backend-owned findings, and consumes the draft once; eviction refuses approval. The browser selects bounded indexes, never submits findings for attestation. Access-code compromise can exhaust the small application allowance; rotate the code/session secret if disclosed. App admission cannot prevent all HTTP-level denial-of-service costs; included platform protections and free allowances must be checked before release. No application request bodies, provider exceptions, credentials or source content are logged.
+
+## Retained deterministic and historical M5 boundaries
+
 All PR titles, bodies, paths, comments, patches, and code are untrusted data. Comments that impersonate system instructions cannot alter the deterministic coordinator. No repository instructions are executed or imported. Babel parses text in a dedicated browser Worker; reviewed content receives no executable capability or investigation tools.
 
 ## Enforced boundaries

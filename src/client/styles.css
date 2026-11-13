@@ -1404,3 +1404,60 @@ footer {
     scroll-behavior: auto !important;
   }
 }
+/* The live agent is separate from the deterministic browser review. */
+.ai-panel {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid #d5dfd9;
+  border-radius: 1rem;
+  background: #fff;
+}
+.ai-panel h2 {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ai-panel p {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.ai-access,
+.ai-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ai-access input {
+  max-width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #a5b5ac;
+  border-radius: 0.4rem;
+}
+.ai-panel button {
+  padding: 0.6rem 0.9rem;
+  margin: 0.4rem 0;
+  border: 1px solid #53745f;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  background: #edf5ef;
+  color: #193c29;
+}
+.ai-panel button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.ai-finding {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #d5dfd9;
+  border-radius: 0.6rem;
+}
+.ai-finding pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.ai-panel [role='alert'] {
+  color: #9a2828;
+}

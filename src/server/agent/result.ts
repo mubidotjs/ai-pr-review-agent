@@ -10,12 +10,17 @@ export interface AgentResult {
   protocolVersion: 1;
   runId: string;
   status: 'draft' | 'partial' | 'refused' | 'failed' | 'cancelled' | 'disabled';
-  ai: { mode: 'mock-only' | 'disabled'; realInference: false };
+  ai: {
+    mode: 'mock-only' | 'disabled' | 'workers-ai';
+    realInference: boolean;
+    attempts?: number;
+    responses?: number;
+  };
   capture: ReturnType<BackendEvidence['identity']> | null;
   coverage: ReturnType<BackendEvidence['summary']> | null;
   findings: (Candidate & {
     id: string;
-    source: 'mock-model';
+    source: 'mock-model' | 'workers-ai';
     evidenceValidation: 'backend-pinned-supported-predicate';
   })[];
   rejected: { index?: number; code: string }[];
@@ -57,8 +62,12 @@ export function agentReport(
   const coverage = result.coverage;
   return (
     [
-      '# PRISM — MOCK model review draft',
-      '**Scripted synthetic model responses only. No real inference. Not a security clearance.**',
+      result.ai.realInference
+        ? '# PRISM — AI review draft'
+        : '# PRISM — MOCK model review draft',
+      result.ai.realInference
+        ? '**Native Workers AI proposals with backend evidence validation. Not a security clearance.**'
+        : '**No confirmed real inference. Mock results are synthetic. Not a security clearance.**',
       approved
         ? '**Human-approved selection for manual copy only. Nothing has been published.**'
         : '**UNAPPROVED: human review required before any publication.**',
@@ -71,7 +80,7 @@ export function agentReport(
         : 'No coverage assertion available.',
       ...selected.flatMap((f) => [
         `## ${f.severity.toUpperCase()} — ${markdownText(f.title)}`,
-        `Source: MOCK model proposal; backend-validated pinned evidence · ${markdownText(f.path)}:${f.line}`,
+        `Source: ${f.source === 'workers-ai' ? 'Workers AI' : 'MOCK model'} proposal; backend-validated pinned evidence · ${markdownText(f.path)}:${f.line}`,
         markdownText(f.explanation),
         `Recommendation: ${markdownText(f.recommendation)}`,
         `Evidence: ${markdownText(f.evidence)}`,
