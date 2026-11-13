@@ -4,6 +4,8 @@ An evidence-grounded AI pull request review agent that investigates GitHub diffs
 
 **Milestone 4: Hono ingestion now has a locally verified Node adapter with binary streaming through 12 MiB. Deployed Vercel compatibility is unverified. The browser Worker and review limits are unchanged; application AI remains disabled.**
 
+[M4.5's isolated Vercel experiment](docs/MILESTONE-4.5-VERCEL-STREAMING.md) remains **NOT VERIFIED** after client and deployment-environment setup failures. Both authorized temporary deployments and secrets were removed. These results establish no Vercel payload or streaming limit.
+
 PRISM reads a public GitHub PR through a minimal Hono service, then maps its diff and applies three narrow JavaScript/TypeScript rules in a dedicated browser Web Worker. Findings have exact evidence and honest coverage, but no server attestation. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)

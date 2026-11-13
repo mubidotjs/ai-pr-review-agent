@@ -1,5 +1,7 @@
 # Next milestone: isolated Vercel Hobby transport acceptance
 
+[M4.5 attempted that acceptance gate](MILESTONE-4.5-VERCEL-STREAMING.md), including one separately authorized replacement. **The result is NOT VERIFIED:** the first client failed before dispatch; the replacement received fail-closed 503 responses because effective deployment target and environment scopes differed. Both deployments and secrets were deleted. The corrected operator now checks the effective target and matching bindings before test dispatch, but has not been redeployed. A new experiment requires new explicit authorization; no agent or production launch is authorized.
+
 M3 completed its one authorized native Workers AI probe: **provider path viable**, output `PRISM_PROBE_OK`, 24 prompt / 8 completion tokens. The temporary Worker, binding, secret and CLI authorization were removed. See [actual provider evidence](MILESTONE-3-PROVIDER.md). **No second inference or full agent implementation is authorized.** The application still shows AI disabled.
 
 The remaining hosting blocker is independently established: full GitHub ingestion exceeds Workers Free CPU limits. Do not repeat the provider experiment to troubleshoot that unrelated problem.

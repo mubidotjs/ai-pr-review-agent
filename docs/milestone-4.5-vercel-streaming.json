@@ -1,0 +1,296 @@
+{
+  "milestone": "M4.5",
+  "baseline": "304057dbff901fb7f42a6e531b2a781d32cce65a",
+  "acceptance": "NOT_VERIFIED",
+  "actualDeployments": 2,
+  "authorization": "Initial temporary deployment plus one explicitly authorized replacement. No further deployment was performed.",
+  "preflight": {
+    "plan": "hobby",
+    "billingStatus": "active",
+    "team": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
+    "observedDate": "2026-11-13",
+    "allowanceSource": "Signed-in Vercel Usage dashboard, last 30 days",
+    "usage": {
+      "fastDataTransfer": "633.52 MB / 100 GB",
+      "fastOriginTransfer": "300.92 MB / 10 GB",
+      "invocations": "33,269 / 1,000,000",
+      "fluidMemory": "13.6 / 360 GB-hours",
+      "fluidCPU": "17m 8s / 4h"
+    },
+    "personalNonCommercialSyntheticExperiment": true
+  },
+  "artifact": {
+    "baseline": "304057dbff901fb7f42a6e531b2a781d32cce65a",
+    "config": {
+      "runtime": "nodejs24.x",
+      "handler": "index.mjs",
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": false,
+      "supportsResponseStreaming": true,
+      "supportsCancellation": true,
+      "maxDuration": 40
+    },
+    "applicationDeadlineMs": 30000,
+    "adapterSha256": "4c3485ad1b596aa3abe486b7b69de685c9e40a39f697942f68fd9d9970073e6d",
+    "cases": {
+      "ingestion": {
+        "bytes": 4752446,
+        "sha256": "96bd87cbd9c02cd8e04d4d626647037344301614d2240c8edb263f3ec4231de5",
+        "upstreamRequestsInBuildOnly": 11
+      },
+      "maximum": {
+        "bytes": 12582912,
+        "sha256": "3438b890c3b885defdebebde8dcd7c73736bffb20961571c257f9e3eba7d2409",
+        "transportOnly": true
+      }
+    },
+    "exclusions": [
+      "real ingestion route",
+      "GitHub transport",
+      "Babel",
+      "browser frontend",
+      "AI",
+      "persistent storage"
+    ]
+  },
+  "deployedBundleSha256": "930ba61adeb69cbfd869a3b6c1ad0f1dfb5e38438f4cf774888a9a2e7e892e63",
+  "first": {
+    "id": "dpl_H4FZ3mhhXbPBrqufcJZ1UHxtweC1",
+    "url": "https://prism-m45-transport-20261113-d7higqz2d-mubidotjs-projects.vercel.app",
+    "readyState": "READY",
+    "projectId": "prj_hxzTD0hNKhS44MrUsFNVlEUKdlTZ",
+    "started": "2026-11-13T11:44:25.622Z",
+    "finished": "2026-11-13T11:46:13.569Z",
+    "clientFailure": "Native curl rejected forwarded --cwd before any HTTP response; no fixture dispatch verified.",
+    "tests": [
+      {
+        "scenario": "delayed",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "ingestion",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "maximum",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "error",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "abort",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "unauthorized",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      },
+      {
+        "scenario": "real-route-absent",
+        "status": 0,
+        "exitCode": 2,
+        "bytes": 0
+      }
+    ],
+    "cleanup": {
+      "secretRemovalExitCode": 0,
+      "deploymentRemovalExitCode": 0,
+      "projectRemovalExitCode": 0,
+      "projectLookupExitCode": 1,
+      "finalHttpStatus": 404,
+      "inaccessible": true
+    }
+  },
+  "replacement": {
+    "id": "dpl_5kUHDepcRkQWtQPcZDnB3x3JuatT",
+    "url": "https://prism-m45-transport-20261113-1f9bazfo1-mubidotjs-projects.vercel.app",
+    "readyState": "READY",
+    "projectId": "prj_COh3RY0nkVS9VH5O15lWTUKtht2F",
+    "requestedTarget": "preview",
+    "observedTarget": "production",
+    "observedTargetEvidence": "Read-only GET /v13/deployments/dpl_5kUHDepcRkQWtQPcZDnB3x3JuatT during execution",
+    "nodeVersionFromPlatform": "24.x",
+    "environmentTargetsAtDeployment": ["preview"],
+    "started": "2026-11-13T11:54:45.683Z",
+    "finished": "2026-11-13T11:56:23.316Z",
+    "tests": [
+      {
+        "scenario": "delayed",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 7018,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::l2hqg-1794570916796-70a9cc3eebb4",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true
+      },
+      {
+        "scenario": "ingestion",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 4569,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::cm5b8-1794570921375-b7f7cbd9a507",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true,
+        "expectedBytes": 4752446,
+        "expectedSha256": "96bd87cbd9c02cd8e04d4d626647037344301614d2240c8edb263f3ec4231de5",
+        "exactIntegrity": false
+      },
+      {
+        "scenario": "maximum",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 4444,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::wxfrv-1794570925813-8d7faa6c6910",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true,
+        "expectedBytes": 12582912,
+        "expectedSha256": "3438b890c3b885defdebebde8dcd7c73736bffb20961571c257f9e3eba7d2409",
+        "exactIntegrity": false
+      },
+      {
+        "scenario": "error",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 4425,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::2tfrq-1794570930278-acdff78f7661",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true
+      },
+      {
+        "scenario": "abort",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 4425,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::gsrlq-1794570934708-543b64bf99e4",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true
+      },
+      {
+        "scenario": "unauthorized",
+        "pass": false,
+        "status": 503,
+        "exitCode": 0,
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lastByteMs": 0,
+        "elapsedMs": 4059,
+        "headers": {
+          "cache-control": "no-store",
+          "x-vercel-id": "sin1::iad1::qcx52-1794570939003-efd2a9e597f9",
+          "transfer-encoding": "chunked"
+        },
+        "eof": true
+      },
+      {
+        "scenario": "real-route-absent",
+        "pass": true,
+        "status": 404,
+        "exitCode": 0,
+        "bytes": 79,
+        "sha256": "6636ca1f5f2ded25ab727b306c5716023fcd10f4b23867b2c323cc6da69d3fbc",
+        "firstByteMs": 3803,
+        "lastByteMs": 3803,
+        "elapsedMs": 3853,
+        "headers": {
+          "cache-control": "public, max-age=0, must-revalidate",
+          "content-type": "text/plain; charset=utf-8",
+          "x-vercel-id": "sin1::4mr68-1794570943132-5699797140cd"
+        },
+        "eof": true
+      }
+    ],
+    "platformEvents": [],
+    "logsQueryExitCode": 0,
+    "metrics": {
+      "available": false,
+      "code": "payment_required",
+      "reason": "CLI detailed Function metrics require Observability Plus on Pro/Enterprise; no upgrade performed"
+    },
+    "cleanup": {
+      "secretRemovalExitCode": 0,
+      "deploymentRemovalExitCode": 0,
+      "projectRemovalExitCode": 0,
+      "projectLookupExitCode": 1,
+      "finalHttpStatus": 404,
+      "inaccessible": true
+    }
+  },
+  "interpretation": {
+    "payloadStreaming": "Not measured: harness returned empty 503 before entering fixture streams.",
+    "hashIntegrity": "No large-frame match; expected hashes preserved, observed bytes zero.",
+    "cancellation": "Not verified: abort scenario received 503 instead of starting a stream.",
+    "configuration": "First-project deployment was assigned production despite requested preview; required bindings were configured only for preview. The old generic 503 guard did not log a specific initialization category.",
+    "platformCapabilityConclusion": "No conclusion about Vercel large-response streaming support can be drawn from these setup failures."
+  },
+  "unchanged": {
+    "applicationAdapter": true,
+    "frontend": true,
+    "reviewLimits": true,
+    "originalVercelProjectsAndTimestamps": true,
+    "plan": "hobby"
+  },
+  "liveGitHubCalls": 0,
+  "inferenceCalls": 0,
+  "aiBindings": 0,
+  "billingChanges": 0,
+  "postExperimentLocalCorrections": {
+    "deployed": false,
+    "items": [
+      "Removed forwarded --cwd; verified HTTP 404 from deleted URL",
+      "Scope secret and expiry to preview and production for implicit first-production assignment",
+      "Inspect actual deployed target and binding metadata before fixture requests",
+      "Fail closed with fixed nonsecret configuration categories",
+      "Verify unauthorized gate before fixture dispatch",
+      "Require exact temporary project ownership before cleanup"
+    ]
+  }
+}
