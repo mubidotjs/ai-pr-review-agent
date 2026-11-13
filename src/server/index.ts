@@ -4,7 +4,7 @@ import { GitHubClient, type Transport } from './github';
 import { ingestPullRequest, serializeSnapshot } from './review';
 import { boundedText, ReviewError } from './security';
 
-export function createApp(transport?: Transport) {
+export function createApp(transport?: Transport, runtime = 'local-worker') {
   const app = new Hono();
   // Ephemeral rate cooldown only. No repository content or identifiers are retained.
   let cooldownUntil = 0;
@@ -27,7 +27,7 @@ export function createApp(transport?: Transport) {
     await next();
   });
   app.get('/api/health', (c) =>
-    c.json({ status: 'ok', ai: 'disabled', runtime: 'local-worker' }),
+    c.json({ status: 'ok', ai: 'disabled', runtime }),
   );
   app.post('/api/review', async (c) => {
     if (Date.now() < cooldownUntil)

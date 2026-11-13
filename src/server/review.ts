@@ -165,15 +165,33 @@ export function serializeSnapshot(snapshot: ReviewInputSnapshot): {
     );
   const header = new Uint8Array(4);
   new DataView(header.buffer).setUint32(0, json.byteLength);
+  const frames = [header, json, ...sources];
+  let frameIndex = 0,
+    offset = 0;
   return {
     bytes,
-    body: new ReadableStream({
-      start(controller) {
-        controller.enqueue(header);
-        controller.enqueue(json);
-        for (const source of sources) controller.enqueue(source);
-        controller.close();
+    body: new ReadableStream(
+      {
+        pull(controller) {
+          const frame = frames[frameIndex];
+          if (!frame) {
+            frames.length = 0;
+            controller.close();
+            return;
+          }
+          const end = Math.min(offset + 64 * 1024, frame.byteLength);
+          controller.enqueue(frame.subarray(offset, end));
+          offset = end;
+          if (offset === frame.byteLength) {
+            frameIndex++;
+            offset = 0;
+          }
+        },
+        cancel() {
+          frames.length = 0;
+        },
       },
-    }),
+      { highWaterMark: 0 },
+    ),
   };
 }

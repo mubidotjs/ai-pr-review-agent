@@ -1,5 +1,7 @@
 # Documentation decision: Vercel Hobby Node.js ingestion boundary
 
+Historical M3 assessment. [M4 subsequently implemented and verified the local Node adapter](MILESTONE-4-NODE-STREAMING.md); deployed Vercel streaming remains unverified.
+
 **Recommendation: investigate one Vercel Hobby Node.js Function for read-only ingestion, with verified response streaming. It is a better CPU candidate than the demonstrated full-workload Workers Free path, but it is not yet a verified deployment or a drop-in buffered migration.** Browser Web Worker analysis and every current review/security limit stay in place. M3 implements and deploys no Vercel resource or hosting adapter.
 
 The native Workers AI path is independently viable for M3's one small synthetic prompt. That does not make full GitHub ingestion fit Workers Free's 10 ms CPU allowance; the M2.5 failure remains valid. No CPU test was repeated in M3.

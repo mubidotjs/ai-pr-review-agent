@@ -2,7 +2,7 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Milestone 3: one native Workers AI provider probe succeeded and was removed. The full-ingestion Workers Free CPU gate remains failed. The local browser Worker MVP is unchanged and AI stays disabled in the application.**
+**Milestone 4: Hono ingestion now has a locally verified Node adapter with binary streaming through 12 MiB. Deployed Vercel compatibility is unverified. The browser Worker and review limits are unchanged; application AI remains disabled.**
 
 PRISM reads a public GitHub PR through a minimal Hono service, then maps its diff and applies three narrow JavaScript/TypeScript rules in a dedicated browser Web Worker. Findings have exact evidence and honest coverage, but no server attestation. A seeded synthetic demonstration works without external network access. Nothing posts to GitHub.
 
@@ -12,20 +12,23 @@ PRISM reads a public GitHub PR through a minimal Hono service, then maps its dif
 
 ## Run locally
 
-Requires Node.js **24.x**, npm, and a supported local workerd platform. No cloud account, API key, GitHub token, or `.env` file is needed.
+Requires Node.js **24.x** and npm. No cloud account, API key, GitHub token, or `.env` file is needed for the Node path.
 
 ```sh
 npm ci
-npm run dev
+npm run build:node
+npm run preview:node
 ```
 
-Open **http://127.0.0.1:5173**. The demonstration is loaded initially; paste a canonical `https://github.com/owner/repository/pull/123` URL for a real public review. Demo data is clearly fictional, and its illustrative source links are not presented as real PR evidence.
+Open **http://127.0.0.1:4174**. The demonstration is loaded initially; paste a canonical `https://github.com/owner/repository/pull/123` URL for a real public review. Demo data is clearly fictional, and its illustrative source links are not presented as real PR evidence.
 
-The Vite Cloudflare plugin runs ingestion in **local workerd** and serves React plus its bundled browser analysis Worker on the same origin. The backend never runs Babel or generates findings. A build-time module-graph check enforces this boundary. The application has no AI, storage, or remote resource bindings. Cloud experiment scripts are isolated operator tools; do not deploy the application or rerun cloud tests without separate authorization.
+The Node server serves React, its bundled browser Worker and Hono ingestion on one loopback origin. The backend never runs Babel or generates findings. Build-time module-graph checks enforce this boundary in both runtimes. The application has no AI, storage, or remote resource bindings. `build:node` also creates an ignored local Build Output API artifact; it does not provision or link a Vercel project. Its Function requires an explicit `PRISM_PUBLIC_ORIGIN` and otherwise fails closed. Cloud experiments require separate authorization.
 
-To exercise the built output:
+The legacy workerd path remains available (requires a supported local workerd platform):
 
 ```sh
+npm run dev
+# http://127.0.0.1:5173
 npm run build
 npm run preview
 # http://127.0.0.1:4173
@@ -74,7 +77,7 @@ npm run test:e2e
 npm audit --audit-level=high
 ```
 
-`check` runs types, lint, formatting checks, unit/integration tests (including actual local workerd), and both builds. Browser tests cover desktop/mobile, tablet containment, external-network-blocked demo operation, keyboard access, reports, loading/cancellation, XSS rendering, and rate limits. CI uses synthetic upstream data and performs no live GitHub ingestion or inference.
+`check` runs types, lint, formatting, unit/integration tests (including local workerd and Node HTTP), frontend/backend builds for both runtime paths, and a packaged Node Function HTTP check. Playwright serves the UI through Node, preserving desktop/mobile flows and adding binary-decoder and real API checks. CI uses synthetic upstream data and performs no live GitHub ingestion, deployment or inference.
 
 With preview already running, an explicitly selected live smoke test is:
 
@@ -108,9 +111,10 @@ Profiling uses synthetic inputs, not GitHub or AI. Browser results include start
 ## Architecture and next milestone
 
 - [Architecture and tool contracts](docs/ARCHITECTURE.md)
+- [M4 Node streaming evidence and remaining platform gate](docs/MILESTONE-4-NODE-STREAMING.md)
 - [Security and limitations](docs/SECURITY.md)
 - [M3 actual native provider result and cleanup](docs/MILESTONE-3-PROVIDER.md)
-- [Vercel Hobby Node ingestion assessment — documentation only](docs/M3-INGESTION-HOSTING.md)
+- [Historical M3 Node ingestion assessment](docs/M3-INGESTION-HOSTING.md)
 - [Next transport verification proposal](docs/NEXT-MILESTONE.md)
 
 The future agent has typed backend tool interfaces and an explicitly disabled adapter. There is no provider SDK, LangGraph, MCP server, database, or distributed orchestration.

@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "types": ["node", "vite/client"]
   },
-  "include": ["src", "tests", "scripts", "*.ts", "*.mts"]
+  "include": ["src", "api", "tests", "scripts", "*.ts", "*.mts"]
 }

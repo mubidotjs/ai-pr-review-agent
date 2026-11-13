@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && tsx scripts/verify-boundaries.ts",
+    "build": "vite build && tsx scripts/verify-boundaries.ts && npm run build:node",
+    "build:node": "tsx scripts/build-node.ts && npm run verify:node",
+    "verify:node": "tsx scripts/verify-node-artifact.ts",
+    "preview:node": "node dist/node/server/local.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
@@ -26,6 +29,7 @@
   },
   "dependencies": {
     "@babel/parser": "8.1.2",
+    "@hono/node-server": "2.1.8",
     "hono": "4.13.18",
     "react": "19.3.1",
     "react-dom": "19.3.1",

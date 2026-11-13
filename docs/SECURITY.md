@@ -13,6 +13,8 @@ All PR titles, bodies, paths, comments, patches, and code are untrusted data. Co
 
 ## Known limitations
 
+M4's Node adapter requires an exact configured origin, validates Host, ignores forwarding headers for origin decisions, refuses parsed bodies, bounds binary delivery and closes failed transfers without exception text. Its local server binds loopback only. The generated Vercel artifact requests raw body handling and streaming but has never been deployed. See [Node boundary and public admission prerequisites](MILESTONE-4-NODE-STREAMING.md). Instance-local busy gates/cooldowns cannot coordinate multiple functions or reserve the shared GitHub quota. Public ingestion remains blocked on verified platform behavior and an aggregate admission policy.
+
 Three rules cannot establish correctness or security. Findings identify specific observable code behavior and require a human to assess intent and exposure. Authentication/TLS warnings are not proof of exploitation.
 
 The AST checks use conservative static import/binding recognition, not a full type checker or control/dataflow analysis. They do not establish every possible runtime mutation. Matching code in tests or examples can still produce a contextual manual-review warning when it is real executable syntax; strings/comments and uncertain API bindings do not.

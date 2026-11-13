@@ -1,0 +1,41 @@
+{
+  "measuredAt": "2026-11-13T11:19:21.773Z",
+  "node": "v24.22.1",
+  "platform": "win32",
+  "arch": "x64",
+  "method": "Loopback HTTP. Packaged Build Output API handler for bounded ingestion; same Node adapter with direct synthetic snapshot for the transport ceiling. No platform deployment, real GitHub requests or inference.",
+  "artifact": {
+    "runtime": "nodejs24.x",
+    "streamingRequested": true,
+    "helpers": false,
+    "maxDurationSeconds": 40
+  },
+  "ingestion": {
+    "bytes": 4752446,
+    "sha256": "ca8618217b30cb88986abedcc290ab110fc02d9a85e1a30a15929656be864a01",
+    "elapsedMs": 186,
+    "upstreamRequests": 11,
+    "inventoried": 100,
+    "contexts": 6,
+    "finalVerified": true,
+    "transferEncoding": "chunked"
+  },
+  "transportCeiling": {
+    "bytes": 12582912,
+    "sha256": "3438b890c3b885defdebebde8dcd7c73736bffb20961571c257f9e3eba7d2409",
+    "independentOracleMatches": true,
+    "elapsedMs": 410,
+    "transferEncoding": "chunked",
+    "acquisitionBudgetClaim": false
+  },
+  "checks": [
+    "missing origin fails closed",
+    "parsed body refused",
+    "native ESM package loads",
+    "AI disabled",
+    "exact byte count",
+    "decoder and EOF",
+    "independent 12-MiB hash"
+  ],
+  "platformCompatibility": "NOT VERIFIED: local Node HTTP does not exercise Vercel launcher, routing or front proxy."
+}

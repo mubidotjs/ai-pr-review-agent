@@ -1,4 +1,4 @@
-# Milestone 2 architecture
+# PRISM architecture through Milestone 4
 
 ## Selected split
 
@@ -48,8 +48,10 @@ Browser findings are **client-computed and not server-attested**. `snapshotVerif
 
 ## Deployment boundary
 
-Only local same-origin execution is configured. Separate Vercel/Worker origins would require explicit origin allowlists, OPTIONS handling, origin checks, frontend API configuration, CSP connect/worker policy, HTTPS, abuse controls, and runtime CPU verification. CORS alone is not authentication. None of those resources or production settings are provisioned.
+Local same-origin execution supports workerd and Node. M4 adds an undeployed Vercel Build Output API artifact with explicit streaming/body-helper configuration and a required exact public origin. No production origin or resource is provisioned. Separate origins would require allowlists, OPTIONS handling, origin checks, frontend API configuration, CSP updates, HTTPS and abuse controls. CORS is not authentication.
 
 The heavy-analysis dependency is removed from the backend path, but [M2.5 actual platform measurements](MILESTONE-2.5-CPU.md) **failed the full-workload Workers Free CPU gate**. Large-source warm groups exceeded 10 ms, and cold ingestion reached 25.350 ms. The one temporary fixture deployment was deleted. Production configuration and authorization remain absent. A proposed bounded byte-path optimization preserves all current limits and validation; it has not been implemented or verified. No application architecture changed during M2.5.
 
-[M3 verified one isolated native AI binding response](MILESTONE-3-PROVIDER.md), then removed its Worker, binding and secret. The application adapter remains disabled. [A Node ingestion host with verified streaming](M3-INGESTION-HOSTING.md) is now a documented candidate: ordinary buffered responses cannot carry the current envelope above 4.5 MB. No migration or Vercel resource is implemented; the local ingestion/browser architecture and all limits are unchanged.
+[M3 verified one isolated native AI binding response](MILESTONE-3-PROVIDER.md), then removed its Worker, binding and secret. The application AI adapter remains disabled. Ordinary buffered responses cannot carry the current envelope above 4.5 MB.
+
+[M4 implements a Node transport adapter](MILESTONE-4-NODE-STREAMING.md) around the same Hono app. The serializer pulls bounded chunks and the official adapter waits for socket backpressure. A guard caps bytes, validates declared EOF, forwards cancellation and terminates partial transfers without exception text. The instance-local admission gate spans delivery; the Node deadline caps total handler lifetime at 30 seconds. All ingestion limits, browser analysis, framing, findings and coverage semantics remain unchanged. Actual local HTTP tests pass 4,752,446-byte valid ingestion and 12-MiB synthetic transport frames. Vercel's launcher/proxy and streaming exemption remain unverified; public quota/abuse policy and an isolated Hobby acceptance test remain launch gates.

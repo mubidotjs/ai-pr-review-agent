@@ -4,7 +4,7 @@ import { LIMITS } from '../src/shared/types';
 import { apiFile, apiPr, fixtureTransport, PR_URL } from './upstream-fixtures';
 
 // Byte-size assessment only. No CPU/timing benchmark, network, or inference.
-export async function ingestionPayloadEnvelope() {
+export function createIngestionPayloadFixture() {
   const prefix = 'export const example = "',
     suffix = '";';
   const line =
@@ -27,7 +27,16 @@ export async function ingestionPayloadEnvelope() {
   const contexts = Object.fromEntries(
     files.slice(0, 6).map((f) => [f.path, source]),
   );
-  const client = new GitHubClient(fixtureTransport(files, contexts, metadata));
+  return {
+    files,
+    metadata,
+    contexts,
+    transport: fixtureTransport(files, contexts, metadata),
+  };
+}
+export async function ingestionPayloadEnvelope() {
+  const { files, transport } = createIngestionPayloadFixture();
+  const client = new GitHubClient(transport);
   const snapshot = await ingestPullRequest(PR_URL, client);
   const frame = serializeSnapshot(snapshot);
   await frame.body.cancel();
@@ -45,7 +54,7 @@ export async function ingestionPayloadEnvelope() {
       bytes(files.slice(0, 50).map(apiFile)),
       bytes(files.slice(50).map(apiFile)),
     ],
-    sourceBytesEach: new TextEncoder().encode(source).byteLength,
+    sourceBytesEach: LIMITS.sourceBytes,
     inventory: snapshot.files.length,
     contexts: snapshot.files.filter((f) => f.context).length,
     verified: !!snapshot.verification.after,

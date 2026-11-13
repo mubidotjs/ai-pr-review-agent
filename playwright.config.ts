@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 2,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: 'http://127.0.0.1:4174',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
@@ -28,8 +28,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run preview',
-    url: 'http://127.0.0.1:4173',
+    command: 'npm run preview:node',
+    url: 'http://127.0.0.1:4174',
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
   },
