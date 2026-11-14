@@ -32,7 +32,27 @@ describe('backend-owned tool progress after the real inventory-loop failure', ()
         expect(request.allowedTools).not.toContain('getPullRequest');
         expect(request.allowedTools).not.toContain('listChangedFiles');
         expect(request.allowedTools).toContain('readFileContext');
-        return read('src/checkout/validate.ts');
+        const data = request.untrusted.observations.at(-1)!.data as {
+          files: {
+            path: string;
+            sourceLineCount: number;
+            firstAddedLine: number;
+          }[];
+        };
+        const file = data.files.find(
+          (file) => file.path === 'src/checkout/validate.ts',
+        )!;
+        expect(file.sourceLineCount).toBeGreaterThanOrEqual(
+          file.firstAddedLine,
+        );
+        return tool({
+          name: 'readFileContext',
+          arguments: {
+            path: file.path,
+            startLine: file.firstAddedLine,
+            endLine: Math.min(file.sourceLineCount, file.firstAddedLine + 79),
+          },
+        });
       },
       card(),
       generate,

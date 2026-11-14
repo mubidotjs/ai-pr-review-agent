@@ -287,20 +287,26 @@ export class BackendEvidence {
           offset,
           files: [...this.files.values()]
             .slice(offset, offset + count)
-            .map(({ raw, file }) => ({
-              path: raw.path,
-              previousPath: raw.previousPath,
-              status: raw.status,
-              additions: raw.additions,
-              deletions: raw.deletions,
-              firstAddedLine:
-                file.rows.find((row) => row.kind === 'add')?.newLine ?? null,
-              sourceAvailable: !!this.source(raw.path),
-              unavailableReason:
-                file.reason ??
-                raw.contextReason ??
-                (!raw.context ? 'Pinned context unavailable.' : undefined),
-            })),
+            .map(({ raw, file }) => {
+              const source = this.source(raw.path);
+              return {
+                path: raw.path,
+                previousPath: raw.previousPath,
+                status: raw.status,
+                additions: raw.additions,
+                deletions: raw.deletions,
+                firstAddedLine:
+                  file.rows.find((row) => row.kind === 'add')?.newLine ?? null,
+                sourceAvailable: !!source,
+                sourceLineCount: source
+                  ? source.context.text.split(/\r?\n/).length
+                  : null,
+                unavailableReason:
+                  file.reason ??
+                  raw.contextReason ??
+                  (!raw.context ? 'Pinned context unavailable.' : undefined),
+              };
+            }),
           nextOffset: offset + count < this.files.size ? offset + count : null,
         };
         commit = () => {
