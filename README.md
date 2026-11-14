@@ -6,6 +6,8 @@ An evidence-grounded AI pull request review agent that investigates GitHub diffs
 
 The offline assessment proves a conservative **8,126,464-byte** bound for valid ingestion; the 12-MiB fixture bypasses upstream limits. The corrected operator client allows **120 seconds** for that stress transfer while preserving the **30-second server deadline**. The deployed maximum transfer completed in **88.98 seconds**; server cancellation completed in **2.599 seconds**. [Evidence, reproduction and executed final scope](docs/FINAL-RELEASE-ACCEPTANCE.md).
 
+The local AI correction now preserves allowlisted contract, response-validation, token-bound, timeout and provider/relay error codes through the engine. It also accepts documented empty native tool arrays while refusing nonempty calls. Mock-backed regression tests pass; no new inference or deployment has occurred. [Investigation and one bounded acceptance proposal](docs/AI-DECISION-ERRORS.md).
+
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)

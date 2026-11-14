@@ -23,6 +23,8 @@ All newly created resources, namespace data, application/operator secrets and lo
 
 The transport blocker is resolved on the tested platform path. The remaining concrete blocker is the first real-agent model/relay decision failing before any validated tool decision could reach the engine. The surfaced generic error limits diagnosis; the evidence does not establish its precise underlying cause. No live application URL is retained.
 
+The subsequent [offline classification correction](AI-DECISION-ERRORS.md) preserves safe relay/native error codes and handles documented empty native tool arrays. It uses mock-backed tests only and does not change or repeat transport acceptance. This does not retroactively identify the previous model output or authorize another live call.
+
 The initial attempt on `3915484b12ae6319f2e473d4224d2cd711c418bd` stopped at the operator harness's empty-body header guard (HTTP 400). The correction in `eba8400` checks actual empty bytes while accepting omitted Content-Length and chunked framing; nonempty bodies remain rejected. That guard passed during the replacement run. [Initial attempt and cleanup](release-acceptance-initial-result.json). Neither correction nor documentation changes alter the application, adapter, agent rules, budgets or UI.
 
 ## Replacement run results — November 13, 2026

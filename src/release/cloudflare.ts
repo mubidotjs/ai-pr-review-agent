@@ -7,6 +7,7 @@ import {
   neuronEstimate,
   interrupted,
 } from './contract';
+import { relayErrorCode } from './errors';
 import {
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
@@ -99,7 +100,11 @@ const nativeResponse = z
               .object({
                 role: z.literal('assistant'),
                 content: z.string().min(1).max(RELEASE.outputBytes),
-                tool_calls: z.null().optional(),
+                // The native contract allows [] as well as absent/null when
+                // there are no provider tools. Nonempty native calls stay refused.
+                tool_calls: z.array(z.unknown()).length(0).nullish(),
+                function_call: z.null().optional(),
+                refusal: z.string().max(0).nullish(),
                 reasoning_content: z.string().max(0).nullish(),
               })
               .passthrough(),
@@ -110,13 +115,11 @@ const nativeResponse = z
     usage: z
       .object({
         prompt_tokens: z.number().int().nonnegative(),
-        completion_tokens: z
-          .number()
-          .int()
-          .min(0)
-          .max(RELEASE.completionTokens),
+        completion_tokens: z.number().int().min(0),
         completion_tokens_details: z
-          .object({ reasoning_tokens: z.literal(0).optional() })
+          .object({
+            reasoning_tokens: z.number().int().nonnegative().optional(),
+          })
           .passthrough()
           .optional(),
       })
@@ -248,12 +251,15 @@ export class ReviewBudget {
             request: requestSchema,
           })
           .strict()
-          .parse(body);
+          .safeParse(body);
+        if (!input.success) throw new ReleaseError('INVALID_CONTRACT', 400);
+        const decisionInput = input.data;
         if (
-          JSON.stringify(input.request.tools) !== JSON.stringify(TOOL_CONTRACTS)
+          JSON.stringify(decisionInput.request.tools) !==
+          JSON.stringify(TOOL_CONTRACTS)
         )
           throw new ReleaseError('INVALID_CONTRACT', 400);
-        const text = JSON.stringify(input.request),
+        const text = JSON.stringify(decisionInput.request),
           bytes = new TextEncoder().encode(text).length;
         if (bytes > RELEASE.inputBytes)
           throw new ReleaseError('MODEL_INPUT_LIMIT', 413);
@@ -264,11 +270,11 @@ export class ReviewBudget {
         if (request.signal.aborted)
           throw new ReleaseError('PROVIDER_TIMEOUT', 502);
         const expires = await this.atomic((c) => {
-          const g = c.grants[input.grant];
+          const g = c.grants[decisionInput.grant];
           if (
             !g ||
             g.kind !== 'agent' ||
-            g.turn !== input.turn ||
+            g.turn !== decisionInput.turn ||
             c.calls >= RELEASE.callsPerDay ||
             c.neurons + reserved > RELEASE.neuronsPerDay
           )
@@ -306,12 +312,18 @@ export class ReviewBudget {
             ),
             signal,
           );
-        } catch {
+        } catch (error) {
           throw new ReleaseError(
-            signal.aborted ? 'PROVIDER_TIMEOUT' : 'PROVIDER_ERROR',
+            signal.aborted ||
+              (error instanceof Error &&
+                ['AbortError', 'TimeoutError'].includes(error.name))
+              ? 'PROVIDER_TIMEOUT'
+              : 'PROVIDER_ERROR',
             502,
           );
         }
+        if (!(response instanceof Response))
+          throw new ReleaseError('PROVIDER_SHAPE', 502);
         if (!response.ok) {
           await response.body?.cancel();
           throw new ReleaseError(
@@ -319,14 +331,29 @@ export class ReviewBudget {
             502,
           );
         }
-        const output = nativeResponse.safeParse(
-          await readJson(response, 64 * 1024, signal),
-        );
+        let envelope: unknown;
+        try {
+          envelope = await readJson(response, 64 * 1024, signal);
+        } catch (error) {
+          throw new ReleaseError(
+            signal.aborted ||
+              (error instanceof ReleaseError && error.code === 'TIMEOUT')
+              ? 'PROVIDER_TIMEOUT'
+              : 'PROVIDER_SHAPE',
+            502,
+          );
+        }
+        const output = nativeResponse.safeParse(envelope);
         if (!output.success) throw new ReleaseError('PROVIDER_SHAPE', 502);
         const { prompt_tokens: prompt, completion_tokens: completion } =
           output.data.usage;
         // A cap violation fails closed and retains the full conservative reservation.
-        if (prompt > inputBound)
+        if (
+          prompt > inputBound ||
+          completion > RELEASE.completionTokens ||
+          (output.data.usage.completion_tokens_details?.reasoning_tokens ?? 0) >
+            0
+        )
           throw new ReleaseError('PROVIDER_TOKEN_BOUND', 502);
         let raw: unknown;
         try {
@@ -341,7 +368,8 @@ export class ReviewBudget {
         if (!decision.success)
           throw new ReleaseError('INVALID_MODEL_RESPONSE', 502);
         await this.atomic((c) => {
-          if (c.grants[input.grant]) c.grants[input.grant].uncertain = false;
+          if (c.grants[decisionInput.grant])
+            c.grants[decisionInput.grant].uncertain = false;
           if (c.day === reservedDay)
             c.neurons = Math.max(
               0,
@@ -396,10 +424,18 @@ export class ReviewBudget {
         {
           error: {
             code:
-              error instanceof ReleaseError ? error.code : 'INVALID_REQUEST',
+              error instanceof ReleaseError
+                ? (relayErrorCode(error.code) ?? 'RELAY_UNAVAILABLE')
+                : error instanceof z.ZodError
+                  ? 'INVALID_REQUEST'
+                  : 'RELAY_UNAVAILABLE',
           },
         },
-        error instanceof ReleaseError ? error.status : 400,
+        error instanceof ReleaseError && relayErrorCode(error.code)
+          ? error.status
+          : error instanceof z.ZodError
+            ? 400
+            : 503,
       );
     }
   }

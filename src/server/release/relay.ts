@@ -1,4 +1,5 @@
 import { RELEASE, ReleaseError, readJson } from '../../release/contract';
+import { relayErrorCode } from '../../release/errors';
 export interface Relay {
   call<T>(path: string, input: unknown, signal?: AbortSignal): Promise<T>;
 }
@@ -30,27 +31,54 @@ export class PrivateRelay implements Relay {
     if (new TextEncoder().encode(body).length > RELEASE.relayBytes)
       throw new ReleaseError('BODY_LIMIT', 413);
     const timeout = AbortSignal.timeout(path === '/decide' ? 20000 : 3000);
-    const response = await this.transport(this.origin + path, {
-      method: 'POST',
-      redirect: 'manual',
-      headers: {
-        Authorization: `Bearer ${this.secret}`,
-        'Content-Type': 'application/json',
-      },
-      body,
-      signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
-    });
-    const value = (await readJson(
-      response,
-      RELEASE.relayBytes,
-      signal ? AbortSignal.any([signal, timeout]) : timeout,
-    )) as { error?: { code?: string } };
-    if (!response.ok) {
-      const code = value?.error?.code;
+    const combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
+    let response: Response;
+    try {
+      response = await this.transport(this.origin + path, {
+        method: 'POST',
+        redirect: 'manual',
+        headers: {
+          Authorization: `Bearer ${this.secret}`,
+          'Content-Type': 'application/json',
+        },
+        body,
+        signal: combined,
+      });
+    } catch (error) {
+      const timedOut =
+        combined.aborted ||
+        (error instanceof Error &&
+          ['AbortError', 'TimeoutError'].includes(error.name));
       throw new ReleaseError(
-        typeof code === 'string' && /^[A-Z_]{1,60}$/.test(code)
-          ? code
-          : 'RELAY_UNAVAILABLE',
+        timedOut ? 'TIMEOUT' : 'RELAY_UNAVAILABLE',
+        timedOut ? 504 : 502,
+      );
+    }
+    let value: unknown;
+    try {
+      value = await readJson(response, RELEASE.relayBytes, combined);
+    } catch {
+      throw new ReleaseError(
+        combined.aborted
+          ? 'TIMEOUT'
+          : response.ok
+            ? 'RELAY_RESPONSE_INVALID'
+            : 'RELAY_UNAVAILABLE',
+        combined.aborted ? 504 : 502,
+      );
+    }
+    if (!response.ok) {
+      const code =
+        value &&
+        typeof value === 'object' &&
+        'error' in value &&
+        value.error &&
+        typeof value.error === 'object' &&
+        'code' in value.error
+          ? relayErrorCode(value.error.code)
+          : undefined;
+      throw new ReleaseError(
+        code ?? 'RELAY_UNAVAILABLE',
         response.status >= 400 && response.status <= 599
           ? response.status
           : 503,

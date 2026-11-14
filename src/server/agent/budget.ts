@@ -1,8 +1,10 @@
 import { AGENT_LIMITS, type AgentLimits } from './protocol';
+import type { RelayErrorCode } from '../../release/errors';
 
 export class AgentFailure extends Error {
   constructor(
     readonly code:
+      | RelayErrorCode
       | 'CANCELLED'
       | 'TIME_LIMIT'
       | 'STEP_LIMIT'
@@ -14,12 +16,6 @@ export class AgentFailure extends Error {
       | 'VALIDATION_LIMIT'
       | 'RESULT_LIMIT'
       | 'MODEL_ERROR'
-      | 'AI_QUOTA'
-      | 'PROVIDER_TIMEOUT'
-      | 'PROVIDER_QUOTA'
-      | 'PROVIDER_ERROR'
-      | 'PROVIDER_SHAPE'
-      | 'INVALID_MODEL_RESPONSE'
       | 'SNAPSHOT_UNVERIFIED'
       | 'CAPTURE_FAILED',
   ) {

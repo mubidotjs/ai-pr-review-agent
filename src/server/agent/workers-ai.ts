@@ -7,6 +7,7 @@ import {
 import { AgentFailure } from './budget';
 import type { Relay } from '../release/relay';
 import { ReleaseError } from '../../release/contract';
+import { relayErrorCode } from '../../release/errors';
 export class WorkersAiAdapter implements AgentModelAdapter {
   readonly mode = 'workers-ai' as const;
   private attempts = 0;
@@ -35,31 +36,15 @@ export class WorkersAiAdapter implements AgentModelAdapter {
           ['AbortError', 'TimeoutError'].includes(error.name))
       )
         throw new AgentFailure('PROVIDER_TIMEOUT');
-      if (
-        error instanceof ReleaseError &&
-        [
-          'AI_QUOTA',
-          'PROVIDER_TIMEOUT',
-          'PROVIDER_QUOTA',
-          'PROVIDER_ERROR',
-          'PROVIDER_SHAPE',
-        ].includes(error.code)
-      )
-        throw new AgentFailure(
-          error.code as
-            | 'AI_QUOTA'
-            | 'PROVIDER_TIMEOUT'
-            | 'PROVIDER_QUOTA'
-            | 'PROVIDER_ERROR'
-            | 'PROVIDER_SHAPE',
-        );
+      const code = error instanceof ReleaseError && relayErrorCode(error.code);
+      if (code) throw new AgentFailure(code);
       throw new AgentFailure('MODEL_ERROR');
     }
     const parsed = z
       .object({ decision: decisionSchema, bindingResponse: z.literal(true) })
       .strict()
       .safeParse(response);
-    if (!parsed.success) throw new AgentFailure('INVALID_MODEL_RESPONSE');
+    if (!parsed.success) throw new AgentFailure('RELAY_RESPONSE_INVALID');
     this.responses++;
     return JSON.stringify(parsed.data.decision);
   }
