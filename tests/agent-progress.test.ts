@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { runAgentReview } from '../src/server/agent/engine';
+import { runAgentReview } from '../src/server/agent/legacy-engine';
 import { ScriptedMockModel } from '../src/server/agent/model';
 import { BackendEvidence } from '../src/server/agent/evidence';
 import { AgentBudget } from '../src/server/agent/budget';
@@ -8,7 +8,7 @@ import { fixtureTransport, PR_URL, addition } from './upstream-fixtures';
 import { tool, read, card, generate } from './agent-fixtures';
 import { releaseFixture, post, nativeOutput } from './release-fixtures';
 import { createReleaseIngestion } from '../src/server/release/ingestion';
-import { createReleaseAgent } from '../src/server/release/agent-app';
+import { createReleaseAgent } from './legacy-release';
 import type { AgentResult } from '../src/server/agent/result';
 import { nativeToolsFor } from '../src/server/agent/protocol';
 

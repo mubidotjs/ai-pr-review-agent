@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createReleaseIngestion } from '../src/server/release/ingestion';
-import { createReleaseAgent } from '../src/server/release/agent-app';
+import { createReleaseAgent } from './legacy-release';
 import { releaseFixture, post, SERVER_SECRET } from './release-fixtures';
 import { fixtureTransport, PR_URL } from './upstream-fixtures';
 import { RELEASE } from '../src/release/contract';

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { runAgentReview } from '../src/server/agent/engine';
+import { runAgentReview } from '../src/server/agent/legacy-engine';
 import { BackendEvidence } from '../src/server/agent/evidence';
 import { ScriptedMockModel, type MockStep } from '../src/server/agent/model';
 import type { AgentDecision, ModelRequest } from '../src/server/agent/protocol';
@@ -7,7 +7,7 @@ import { card, read, tool, hypothesis } from './agent-fixtures';
 import { fixtureTransport, PR_URL, sources } from './upstream-fixtures';
 import { releaseFixture, post } from './release-fixtures';
 import { createReleaseIngestion } from '../src/server/release/ingestion';
-import { createReleaseAgent } from '../src/server/release/agent-app';
+import { createReleaseAgent } from './legacy-release';
 import type { AgentResult } from '../src/server/agent/result';
 
 const select = (request: ModelRequest): AgentDecision =>

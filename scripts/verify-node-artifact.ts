@@ -20,8 +20,7 @@ import { SNAPSHOT_MEDIA_TYPE } from '../src/server/node-adapter';
 import { decodeSnapshotWire } from '../src/analysis/snapshot-wire';
 import { PR_URL } from '../tests/upstream-fixtures';
 import { fixtureTransport } from '../tests/upstream-fixtures';
-import { oneFindingModel } from '../tests/agent-fixtures';
-import type { ModelRequest } from '../src/server/agent/protocol';
+import { oneProposal } from '../tests/proposal-fixtures';
 
 // Native ESM import of the packaged Function artifact, not the TypeScript source.
 const directory = '.vercel/output/functions/ingestion.func';
@@ -62,8 +61,8 @@ const fixture = createIngestionPayloadFixture();
 let now = 1900000000000,
   requests = 0;
 let agentPhase = false;
-const script = oneFindingModel(),
-  agentTransport = fixtureTransport();
+const agentTransport = fixtureTransport();
+let modelDispatches = 0;
 const drafts = new Map<string, unknown>();
 const server = createServer((req, res) => {
   if (req.headers['x-test-parsed-body']) Object.assign(req, { body: {} });
@@ -96,13 +95,14 @@ try {
       const body = JSON.parse(String(init?.body));
       if (String(input).endsWith('/admit'))
         return Response.json({ grant: '00000000-0000-4000-8000-000000000000' });
-      if (String(input).endsWith('/decide'))
+      if (String(input).endsWith('/propose')) {
+        modelDispatches++;
+        assert.equal(body.request.protocolVersion, 4);
         return Response.json({
-          decision: JSON.parse(
-            await script.next(body.request as ModelRequest, init!.signal!),
-          ),
+          proposal: oneProposal,
           bindingResponse: true,
         });
+      }
       if (String(input).endsWith('/draft')) drafts.set(body.runId, body.result);
       if (String(input).endsWith('/approve'))
         return Response.json({ result: drafts.get(body.runId) });
@@ -163,6 +163,8 @@ try {
   assert.equal(agentDraft.result.findings.length, 1);
   assert.equal(agentDraft.result.findings[0].line, 2);
   assert.equal(agentDraft.result.budget.githubRequests, 9);
+  assert.equal(modelDispatches, 1);
+  assert.equal(agentDraft.result.workflow, 'single-inference');
   const approval = await originalFetch(`${origin}/api/agent/approve`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Cookie: cookie },

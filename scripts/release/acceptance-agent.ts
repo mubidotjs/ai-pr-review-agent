@@ -5,7 +5,7 @@ import { createNodeHandler } from '../../src/server/node-adapter';
 import { releaseConfig } from '../../src/server/release/environment';
 import { ReleaseAccess, releaseFailure } from '../../src/server/release/access';
 import { runAgentReview } from '../../src/server/agent/engine';
-import { WorkersAiAdapter } from '../../src/server/agent/workers-ai';
+import { WorkersProposalAdapter } from '../../src/server/agent/proposal-adapter';
 import { humanApprovalGate } from '../../src/server/agent/result';
 import { fixtureTransport, PR_URL } from '../../tests/upstream-fixtures';
 import { isEmptyRequest } from './empty-body';
@@ -61,7 +61,7 @@ export default async function acceptanceAgent(
           const { result } = await runAgentReview(
             { url: PR_URL },
             {
-              model: new WorkersAiAdapter(config.relay, grant),
+              model: new WorkersProposalAdapter(config.relay, grant),
               allowRealModel: true,
               transport: fixtureTransport(),
               signal: request.signal,

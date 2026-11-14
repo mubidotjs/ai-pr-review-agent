@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { releaseFixture, post, SERVER_SECRET } from './release-fixtures';
-import { createReleaseAgent } from '../src/server/release/agent-app';
+import { createReleaseAgent } from './legacy-release';
 import { createReleaseIngestion } from '../src/server/release/ingestion';
 import { PrivateRelay } from '../src/server/release/relay';
 import { WorkersAiAdapter } from '../src/server/agent/workers-ai';
-import { runAgentReview } from '../src/server/agent/engine';
+import { runAgentReview } from '../src/server/agent/legacy-engine';
 import { fixtureTransport, PR_URL } from './upstream-fixtures';
 import { localNodeRoute } from './node-http';
 import type { AgentResult } from '../src/server/agent/result';

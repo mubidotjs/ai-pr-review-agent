@@ -1,6 +1,6 @@
 import { createInterface } from 'node:readline/promises';
 import { runAgentReview } from '../src/server/agent/engine';
-import { fullInvestigationModel } from '../tests/agent-fixtures';
+import { mockProposals, supportedProposals } from '../tests/proposal-fixtures';
 import { fixtureTransport, PR_URL } from '../tests/upstream-fixtures';
 
 const flags = process.argv.slice(2);
@@ -14,14 +14,14 @@ process.once('SIGINT', cancel);
 const run = await runAgentReview(
   { url: PR_URL },
   {
-    model: fullInvestigationModel(),
+    model: mockProposals(supportedProposals),
     transport: fixtureTransport(),
     signal: abort.signal,
   },
 );
 process.off('SIGINT', cancel);
 console.log(
-  'PRISM M5 — LOCAL SYNTHETIC MOCK AGENT. Zero real model/GitHub calls.',
+  'PRISM — LOCAL SINGLE-INFERENCE MOCK REVIEW. Zero real model/GitHub calls.',
 );
 console.log(
   JSON.stringify(

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { releaseFixture, post } from './release-fixtures';
 import { createReleaseIngestion } from '../src/server/release/ingestion';
-import { createReleaseAgent } from '../src/server/release/agent-app';
+import { createReleaseAgent } from './legacy-release';
 import { fixtureTransport, PR_URL } from './upstream-fixtures';
 import { localNodeRoute } from './node-http';
 import { ScriptedMockModel } from '../src/server/agent/model';

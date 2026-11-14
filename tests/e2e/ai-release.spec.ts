@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { runAgentReview } from '../../src/server/agent/engine';
-import { oneFindingModel, tool } from '../agent-fixtures';
+import { mockProposals } from '../proposal-fixtures';
 import { fixtureTransport, PR_URL } from '../upstream-fixtures';
 
 test('PRISM launch metadata and local brand assets render without external requests', async ({
@@ -41,18 +41,13 @@ test('mock-backed selected-validation draft, human approval and manual copy with
   const { result, humanApproval } = await runAgentReview(
     { url: PR_URL },
     {
-      model: oneFindingModel((request) =>
-        tool({
-          name: 'validateReviewFinding',
-          arguments: { evidenceId: request.factCards[0].evidenceId },
-        }),
-      ),
+      model: mockProposals(),
       transport: fixtureTransport(),
     },
   );
   expect(result.status).toBe('partial');
-  expect(result.budget.modelCalls).toBe(3);
-  expect(result.budget.validationChecks).toBe(3);
+  expect(result.budget.modelCalls).toBe(1);
+  expect(result.budget.validationChecks).toBe(2);
   expect(result.findings).toHaveLength(1);
   await page.route('**/api/session', (route) =>
     route.fulfill({ json: { authenticated: true } }),
@@ -108,9 +103,10 @@ test('mock-backed selected-validation draft, human approval and manual copy with
   expect(clipboard).toContain('Status: partial');
   expect(clipboard).toContain(result.findings[0].sourceUrl);
   expect(clipboard).toContain(
-    'Investigation stopped after one explicit AI selection',
+    'One model response selected hypotheses only from supplied source windows',
   );
-  expect(clipboard).toContain('7 uninspected');
+  expect(clipboard).toContain('3 uninspected');
+  expect(clipboard).toContain('20 supplied source lines');
   expect(
     await page.evaluate(() => ({
       local: localStorage.length,

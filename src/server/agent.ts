@@ -3,17 +3,17 @@ import type { GitHubClient } from './github';
 
 // Local Node orchestration is deliberately not imported by either ingestion entry.
 export { runAgentReview, AGENT_LIMITS } from './agent/engine';
-export { ScriptedMockModel } from './agent/model';
+export { MockProposalModel } from './agent/proposal-model';
 export type {
-  AgentModelAdapter,
-  ModelRequest,
-  Candidate,
-  AgentDecision,
-} from './agent/protocol';
+  ProposalModelAdapter,
+  ProposalRequest,
+  ProposalResponse,
+} from './agent/proposal-protocol';
+export type { Candidate } from './agent/protocol';
 
 // Legacy types for the disabled MVP adapter only. Never expose raw GitHubClient
 // capabilities to a model. M5 uses its strict ToolCall protocol and backend-owned
-// capture in agent/engine.ts instead.
+// capture and one proposal call in agent/engine.ts instead.
 export interface ReviewTools {
   getPullRequest: GitHubClient['getPullRequest'];
   listChangedFiles: GitHubClient['listChangedFiles'];

@@ -217,15 +217,28 @@ export function AIReviewPanel({ url }: { url: string }) {
                 : 'No confirmed real inference'}
             </strong>{' '}
             · {draft.result.status} · {draft.result.budget.githubRequests}/12
-            GitHub requests · {draft.result.budget.modelCalls}/16 model
-            decisions
+            GitHub requests · {draft.result.budget.modelCalls}/
+            {draft.result.workflow === 'single-inference' ? 1 : 16} model
+            {draft.result.workflow === 'single-inference'
+              ? ' inference'
+              : ' decisions'}
           </p>
           <p>
             {draft.result.coverage
-              ? `${draft.result.coverage.total} total files; ${draft.result.coverage.inventoried} inventoried; ${draft.result.coverage.inspected} with observed windows; ${draft.result.coverage.semanticChecksCompleted} checked for supported predicates. Other files remain unreviewed.`
+              ? `${draft.result.coverage.total} total files; ${draft.result.coverage.inventoried} inventoried; ${draft.result.coverage.inspected} with ${draft.result.workflow === 'single-inference' ? 'prepared source' : 'observed'} windows; ${draft.result.coverage.semanticChecksCompleted} checked for supported predicates. Other files remain unreviewed.`
               : 'Coverage unknown.'}{' '}
             This is not a security clearance.
           </p>
+          {draft.result.contextCoverage ? (
+            <p>
+              {draft.result.contextCoverage.providedLines} supplied source
+              lines; {draft.result.contextCoverage.providedAddedLines} supplied
+              added lines; {draft.result.contextCoverage.omittedKnownAddedLines}{' '}
+              known parsed added lines omitted. Dispatch:{' '}
+              {draft.result.contextCoverage.dispatch}. Supplied context does not
+              attest model comprehension.
+            </p>
+          ) : null}
           {draft.result.findings.map((f) => (
             <article key={f.id} className="ai-finding">
               <label>

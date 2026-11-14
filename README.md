@@ -2,15 +2,15 @@
 
 An evidence-grounded AI pull request review agent that investigates GitHub diffs, identifies actionable risks, and produces human-reviewed suggestions.
 
-**Transport PASS; latest real-agent acceptance FAIL (`PROVIDER_TIMEOUT`); no production release.** On `b47c5f3`, three validated native Gemma decisions completed metadata, inventory and pinned-source inspection. Dispatch four timed out before another decision was accepted. There were zero findings; approval/copy was not reached. All temporary resources and OAuth were removed, with existing-project fingerprints unchanged. [Safe result and cleanup](docs/ai-agent-acceptance-result.json).
+**Transport PASS; latest live result on the previous multi-turn build FAIL (`PROVIDER_TIMEOUT`); no production release.** On `b47c5f3`, three native decisions completed metadata, inventory and source inspection, then dispatch four timed out. All temporary resources and OAuth were removed, with Projects 1/2 unchanged. The current production implementation is a bounded **single-inference review**, verified offline and awaiting separately authorized live acceptance. [Preserved live evidence](docs/ai-agent-acceptance-result.json); [current workflow and verification](docs/SINGLE-INFERENCE-REVIEW.md).
 
 The offline assessment proves a conservative **8,126,464-byte** bound for valid ingestion; the 12-MiB fixture bypasses upstream limits. The corrected operator client allows **120 seconds** for that stress transfer while preserving the **30-second server deadline**. The deployed maximum transfer completed in **88.98 seconds**; server cancellation completed in **2.599 seconds**. [Evidence, reproduction and executed final scope](docs/FINAL-RELEASE-ACCEPTANCE.md).
 
-An earlier run established real source investigation and backend fact-card validation. Successful model-selected validation now intentionally selects a one-finding partial draft: Node independently revalidates it and finalizes without another model decision. The latest native-contract correction passed 414 unit/integration and 32 browser tests, but its authorized live workflow timed out after source inspection, before hypothesis/selection validation. No provider error is converted into success, and no retry or production launch followed. [Selection correction](docs/AI-SELECTION-FINALIZATION.md); [earlier live evidence](docs/AI-TOOL-PROGRESS.md).
+The trusted backend now acquires GitHub data and prepares bounded pinned source without model decisions. Gemma receives one compact package and proposes only supported kind/path/line hypotheses. Node independently validates each selected hypothesis, constructs canonical findings and finalizes a partial draft without another inference. Empty proposals never promote deterministic matches. Human approval unlocks manual-copy Markdown only. Historical multi-turn behavior remains in explicit regression tests.
 
 The native-contract correction accepts and discards documented assistant prose beside one strict tool call, retains full quota reservations when optional usage is absent, and preserves bounded field-specific diagnostics through the backend. `PROVIDER_SHAPE` did not occur in the three accepted responses; this sample does not establish general compatibility or identify the historical defect. The fourth attempt returned `PROVIDER_TIMEOUT`; the precise native/relay timeout branch is not established. [Contract, tests and executed acceptance](docs/NATIVE-AI-COMPATIBILITY.md).
 
-PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
+PRISM combines a responsive deterministic review workspace with a bounded single-inference AI review. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)
 
@@ -41,26 +41,26 @@ npm run agent:demo -- --approve
 - Strict URL/SSRF defenses, public visibility, fork-aware pinned source, before/after snapshot verification, pagination and safe rate-limit errors without retries.
 - Three conservative JS/TS/JSX/TSX rules: global `NaN` comparisons, recognized imported HTTPS Agent certificate-verification opt-outs, and recognized imported `jsonwebtoken.verify` expiration opt-outs. Strings/comments and uncertain bindings do not create findings.
 - Dedicated browser Web Worker for deterministic analysis, bounded file/diff navigation, severity groups, exact source links, honest partial coverage, cancellation, stale-result rejection, offline demo and Markdown export.
-- Existing agent state machine and five backend-owned tools. A separate Node Function independently validates observed added lines and supported AST predicates; browser findings cannot become server attestations.
+- Backend-owned acquisition and source-window preparation, one native proposal call, independent added-line/AST validation and deterministic draft construction. Browser findings cannot become server attestations.
 - Native Gemma 4 binding adapter with strict function decisions, bounded input/output, timeouts, no retries/fallback and explicit provenance. Newly integrated behavior is tested using **synthetic provider responses**; live agent behavior is not yet verified.
 - Release access-code sessions, same-origin checks, shared atomic admission/quota reservations, one-use server-owned draft approval and manual-copy Markdown. All live endpoints remain access controlled.
 - No GitHub write permission, arbitrary proxy, downloaded-code execution, accounts, analytics, persistent PR storage, queues or automatic publication.
 
 ## Limits and honest coverage
 
-| Resource                               | Limit                                              |
-| -------------------------------------- | -------------------------------------------------- |
-| Request body                           | 2 KiB                                              |
-| File inventory                         | 100, two pages of 50                               |
-| GitHub requests                        | 12 per logical review, final verification reserved |
-| Upstream concurrency                   | At most 2; currently sequential                    |
-| Individual / total review time         | 8 / 30 seconds                                     |
-| Individual / aggregate upstream bytes  | 2 / 8 MiB                                          |
-| Individual patch / source              | 128 KiB                                            |
-| Pinned source contexts                 | 6, inventory order                                 |
-| Parsed diff lines / findings           | 10,000 / 100                                       |
-| Framed ingestion response              | 12 MiB                                             |
-| Agent steps / model calls / tool calls | 16 / 16 / 12                                       |
+| Resource                                                       | Limit                                              |
+| -------------------------------------------------------------- | -------------------------------------------------- |
+| Request body                                                   | 2 KiB                                              |
+| File inventory                                                 | 100, two pages of 50                               |
+| GitHub requests                                                | 12 per logical review, final verification reserved |
+| Upstream concurrency                                           | At most 2; currently sequential                    |
+| Individual / total review time                                 | 8 / 30 seconds                                     |
+| Individual / aggregate upstream bytes                          | 2 / 8 MiB                                          |
+| Individual patch / source                                      | 128 KiB                                            |
+| Pinned source contexts                                         | 6, inventory order                                 |
+| Parsed diff lines / findings                                   | 10,000 / 100                                       |
+| Framed ingestion response                                      | 12 MiB                                             |
+| Agent steps / production model calls / verification tool calls | 16 / 1 / 12                                        |
 
 Deterministic coverage shows metadata total T, inventoried I, analyzed A, skipped I−A and uninventoried T−I. Agent coverage separately counts observed windows and completed supported-predicate checks; observing a window is not reviewing a whole file. Zero findings and unreviewed files never establish safety. Binary/missing patches, unsupported syntax, unavailable pinned source, deleted files and budgets produce explicit unknown/skipped states.
 

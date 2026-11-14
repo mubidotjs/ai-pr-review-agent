@@ -63,6 +63,7 @@ export function releaseFixture(script = oneFindingModel()) {
   const env = {
     AI: { run },
     RELAY_SECRET: SERVER_SECRET,
+    LEGACY_TEST_PROTOCOL: true,
   } as unknown as RelayEnvironment;
   let coordinator = new ReviewBudget({ storage }, env);
   const transport = vi.fn(
@@ -79,6 +80,7 @@ export function releaseFixture(script = oneFindingModel()) {
     run,
     transport,
     storage,
+    env,
     restart: () => {
       coordinator = new ReviewBudget({ storage }, env);
     },

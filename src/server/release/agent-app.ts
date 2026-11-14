@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { runAgentReview } from '../agent/engine';
 import { humanApprovalGate, type AgentResult } from '../agent/result';
-import { WorkersAiAdapter } from '../agent/workers-ai';
-import type { AgentModelAdapter } from '../agent/protocol';
+import { WorkersProposalAdapter } from '../agent/proposal-adapter';
+import type { ProposalModelAdapter } from '../agent/proposal-protocol';
 import type { Transport } from '../github';
 import { parsePullRequestUrl } from '../security';
 import {
@@ -16,7 +16,12 @@ export function createReleaseAgent(
   config: AccessConfig,
   dependencies: {
     transport?: Transport;
-    model?: (grant: string) => AgentModelAdapter;
+    model?: (grant: string) => ProposalModelAdapter;
+    /** Trusted test injection only; no request field or environment can select a legacy workflow. */
+    review?: (
+      input: unknown,
+      options: { grant: string; signal: AbortSignal },
+    ) => ReturnType<typeof runAgentReview>;
   } = {},
 ) {
   const access = new ReleaseAccess(config);
@@ -81,15 +86,18 @@ export function createReleaseAgent(
         { principal, kind: 'agent' },
         request.signal,
       ));
-      const model =
-        dependencies.model?.(grant) ??
-        new WorkersAiAdapter(config.relay, grant);
-      const { result, humanApproval } = await runAgentReview(input, {
-        model,
-        allowRealModel: true,
-        transport: dependencies.transport,
+      const { result, humanApproval } = await (dependencies.review?.(input, {
+        grant,
         signal: request.signal,
-      });
+      }) ??
+        runAgentReview(input, {
+          model:
+            dependencies.model?.(grant) ??
+            new WorkersProposalAdapter(config.relay, grant),
+          allowRealModel: true,
+          transport: dependencies.transport,
+          signal: request.signal,
+        }));
       if (
         result.findings.length &&
         ['partial', 'draft'].includes(result.status)

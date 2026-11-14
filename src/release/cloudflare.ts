@@ -10,6 +10,12 @@ import {
 import { relayErrorCode } from './errors';
 import { readNativeResponse } from './native-response';
 import {
+  proposalRequestSchema,
+  PROPOSAL_POLICY,
+  PROPOSAL_TOOL,
+  parseProposals,
+} from '../server/agent/proposal-protocol';
+import {
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
   factCardSchema,
@@ -34,6 +40,8 @@ export interface NativeAi {
 export interface RelayEnvironment {
   AI: NativeAi;
   RELAY_SECRET: string;
+  /** Historical unit tests only. Never configured in a deployed Worker. */
+  LEGACY_TEST_PROTOCOL?: boolean;
   REVIEW_BUDGET: {
     idFromName(name: string): unknown;
     get(id: unknown): { fetch(request: Request): Promise<Response> };
@@ -141,6 +149,139 @@ export class ReviewBudget {
       release();
     }
   }
+  private async propose(body: unknown, request: Request) {
+    const input = z
+      .object({ grant: grantId, request: proposalRequestSchema })
+      .strict()
+      .safeParse(body);
+    if (!input.success) throw new ReleaseError('INVALID_CONTRACT', 400);
+    const text = JSON.stringify(input.data.request),
+      bytes = new TextEncoder().encode(text).length;
+    if (bytes > RELEASE.inputBytes)
+      throw new ReleaseError('MODEL_INPUT_LIMIT', 413);
+    for (const file of input.data.request.evidence.files) {
+      if (
+        new TextEncoder().encode(JSON.stringify(file)).length > 8192 ||
+        new Set(file.lines.map((l) => l.line)).size !== file.lines.length ||
+        file.lines.some((l) => l.line > file.sourceLineCount)
+      )
+        throw new ReleaseError('INVALID_CONTRACT', 400);
+    }
+    const inputBound =
+      bytes +
+      new TextEncoder().encode(
+        PROPOSAL_POLICY + JSON.stringify([PROPOSAL_TOOL]),
+      ).length +
+      1024;
+    const reserved = neuronEstimate(inputBound, RELEASE.completionTokens),
+      reservedDay = new Date().toISOString().slice(0, 10);
+    const expires = await this.atomic((c) => {
+      const g = c.grants[input.data.grant];
+      if (!g || g.expires <= Date.now())
+        throw new ReleaseError('REVIEW_GRANT_EXPIRED', 504);
+      if (
+        g.kind !== 'agent' ||
+        g.turn !== 0 ||
+        c.calls >= RELEASE.callsPerDay ||
+        c.neurons + reserved > RELEASE.neuronsPerDay
+      )
+        throw new ReleaseError('AI_QUOTA', 429);
+      g.turn = 1;
+      g.uncertain = true;
+      c.calls++;
+      c.neurons += reserved;
+      return g.expires;
+    });
+    const nativeExpires = Date.now() + RELEASE.modelTimeoutMs;
+    const nativeDeadline = AbortSignal.timeout(RELEASE.modelTimeoutMs),
+      grantDeadline = AbortSignal.timeout(Math.max(1, expires - Date.now()));
+    const signal = AbortSignal.any([
+      request.signal,
+      nativeDeadline,
+      grantDeadline,
+    ]);
+    let phase: 'invocation' | 'response' = 'invocation';
+    const timeoutCode = () =>
+      grantDeadline.aborted || Date.now() >= expires
+        ? 'REVIEW_GRANT_EXPIRED'
+        : nativeDeadline.aborted || Date.now() >= nativeExpires
+          ? phase === 'invocation'
+            ? 'NATIVE_INVOCATION_DEADLINE'
+            : 'RESPONSE_VALIDATION_TIMEOUT'
+          : 'PROVIDER_TIMEOUT';
+    let response: Response;
+    try {
+      if (signal.aborted) throw new ReleaseError(timeoutCode(), 504);
+      response = await interrupted(
+        this.env.AI.run(
+          RELEASE.model,
+          {
+            messages: [
+              { role: 'system', content: PROPOSAL_POLICY },
+              { role: 'user', content: text },
+            ],
+            max_completion_tokens: RELEASE.completionTokens,
+            chat_template_kwargs: { enable_thinking: false },
+            stream: false,
+            n: 1,
+            temperature: 0,
+            tools: [PROPOSAL_TOOL],
+            tool_choice: 'required',
+            parallel_tool_calls: false,
+          },
+          { returnRawResponse: true, signal },
+        ),
+        signal,
+      );
+    } catch (error) {
+      throw new ReleaseError(
+        signal.aborted ||
+          (error instanceof Error &&
+            ['AbortError', 'TimeoutError'].includes(error.name))
+          ? timeoutCode()
+          : 'PROVIDER_ERROR',
+        502,
+      );
+    }
+    phase = 'response';
+    let normalized: Awaited<ReturnType<typeof readNativeResponse>>;
+    try {
+      normalized = await readNativeResponse(response, signal, inputBound);
+      if (
+        signal.aborted ||
+        Date.now() >= expires ||
+        Date.now() >= nativeExpires
+      )
+        throw new ReleaseError(timeoutCode(), 504);
+    } catch (error) {
+      if (
+        signal.aborted ||
+        (error instanceof ReleaseError && error.code === 'PROVIDER_TIMEOUT')
+      )
+        throw new ReleaseError(timeoutCode(), 504);
+      throw error;
+    }
+    const proposal = parseProposals(normalized.name, normalized.arguments);
+    if (!proposal.success) throw new ReleaseError(proposal.code, 502);
+    if (signal.aborted || Date.now() >= expires || Date.now() >= nativeExpires)
+      throw new ReleaseError(timeoutCode(), 504);
+    await this.atomic((c) => {
+      const g = c.grants[input.data.grant];
+      if (!g) throw new ReleaseError('REVIEW_GRANT_EXPIRED', 504);
+      g.uncertain = false;
+      if (c.day === reservedDay && normalized.usage)
+        c.neurons = Math.max(
+          0,
+          c.neurons -
+            reserved +
+            neuronEstimate(
+              normalized.usage.prompt,
+              normalized.usage.completion,
+            ),
+        );
+    });
+    return safeJson({ proposal: proposal.data, bindingResponse: true });
+  }
   async fetch(request: Request): Promise<Response> {
     try {
       if (
@@ -158,6 +299,7 @@ export class ReviewBudget {
       )
         throw new ReleaseError('REJECTED_ROUTE', 404);
       const body = await readJson(request, RELEASE.relayBytes);
+      if (url.pathname === '/propose') return await this.propose(body, request);
       if (url.pathname === '/login') {
         z.object({}).strict().parse(body);
         await this.atomic((c) => {
@@ -219,6 +361,8 @@ export class ReviewBudget {
         return safeJson({ ok: true });
       }
       if (url.pathname === '/decide') {
+        if (!this.env.LEGACY_TEST_PROTOCOL)
+          throw new ReleaseError('NOT_FOUND', 404);
         const input = z
           .object({
             grant: grantId,

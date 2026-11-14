@@ -112,6 +112,8 @@ export const decisionSchema = z.discriminatedUnion('type', [
 ]);
 export type AgentDecision = z.infer<typeof decisionSchema>;
 export type AgentStage =
+  | 'prepare-evidence'
+  | 'propose-once'
   | 'investigate'
   | 'select-read-only-tool'
   | 'observe'

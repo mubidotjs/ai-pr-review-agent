@@ -9,6 +9,17 @@ import type { ProviderDiagnostic } from '../../release/provider-diagnostics';
 
 export interface AgentResult {
   protocolVersion: 1;
+  workflow?: 'single-inference';
+  contextCoverage?: {
+    totalFiles: number;
+    inventoriedFiles: number;
+    knownAddedLines: number;
+    providedLines: number;
+    providedAddedLines: number;
+    omittedKnownAddedLines: number;
+    files: { path: string; lines: number[]; addedLines: number[] }[];
+    dispatch: 'not-sent' | 'attempted' | 'response-received';
+  };
   runId: string;
   status: 'draft' | 'partial' | 'refused' | 'failed' | 'cancelled' | 'disabled';
   ai: {
@@ -77,8 +88,13 @@ export function agentReport(
         ? `Capture: ${result.capture.captureId} · Head: ${result.capture.headSha}\n\nPR: ${result.capture.url}`
         : 'No trusted capture; coverage unknown.',
       coverage
-        ? `Coverage: ${coverage.total} total; ${coverage.inventoried} inventoried; ${coverage.inspected} files with observed windows; ${coverage.semanticChecksCompleted} files checked for supported predicates; ${coverage.uninspected} uninspected; ${coverage.uninventoried} uninventoried. Observing a window is not reviewing an entire file.`
+        ? `Coverage: ${coverage.total} total; ${coverage.inventoried} inventoried; ${coverage.inspected} files with ${result.workflow === 'single-inference' ? 'prepared source' : 'observed'} windows; ${coverage.semanticChecksCompleted} files checked for supported predicates; ${coverage.uninspected} uninspected; ${coverage.uninventoried} uninventoried. Observing a window is not reviewing an entire file.`
         : 'No coverage assertion available.',
+      ...(result.contextCoverage
+        ? [
+            `Model context: ${result.contextCoverage.providedLines} supplied source lines; ${result.contextCoverage.providedAddedLines} supplied added lines; ${result.contextCoverage.omittedKnownAddedLines} known parsed added lines omitted. Dispatch: ${result.contextCoverage.dispatch}. Supplied context is not an attestation of model comprehension.`,
+          ]
+        : []),
       ...selected.flatMap((f) => [
         `## ${f.severity.toUpperCase()} — ${markdownText(f.title)}`,
         `Source: ${f.source === 'workers-ai' ? 'Workers AI' : 'MOCK model'} proposal; backend-validated pinned evidence · ${markdownText(f.path)}:${f.line}`,

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { runAgentReview } from '../src/server/agent/engine';
+import { runAgentReview } from '../src/server/agent/legacy-engine';
 import { ScriptedMockModel } from '../src/server/agent/model';
 import { humanApprovalGate } from '../src/server/agent/result';
 import type {

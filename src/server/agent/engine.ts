@@ -4,16 +4,8 @@ import { GitHubClient, type Transport } from '../github';
 import { byteLength, parsePullRequestUrl, ReviewError } from '../security';
 import { AgentBudget, AgentFailure } from './budget';
 import { BackendEvidence } from './evidence';
-import {
-  AGENT_LIMITS,
-  SYSTEM_POLICY,
-  TOOL_CONTRACTS,
-  parseDecision,
-  type AgentLimits,
-  type AgentModelAdapter,
-  type ModelRequest,
-  type Observation,
-} from './protocol';
+import { AGENT_LIMITS, type AgentLimits } from './protocol';
+import { parseProposals, type ProposalModelAdapter } from './proposal-protocol';
 import {
   humanApprovalGate,
   type AgentResult,
@@ -36,7 +28,7 @@ function freeze<T>(value: T): T {
   return value;
 }
 export interface AgentDependencies {
-  model: AgentModelAdapter;
+  model: ProposalModelAdapter;
   /** Explicit backend configuration only. Default remains mock-only. */
   allowRealModel?: boolean;
   /** Trusted backend dependency; never accepted from a model/browser argument. */
@@ -53,7 +45,10 @@ export async function runAgentReview(
     signal = dependencies.signal
       ? AbortSignal.any([controller.signal, dependencies.signal])
       : controller.signal;
-  const budget = new AgentBudget(signal, dependencies.limits);
+  const budget = new AgentBudget(signal, {
+    ...dependencies.limits,
+    modelCalls: 1,
+  });
   let timedOut = false;
   const timer = setTimeout(() => {
     timedOut = true;
@@ -62,6 +57,7 @@ export async function runAgentReview(
   let evidence: BackendEvidence | undefined, client: GitHubClient | undefined;
   const result: AgentResult = {
     protocolVersion: 1,
+    workflow: 'single-inference',
     runId: randomUUID(),
     status: 'failed',
     ai: { mode: 'mock-only', realInference: false },
@@ -127,37 +123,37 @@ export async function runAgentReview(
       result.budget.sourceFiles = evidence.sourceFiles;
       result.capture = evidence.identity();
       if (!evidence.verified) throw new AgentFailure('SNAPSHOT_UNVERIFIED');
-      const observations: Observation[] = [];
-      const executed = new Map<string, number>();
-      for (;;) {
-        budget.step();
-        stage('select-read-only-tool');
-        budget.model();
-        const request: ModelRequest = {
-          protocolVersion: 3,
-          system: SYSTEM_POLICY,
-          tools: TOOL_CONTRACTS,
-          allowedTools:
-            budget.toolCalls < budget.limits.toolCalls
-              ? evidence.allowedTools()
-              : [],
-          factCards: evidence.factCards(),
-          untrusted: {
-            label: 'UNTRUSTED_REPOSITORY_DATA',
-            observations: observations.slice(-3),
-          },
-          remaining: {
-            steps: budget.limits.steps - budget.steps,
-            toolCalls: budget.limits.toolCalls - budget.toolCalls,
-            modelCalls: budget.limits.modelCalls - budget.modelCalls,
-          },
-        };
-        if (byteLength(JSON.stringify(request)) > budget.limits.modelInputBytes)
+      budget.step();
+      stage('prepare-evidence');
+      const prepared = evidence.prepareProposalRequest();
+      result.contextCoverage = {
+        ...prepared.evidence.coverage,
+        files: prepared.evidence.files.map((f) => ({
+          path: f.path,
+          lines: f.lines.map((l) => l.line),
+          addedLines: f.lines.filter((l) => l.added).map((l) => l.line),
+        })),
+        dispatch: 'not-sent',
+      };
+      if (!prepared.evidence.coverage.providedAddedLines) {
+        result.status = 'refused';
+        result.rejected.push({ code: 'INSUFFICIENT_EVIDENCE' });
+      } else {
+        const serialized = JSON.stringify(prepared);
+        if (byteLength(serialized) > budget.limits.modelInputBytes)
           throw new AgentFailure('MODEL_INPUT_LIMIT');
+        budget.step();
+        budget.model();
+        stage('propose-once');
+        evidence.exposePrepared(prepared);
+        result.contextCoverage.dispatch = 'attempted';
         let text: string;
         try {
           text = await budget.wait(
-            dependencies.model.next(freeze(structuredClone(request)), signal),
+            dependencies.model.propose(
+              freeze(structuredClone(prepared)),
+              signal,
+            ),
           );
         } catch (error) {
           if (error instanceof AgentFailure) throw error;
@@ -169,70 +165,59 @@ export async function runAgentReview(
           byteLength(text) > budget.limits.modelOutputBytes
         )
           throw new AgentFailure('MODEL_OUTPUT_LIMIT');
-        const decision = parseDecision(text);
-        if (!decision.success) throw new AgentFailure(decision.code);
-        if (decision.data.type === 'refuse') {
-          result.status = 'refused';
-          result.rejected.push({ code: decision.data.reason });
-          break;
-        }
-        let proposed: string[];
-        let selectedByValidation = false;
-        if (decision.data.type === 'tool') {
-          const call = decision.data.call;
-          if (budget.toolCalls >= budget.limits.toolCalls)
-            throw new AgentFailure('TOOL_LIMIT');
-          const key = JSON.stringify(call);
-          if (executed.get(key) === evidence.revision)
-            throw new AgentFailure('TOOL_NO_PROGRESS');
-          if (!request.allowedTools.includes(call.name))
-            throw new AgentFailure('MODEL_ACTION_UNSUPPORTED');
-          const data = evidence.execute(call);
-          executed.set(key, evidence.revision);
-          observations.push({ tool: call.name, data });
-          const refused = data as {
-            ok?: boolean;
-            accepted?: boolean;
-            code?: string;
-          };
-          const code =
-            refused.ok === false || refused.accepted === false
-              ? refused.code
-              : undefined;
-          if (code) result.rejected.push({ code });
-          stage('observe', call.name, code);
-          if (
-            call.name !== 'validateReviewFinding' ||
-            refused.accepted !== true
-          )
-            continue;
-          // Successful model-selected validation intentionally ends investigation.
-          // Finalization below independently resolves the issued card again.
-          proposed = [call.arguments.evidenceId];
-          selectedByValidation = true;
-        } else {
-          proposed = decision.data.findingIds;
-        }
-        stage('generate-findings');
+        const proposals = parseProposals('submit_review', text);
+        if (!proposals.success) throw new AgentFailure(proposals.code);
+        budget.check();
+        result.contextCoverage.dispatch = 'response-received';
         stage('validate');
-        if (proposed.length > budget.limits.findings)
-          throw new AgentFailure('VALIDATION_LIMIT');
         const seen = new Set<string>();
-        for (const [index, evidenceId] of proposed.entries()) {
-          const verdict = evidence.validateFactCard(evidenceId);
+        for (const [index, hypothesis] of proposals.data.proposals.entries()) {
           budget.check();
-          if (!verdict.accepted || !verdict.finding) {
-            result.rejected.push({ index, code: verdict.code });
-            continue;
-          }
-          if (seen.has(verdict.finding.evidenceId)) {
+          const key = JSON.stringify(hypothesis);
+          if (seen.has(key)) {
             result.rejected.push({ index, code: 'DUPLICATE_FINDING' });
             continue;
           }
-          seen.add(verdict.finding.evidenceId);
+          seen.add(key);
+          const supplied = prepared.evidence.files
+            .find((f) => f.path === hypothesis.path)
+            ?.lines.find((l) => l.line === hypothesis.line && l.added);
+          if (!supplied) {
+            result.rejected.push({
+              index,
+              code: 'EVIDENCE_NOT_SUPPLIED_ADDED_LINE',
+            });
+            continue;
+          }
+          const issued = evidence.execute({
+            name: 'createReviewFinding',
+            arguments: hypothesis,
+          }) as {
+            accepted: boolean;
+            code: string;
+            factCard?: { evidenceId: string };
+          };
+          if (!issued.accepted || !issued.factCard) {
+            result.rejected.push({ index, code: issued.code });
+            continue;
+          }
+          const validation = evidence.execute({
+            name: 'validateReviewFinding',
+            arguments: { evidenceId: issued.factCard.evidenceId },
+          }) as { accepted: boolean; code: string };
+          budget.check();
+          if (!validation.accepted) {
+            result.rejected.push({ index, code: validation.code });
+            continue;
+          }
+          // The model selected this hypothesis; the backend resolves its independently validated issued card.
+          const finding = evidence.factCard(issued.factCard.evidenceId);
+          if (!finding) throw new AgentFailure('SNAPSHOT_UNVERIFIED');
+          if (result.findings.length >= budget.limits.findings)
+            throw new AgentFailure('VALIDATION_LIMIT');
           result.findings.push({
-            ...verdict.finding,
-            id: verdict.finding.evidenceId,
+            ...finding,
+            id: finding.evidenceId,
             source:
               dependencies.model.mode === 'workers-ai'
                 ? 'workers-ai'
@@ -240,27 +225,19 @@ export async function runAgentReview(
             evidenceValidation: 'backend-pinned-supported-predicate',
           });
         }
-        const coverage = evidence.summary();
-        if (selectedByValidation)
-          result.limitations.push(
-            'Investigation stopped after one explicit AI selection. Remaining findings and uninspected source are unreviewed.',
-          );
-        result.status =
-          selectedByValidation ||
-          result.rejected.length ||
-          coverage.inspected < coverage.total ||
-          coverage.semanticChecksCompleted < coverage.total
-            ? 'partial'
-            : 'draft';
-        break;
+        result.status = 'partial';
+        result.limitations.push(
+          'One model response selected hypotheses only from supplied source windows. Omitted source and unproposed claims remain unreviewed; no comprehensive inspection is attested.',
+        );
       }
     }
   } catch (error) {
-    const code = timedOut
-      ? 'TIME_LIMIT'
-      : error instanceof AgentFailure || error instanceof ReviewError
-        ? error.code
-        : 'CAPTURE_FAILED';
+    const code =
+      timedOut || (error instanceof AgentFailure && error.code === 'TIME_LIMIT')
+        ? 'REVIEW_DEADLINE'
+        : error instanceof AgentFailure || error instanceof ReviewError
+          ? error.code
+          : 'CAPTURE_FAILED';
     result.rejected.push({
       code,
       ...(error instanceof AgentFailure && error.diagnostic
@@ -277,6 +254,8 @@ export async function runAgentReview(
               'MODEL_CALL_LIMIT',
               'VALIDATION_LIMIT',
               'TIME_LIMIT',
+              'REVIEW_DEADLINE',
+              'REVIEW_GRANT_EXPIRED',
               'SNAPSHOT_UNVERIFIED',
             ].includes(code)
           ? 'partial'
@@ -323,6 +302,7 @@ export async function runAgentReview(
     result.findings = [];
     result.coverage = null;
     result.capture = null;
+    result.contextCoverage = undefined;
     result.rejected = [{ code: 'RESULT_LIMIT' }];
     result.trace = [];
     result.rateLimit = { ...result.rateLimit, resource: undefined };

@@ -18,6 +18,7 @@ import {
   type Hypothesis,
   type ToolCall,
 } from './protocol';
+import { PROPOSAL_POLICY, type ProposalRequest } from './proposal-protocol';
 
 type RecordFile = {
   raw: ReviewInputFile;
@@ -25,6 +26,7 @@ type RecordFile = {
   observed: Set<number>;
   checked: boolean;
   proof?: ReturnType<typeof analyzeFile>;
+  packageReason?: string;
 };
 export interface EvidenceVerdict {
   accepted: boolean;
@@ -430,6 +432,7 @@ export class BackendEvidence {
             : 'supported-predicates-checked'
           : 'not-requested',
         reason:
+          f.packageReason ??
           f.file.reason ??
           f.proof?.reason ??
           f.raw.contextReason ??
@@ -452,5 +455,136 @@ export class BackendEvidence {
   }
   factCards() {
     return [...this.cards.values()].map(reference);
+  }
+  factCard(evidenceId: string) {
+    const card = this.cards.get(evidenceId);
+    return card ? structuredClone(card) : undefined;
+  }
+  /** Routine trusted preparation: no AST matching, finding generation or model tool selection. */
+  prepareProposalRequest(): ProposalRequest {
+    this.budget.check();
+    const pr = this.snapshot.pr;
+    const request: ProposalRequest = {
+      protocolVersion: 4,
+      system: PROPOSAL_POLICY,
+      evidence: {
+        label: 'UNTRUSTED_REPOSITORY_DATA',
+        headSha: pr.headSha,
+        repository: pr.headRepo!.fullName,
+        metadata: {
+          title: preview(pr.title, 1024).text,
+          description: preview(pr.description, 2048).text,
+          state: pr.state,
+        },
+        files: [],
+        coverage: {
+          totalFiles: pr.changedFiles,
+          inventoriedFiles: this.files.size,
+          knownAddedLines: 0,
+          providedLines: 0,
+          providedAddedLines: 0,
+          omittedKnownAddedLines: 0,
+        },
+      },
+    };
+    const pending: {
+      record: RecordFile;
+      file: ProposalRequest['evidence']['files'][number];
+      source: string[];
+      queue: number[];
+    }[] = [];
+    for (const record of this.files.values()) {
+      this.budget.check();
+      const added = record.file.rows.filter((r) => r.kind === 'add');
+      request.evidence.coverage.knownAddedLines += added.length;
+      const source = this.source(record.raw.path);
+      if (!source || !added.length) continue;
+      const lines = source.context.text.split(/\r?\n/);
+      if (added.some((r) => lines[r.newLine! - 1] !== r.text)) {
+        record.packageReason = 'Pinned source and added diff lines disagree.';
+        continue;
+      }
+      const indices = new Set<number>();
+      const push = (line: number) => {
+        if (line >= 1 && line <= lines.length && indices.size < 80)
+          indices.add(line);
+      };
+      push(added[0].newLine!);
+      for (let n = 1; n <= Math.min(8, lines.length); n++) push(n);
+      for (const row of added) {
+        for (const offset of [0, -1, 1, -2, 2]) push(row.newLine! + offset);
+        if (indices.size >= 80) break;
+      }
+      const file = {
+        path: record.raw.path,
+        sourceLineCount: lines.length,
+        lines: [] as ProposalRequest['evidence']['files'][number]['lines'],
+      };
+      request.evidence.files.push(file);
+      pending.push({ record, file, source: lines, queue: [...indices] });
+    }
+    // Reserve exact-width counts before packing; later smaller counts cannot grow the request.
+    const coverage = request.evidence.coverage;
+    coverage.providedLines = 480;
+    coverage.providedAddedLines = 480;
+    coverage.omittedKnownAddedLines = coverage.knownAddedLines;
+    if (
+      byteLength(JSON.stringify(request)) > this.budget.limits.modelInputBytes
+    )
+      throw new AgentFailure('MODEL_INPUT_LIMIT');
+    // Round-robin packing gives every captured source a chance within the shared input bound.
+    for (let n = 0; n < 80; n++)
+      for (const entry of pending) {
+        this.budget.check();
+        const line = entry.queue[n];
+        if (line === undefined) continue;
+        const text = entry.source[line - 1],
+          added = entry.record.file.rows.some(
+            (r) => r.kind === 'add' && r.newLine === line && r.text === text,
+          );
+        entry.file.lines.push({ line, text, added });
+        if (
+          byteLength(JSON.stringify(entry.file)) >
+            this.budget.limits.toolOutputBytes ||
+          byteLength(JSON.stringify(request)) >
+            this.budget.limits.modelInputBytes
+        )
+          entry.file.lines.pop();
+      }
+    for (const entry of pending) {
+      entry.file.lines.sort((a, b) => a.line - b.line);
+      entry.record.packageReason = entry.file.lines.length
+        ? 'Only supplied source windows are available to the model; omitted lines remain unreviewed.'
+        : 'Source omitted from the bounded model context.';
+    }
+    coverage.providedLines = request.evidence.files.reduce(
+      (n, f) => n + f.lines.length,
+      0,
+    );
+    coverage.providedAddedLines = request.evidence.files.reduce(
+      (n, f) => n + f.lines.filter((l) => l.added).length,
+      0,
+    );
+    coverage.omittedKnownAddedLines =
+      coverage.knownAddedLines - coverage.providedAddedLines;
+    this.budget.check();
+    return request;
+  }
+  /** Called only for the exact backend-built request immediately before its one dispatch. */
+  exposePrepared(request: ProposalRequest) {
+    for (const file of request.evidence.files) {
+      const source = this.source(file.path);
+      if (!source) throw new AgentFailure('SNAPSHOT_UNVERIFIED');
+      const lines = source.context.text.split(/\r?\n/);
+      for (const line of file.lines) {
+        if (lines[line.line - 1] !== line.text)
+          throw new AgentFailure('SNAPSHOT_UNVERIFIED');
+        source.record.observed.add(line.line);
+      }
+    }
+    this.budget.observationBytes += byteLength(JSON.stringify(request));
+    if (this.budget.observationBytes > this.budget.limits.observationBytes)
+      throw new AgentFailure('OBSERVATION_LIMIT');
+    this.budget.check();
   }
 }

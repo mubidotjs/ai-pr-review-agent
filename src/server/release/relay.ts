@@ -1,4 +1,9 @@
-import { RELEASE, ReleaseError, readJson } from '../../release/contract';
+import {
+  RELEASE,
+  ReleaseError,
+  readJson,
+  interrupted,
+} from '../../release/contract';
 import { relayErrorCode } from '../../release/errors';
 export interface Relay {
   call<T>(path: string, input: unknown, signal?: AbortSignal): Promise<T>;
@@ -25,42 +30,58 @@ export class PrivateRelay implements Relay {
     input: unknown,
     signal?: AbortSignal,
   ): Promise<T> {
-    if (!/^\/(login|admit|decide|finish|draft|approve|status)$/.test(path))
+    if (
+      !/^\/(login|admit|decide|propose|finish|draft|approve|status)$/.test(path)
+    )
       throw new ReleaseError('RELAY_ROUTE');
     const body = JSON.stringify(input);
     if (new TextEncoder().encode(body).length > RELEASE.relayBytes)
       throw new ReleaseError('BODY_LIMIT', 413);
-    const timeout = AbortSignal.timeout(path === '/decide' ? 20000 : 3000);
+    const timeout = AbortSignal.timeout(
+      path === '/decide' || path === '/propose' ? 20000 : 3000,
+    );
     const combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
     let response: Response;
     try {
-      response = await this.transport(this.origin + path, {
-        method: 'POST',
-        redirect: 'manual',
-        headers: {
-          Authorization: `Bearer ${this.secret}`,
-          'Content-Type': 'application/json',
-        },
-        body,
-        signal: combined,
-      });
+      response = await interrupted(
+        this.transport(this.origin + path, {
+          method: 'POST',
+          redirect: 'manual',
+          headers: {
+            Authorization: `Bearer ${this.secret}`,
+            'Content-Type': 'application/json',
+          },
+          body,
+          signal: combined,
+        }),
+        combined,
+      );
     } catch (error) {
       const timedOut =
         combined.aborted ||
         (error instanceof Error &&
           ['AbortError', 'TimeoutError'].includes(error.name));
       throw new ReleaseError(
-        timedOut ? 'TIMEOUT' : 'RELAY_UNAVAILABLE',
+        timedOut
+          ? path === '/propose' && timeout.aborted && !signal?.aborted
+            ? 'NODE_RELAY_DEADLINE'
+            : 'TIMEOUT'
+          : 'RELAY_UNAVAILABLE',
         timedOut ? 504 : 502,
       );
     }
     let value: unknown;
     try {
-      value = await readJson(response, RELEASE.relayBytes, combined);
+      value = await interrupted(
+        readJson(response, RELEASE.relayBytes, combined),
+        combined,
+      );
     } catch {
       throw new ReleaseError(
         combined.aborted
-          ? 'TIMEOUT'
+          ? path === '/propose' && timeout.aborted && !signal?.aborted
+            ? 'NODE_RELAY_DEADLINE'
+            : 'TIMEOUT'
           : response.ok
             ? 'RELAY_RESPONSE_INVALID'
             : 'RELAY_UNAVAILABLE',
