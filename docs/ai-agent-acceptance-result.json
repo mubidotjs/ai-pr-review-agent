@@ -1,16 +1,16 @@
 {
-  "testedSha": "5b5a559e270b1bd5578fd1f58f2bddd05fd53c19",
+  "testedSha": "fddaf0ac611aa1bb4ad95c81b934e5b0d9bcb6d5",
+  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43581241161",
   "result": "FAIL",
   "failure": {
     "safeCode": "PROVIDER_SHAPE",
     "classificationSource": "backend result",
     "boundary": "native binding return/envelope validation"
   },
-  "realNativeDispatches": 6,
-  "validatedNativeDecisions": 5,
-  "backendValidationChecks": 2,
-  "acceptedHypothesisAndFactCardValidation": true,
-  "acceptanceAssertionBasis": "createReviewFinding and validateReviewFinding completed with no refusal codes before the terminal provider-shape error",
+  "realNativeDispatches": 3,
+  "validatedNativeDecisions": 2,
+  "backendValidationChecks": 0,
+  "acceptedHypothesisAndFactCardValidation": false,
   "finalFindings": 0,
   "humanApprovalManualCopy": "NOT_REACHED",
   "production": "NOT_DEPLOYED",
@@ -19,7 +19,7 @@
   "workflow": {
     "kind": "synthetic",
     "attempted": true,
-    "startedAt": "2026-11-14T08:57:06.948Z",
+    "startedAt": "2026-11-14T09:50:20.541Z",
     "maxDispatches": 16,
     "passed": false,
     "httpStatus": 200,
@@ -28,19 +28,19 @@
     "ai": {
       "mode": "workers-ai",
       "realInference": true,
-      "attempts": 6,
-      "responses": 5
+      "attempts": 3,
+      "responses": 2
     },
     "budget": {
-      "steps": 6,
-      "tools": 5,
-      "modelCalls": 6,
-      "validationChecks": 2,
-      "observationBytes": 2093,
+      "steps": 3,
+      "tools": 2,
+      "modelCalls": 3,
+      "validationChecks": 0,
+      "observationBytes": 1314,
       "githubRequests": 9,
       "upstreamBytes": 134477,
       "sourceFiles": 5,
-      "elapsedMs": 6738
+      "elapsedMs": 6165
     },
     "rejected": [
       {
@@ -75,100 +75,91 @@
         "step": 3
       },
       {
-        "stage": "observe",
-        "step": 3,
-        "tool": "readFileContext"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 4
-      },
-      {
-        "stage": "observe",
-        "step": 4,
-        "tool": "createReviewFinding"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 5
-      },
-      {
-        "stage": "observe",
-        "step": 5,
-        "tool": "validateReviewFinding"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 6
-      },
-      {
         "stage": "finalize",
-        "step": 6
+        "step": 3
       }
     ],
     "capture": {
-      "captureId": "00517d3e-f800-4973-b0fa-8e3f9a1c29ac",
+      "captureId": "82a1c0a9-4b8a-4623-8dbb-6583f4d5a024",
       "url": "https://github.com/example/checkout/pull/42",
       "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "repository": "example/checkout"
     },
     "findings": [],
-    "clientElapsedMs": 11305
+    "clientElapsedMs": 11032
   },
-  "cloudflare": {
-    "worker": "prism-ai-review",
-    "origin": "https://prism-ai-review.mubikhan69.workers.dev",
-    "bindings": [
+  "resources": {
+    "cloudflare": {
+      "worker": "prism-ai-review",
+      "origin": "https://prism-ai-review.mubikhan69.workers.dev",
+      "bindings": [
+        {
+          "name": "AI",
+          "type": "ai"
+        },
+        {
+          "name": "RELAY_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "REVIEW_BUDGET",
+          "type": "durable_object_namespace",
+          "class_name": "ReviewBudget",
+          "namespace_id": "0c4445d2c2834182b1aaf17d98e538cf"
+        }
+      ],
+      "deploymentIds": [
+        {
+          "id": "e7b30daa-5e79-4dea-aca2-80f752bdf6de",
+          "versions": [
+            {
+              "version_id": "89feee67-59d2-4e36-85f2-a2d3c81a28bf",
+              "percentage": 100
+            }
+          ]
+        }
+      ],
+      "cliSuccess": true
+    },
+    "namespaceId": "0c4445d2c2834182b1aaf17d98e538cf",
+    "vercelProject": {
+      "id": "prj_XpNe4hog4RFYAAO3jg9vRPKqn5LN",
+      "name": "mubidotjs-prism"
+    },
+    "vercelDeployments": [
       {
-        "name": "AI",
-        "type": "ai"
-      },
-      {
-        "name": "RELAY_SECRET",
-        "type": "secret_text"
-      },
-      {
-        "name": "REVIEW_BUDGET",
-        "type": "durable_object_namespace",
-        "class_name": "ReviewBudget",
-        "namespace_id": "f4e9568eb7c34ef583650dec9525eb02"
+        "phase": "acceptance",
+        "startedAt": "2026-11-14T09:47:54.929Z",
+        "id": "dpl_ADcSZc7HHMvi3wCzm9PeVSSPfQUE",
+        "url": "https://mubidotjs-prism-ks232uqje-mubidotjs-projects.vercel.app",
+        "readyState": "READY",
+        "target": "production",
+        "nodeVersion": "24.x",
+        "metaSha": "fddaf0ac611aa1bb4ad95c81b934e5b0d9bcb6d5"
       }
-    ],
-    "deploymentIds": [
-      {
-        "id": "c8621dce-92cb-4161-926d-4f7796bbc20f",
-        "versions": [
-          {
-            "version_id": "73ac31b7-1595-4466-b402-66c34c31736a",
-            "percentage": 100
-          }
-        ]
-      }
-    ],
-    "cliSuccess": true
+    ]
   },
-  "vercelDeployments": [
-    {
-      "phase": "acceptance",
-      "startedAt": "2026-11-14T08:55:19.989Z",
-      "id": "dpl_Nhzaramv5J63N7oX6KQGjRTVukqa",
-      "url": "https://mubidotjs-prism-iddg0lbtf-mubidotjs-projects.vercel.app",
-      "readyState": "READY",
-      "target": "production",
-      "nodeVersion": "24.x",
-      "metaSha": "5b5a559e270b1bd5578fd1f58f2bddd05fd53c19"
-    }
-  ],
-  "sharedUsage": {
-    "dailyBefore": 225.71814918518066,
-    "dailyAfter": 277.2817850112915,
+  "preflight": {
+    "workersFreeEvidence": "Accepted user-supplied authenticated dashboard screenshot; no billing operations or billing-write permission.",
+    "vercelPlan": "hobby",
+    "vercelPlanStatus": "active",
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
+    "passed": true,
+    "completedAt": "2026-11-14T09:45:25.11Z"
+  },
+  "freeQuota": {
+    "sharedDailyBefore": 330.363600730896,
+    "beforeCheckedAt": "2026-11-14T09:45:17.237Z",
+    "sharedDailyAfter": 346.01814556121826,
+    "afterCheckedAt": "2026-11-14T09:51:08.756Z",
     "dailyAllowance": 10000,
-    "coordinatorEstimatedReservationAndSettlement": 227.468,
-    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes an unknown-outcome reservation and is not billed usage."
+    "coordinatorEstimatedReservationAndSettlement": 183.994,
+    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes the failed dispatch unknown-outcome reservation and is not billed usage or a provider-enforced per-call cap."
   },
   "cleanup": {
-    "startedAt": "2026-11-14T08:59:37.904Z",
+    "startedAt": "2026-11-14T09:51:11.880Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
     "cloudflareWorkerAbsent": true,
@@ -176,8 +167,8 @@
     "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-iddg0lbtf-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 302
+        "url": "https://mubidotjs-prism-ks232uqje-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 404
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
@@ -213,7 +204,7 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-14T09:00:23.275Z",
+    "finishedAt": "2026-11-14T09:51:57.373Z",
     "vercelDeploymentNotFound": true,
     "finalVercelEndpointStatus": 410,
     "temporaryCliRevoked": true,
@@ -221,10 +212,10 @@
     "noDnsChanges": true,
     "noProductionDeployment": true
   },
-  "previousEvidence": "ai-agent-acceptance-31d48d7-result.json",
+  "previousEvidence": "ai-agent-acceptance-5b5a559-result.json",
   "limitations": [
-    "The sixth call failed at native response collection/envelope validation. The exact rejected field or body condition is unavailable because raw model/provider output was not retained.",
-    "Five native decisions completed metadata, inventory, source inspection, hypothesis creation and fact-card validation; they do not establish a completed or human-approved review.",
-    "The engine suppressed all final findings after the terminal error. No retry, corrective deployment, public-PR workflow, production release or DNS change followed."
+    "Native dispatch 3 failed at binding return/collection/envelope validation before a source tool decision could be accepted. Raw output was not retained; the exact rejected field/body condition is unknown.",
+    "Only metadata and inventory completed. The corrected successful-selection finalization branch was not reached; this run cannot establish or disprove its live behavior.",
+    "The terminal failure suppressed findings. Approval/copy, the public-PR workflow, normal production deployment and DNS were not reached. No retry, repair inference or corrective deployment followed."
   ]
 }

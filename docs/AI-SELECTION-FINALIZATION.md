@@ -2,7 +2,7 @@
 
 ## Evidence and focused correction
 
-The last live workflow on `5b5a559e270b1bd5578fd1f58f2bddd05fd53c19` completed five native decisions: `getPullRequest`, `listChangedFiles`, `readFileContext`, `createReviewFinding` and `validateReviewFinding`. The backend accepted the hypothesis and validated its issued fact card. A sixth dispatch failed `PROVIDER_SHAPE` before finalization. No raw output was retained, so its exact native response defect is unknown. [Safe evidence and cleanup](ai-agent-acceptance-result.json).
+Before this correction, the live workflow on `5b5a559e270b1bd5578fd1f58f2bddd05fd53c19` completed five native decisions: `getPullRequest`, `listChangedFiles`, `readFileContext`, `createReviewFinding` and `validateReviewFinding`. The backend accepted the hypothesis and validated its issued fact card. A sixth dispatch failed `PROVIDER_SHAPE` before finalization. No raw output was retained, so its exact native response defect is unknown. [Archived safe evidence and cleanup](ai-agent-acceptance-5b5a559-result.json).
 
 Successful, explicitly model-selected `validateReviewFinding({evidenceId})` now intentionally selects that issued card for a **one-finding partial draft**. The Node engine revalidates the card independently against its private pinned capture, exact added line and supported AST predicate, checks cancellation/deadline again, and finalizes without requesting another model decision. The additional validation consumes the existing validation budget. Result/report limits and honest coverage remain unchanged. The system policy and native tool description make this terminal selection behavior explicit.
 
@@ -18,9 +18,9 @@ Existing deterministic, multi-finding mock, native parsing, release security, co
 
 Local verification passed: **346 unit/integration tests**, **32 desktop/mobile browser tests**, types, ESLint, formatting, frontend/Node builds, Cloudflare dry compilation, mock agent demonstration and isolated acceptance-artifact preparation. Audit: **zero vulnerabilities**. The browser approval test uses this direct-selection result and verifies real clipboard contents, honest partial coverage and the pinned source link. Existing three-finding mock parity remains intact. No cloud acceptance, real inference or DNS change occurred during this correction.
 
-## One consolidated remaining acceptance and release request — not yet authorized
+## Consolidated acceptance and release scope — authorized and consumed
 
-The prior failed run's authorization is consumed. After publication and passing exact-SHA CI, request approval once for this scope on the verified correction commit:
+The user authorized this scope on `fddaf0ac611aa1bb4ad95c81b934e5b0d9bcb6d5` after [exact-SHA CI passed](https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43581241161). It was consumed by the failure below and grants no further calls or corrective deployment:
 
 1. Reuse the accepted Free/Hobby/Dynadot evidence, keeping historical measurements labeled historical. Refresh model availability/native contract, shared Neuron usage and existing-project ownership/configuration through supported read-only APIs. No new usage-screenshot gate, completed transport tests or basic Gemma probe. Stop for concrete eligibility/quota failure.
 2. Create one `prism-ai-review` Cloudflare Worker with the existing native Gemma binding and one counter-only SQLite Durable Object namespace; one `mubidotjs-prism` Vercel Hobby project with at most two deployments of the same verified SHA. Preserve Node 24, backend-only secrets, access-code sessions, origin checks, existing admission/quota controls and 40-second platform/30-second application bounds. No paid plan, fallback provider or unrelated-project changes.
@@ -29,4 +29,14 @@ The prior failed run's authorization is consumed. After publication and passing 
 5. Retain production only after all acceptance criteria pass. Make the frontend/demo public while live review/inference stays access-code protected. Attach only `prism.mubashirhussain.dev` using Vercel's exact generated CNAME and any required verification TXT. If authenticated Dynadot editing is unavailable, supply the exact records for manual entry; preserve every existing record. Verify HTTPS, redirects, prepared icons/metadata, desktop/mobile UI and same-origin behavior with at most five final checks over 15 minutes and no extra inference.
 6. Stop at the first failed criterion. No automatic retries, repair calls, alternate models or corrective redeployment. Report the safe category and failing boundary; remove all newly created resources and this run's DNS additions on failure. On success, remove acceptance/operator resources and secrets while retaining the accepted runtime services. Revoke temporary CLI access either way, verify resource cleanup and unchanged Projects 1/2. No production launch on failed real-AI acceptance.
 
-Until that authorized acceptance succeeds, real-AI finalization, human approval with real output, production and the custom domain remain unverified.
+## Executed result on fddaf0a
+
+**FAIL — `PROVIDER_SHAPE` on native dispatch 3.** Two validated native decisions executed `getPullRequest` and `listChangedFiles`. The next dispatch failed at the native binding return/collection/envelope validation boundary, before any `readFileContext` decision was accepted. Raw output was not retained, so the exact rejected field/body condition is unknown. This does not establish provider unavailability or identify a particular response field.
+
+There were **three actual dispatches, two validated decisions, zero evidence checks and zero findings**. The successful-selection finalization branch was not reached. Engine time was **6,165 ms** and client time including CLI **11,032 ms**. Nine GitHub reads were mocked; **zero live GitHub requests** occurred. Approval/manual copy, the public-PR workflow and normal production were not reached. The operator stopped immediately: no retry, repair call, corrective deployment, transport experiment or basic provider probe followed.
+
+Worker version `89feee67-59d2-4e36-85f2-a2d3c81a28bf`, namespace `0c4445d2c2834182b1aaf17d98e538cf`, Vercel acceptance deployment `dpl_ADcSZc7HHMvi3wCzm9PeVSSPfQUE` and project `prj_XpNe4hog4RFYAAO3jg9vRPKqn5LN` were deleted. Authoritative API lookups confirm absence; former Vercel/Worker endpoints return **410/404**. Temporary OAuth was revoked (`loggedIn: false`), local secrets and this run's Wrangler logs removed, and all unrelated-project fingerprints match. No DNS record changed. [Complete safe result and cleanup](ai-agent-acceptance-result.json).
+
+Observed account-wide daily usage moved **330.36 → 346.02 / 10,000 Neurons**. These potentially delayed shared observations are not exact per-call receipts. The coordinator balance was **183.994 estimated Neurons**, including the failed call's unknown-outcome reservation, not billed usage or a provider-enforced per-call quota.
+
+The remaining blocker is native response acceptance **before source investigation**. Offline selection/finalization and human-copy tests pass, but a completed real-AI review, real-output approval, production and the custom domain remain unverified. No additional live run is authorized or proposed by this report.
