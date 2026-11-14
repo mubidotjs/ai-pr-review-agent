@@ -1,0 +1,224 @@
+{
+  "provenance": "LOCAL RECONSTRUCTION ONLY: the approved live result and Markdown were deleted during mandated cleanup. Replays the three proven hypotheses/canonical wording with fixed local IDs; no new inference. Not an original provider receipt.",
+  "result": {
+    "protocolVersion": 1,
+    "workflow": "single-inference",
+    "runId": "00000000-0000-4000-8000-000000000001",
+    "status": "partial",
+    "ai": {
+      "mode": "workers-ai",
+      "realInference": true,
+      "attempts": 1,
+      "responses": 1
+    },
+    "capture": {
+      "captureId": "453395bc-e49d-430f-b9b7-89621d862c7e",
+      "url": "https://github.com/example/checkout/pull/42",
+      "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "repository": "example/checkout"
+    },
+    "coverage": {
+      "total": 8,
+      "inventoried": 8,
+      "sourceAvailable": 5,
+      "inspected": 5,
+      "semanticChecksCompleted": 3,
+      "uninspected": 3,
+      "uninventoried": 0,
+      "files": [
+        {
+          "path": "src/checkout/validate.ts",
+          "inspectedLines": [1, 2, 3, 4, 5, 6],
+          "validation": "supported-predicates-checked",
+          "reason": "Only supplied source windows are available to the model; omitted lines remain unreviewed."
+        },
+        {
+          "path": "src/auth/session.ts",
+          "inspectedLines": [1, 2, 3, 4],
+          "validation": "supported-predicates-checked",
+          "reason": "Only supplied source windows are available to the model; omitted lines remain unreviewed."
+        },
+        {
+          "path": "src/network/receipts.ts",
+          "inspectedLines": [1, 2, 3, 4],
+          "validation": "supported-predicates-checked",
+          "reason": "Only supplied source windows are available to the model; omitted lines remain unreviewed."
+        },
+        {
+          "path": "src/ui/format.ts",
+          "inspectedLines": [1, 2, 3],
+          "validation": "not-requested",
+          "reason": "Only supplied source windows are available to the model; omitted lines remain unreviewed."
+        },
+        {
+          "path": "src/docs/example.ts",
+          "inspectedLines": [1, 2, 3],
+          "validation": "not-requested",
+          "reason": "Only supplied source windows are available to the model; omitted lines remain unreviewed."
+        },
+        {
+          "path": "public/receipt.png",
+          "inspectedLines": [],
+          "validation": "not-requested",
+          "reason": "Language unsupported by the current JS/TS rules."
+        },
+        {
+          "path": "src/generated/catalog.ts",
+          "inspectedLines": [],
+          "validation": "not-requested",
+          "reason": "Oversized patch."
+        },
+        {
+          "path": "src/legacy.ts",
+          "inspectedLines": [],
+          "validation": "not-requested",
+          "reason": "Deleted file; no head source or added-line analysis."
+        }
+      ]
+    },
+    "findings": [
+      {
+        "kind": "nan-comparison",
+        "path": "src/checkout/validate.ts",
+        "line": 2,
+        "evidence": "  if (amount === NaN) {",
+        "severity": "medium",
+        "title": "NaN comparison cannot test for NaN",
+        "explanation": "Comparing with the global NaN using === always yields false. This can select the wrong branch.",
+        "recommendation": "Use Number.isNaN(value) to test the value explicitly.",
+        "sourceUrl": "https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/checkout/validate.ts#L2",
+        "evidenceId": "0da909ecc1e23b89c725a33a568877895f21e015aacd2b2a9202c6be0c2014cc",
+        "id": "0da909ecc1e23b89c725a33a568877895f21e015aacd2b2a9202c6be0c2014cc",
+        "source": "mock-model",
+        "evidenceValidation": "backend-pinned-supported-predicate"
+      },
+      {
+        "kind": "jwt-expiration-disabled",
+        "path": "src/auth/session.ts",
+        "line": 3,
+        "evidence": "  return jwt.verify(token, key, { ignoreExpiration: true });",
+        "severity": "medium",
+        "title": "JWT exp claim validation disabled",
+        "explanation": "This jsonwebtoken.verify call explicitly ignores the exp claim. Other constraints may still apply; this is a manual-review warning, not proof of an authentication bypass.",
+        "recommendation": "Remove ignoreExpiration: true unless a separately reviewed flow intentionally handles expired tokens.",
+        "sourceUrl": "https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/auth/session.ts#L3",
+        "evidenceId": "d65acebecd9e65db33bc0a2d8e74365083e5988be8034e5bdf75c792d790f842",
+        "id": "d65acebecd9e65db33bc0a2d8e74365083e5988be8034e5bdf75c792d790f842",
+        "source": "mock-model",
+        "evidenceValidation": "backend-pinned-supported-predicate"
+      },
+      {
+        "kind": "tls-verification-disabled",
+        "path": "src/network/receipts.ts",
+        "line": 3,
+        "evidence": "  rejectUnauthorized: false,",
+        "severity": "medium",
+        "title": "HTTPS certificate verification disabled",
+        "explanation": "This HTTPS Agent explicitly disables server certificate verification. The diff alone does not establish exploitability or deployment exposure.",
+        "recommendation": "Remove rejectUnauthorized: false; configure a trusted CA when private certificates are required.",
+        "sourceUrl": "https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/network/receipts.ts#L3",
+        "evidenceId": "1de9fafce370c05399d13a96ac0e69f7840a9a3bf938c388f59c9b5cb2ca8236",
+        "id": "1de9fafce370c05399d13a96ac0e69f7840a9a3bf938c388f59c9b5cb2ca8236",
+        "source": "mock-model",
+        "evidenceValidation": "backend-pinned-supported-predicate"
+      }
+    ],
+    "rejected": [],
+    "trace": [
+      {
+        "stage": "investigate",
+        "step": 0
+      },
+      {
+        "stage": "prepare-evidence",
+        "step": 1
+      },
+      {
+        "stage": "propose-once",
+        "step": 2
+      },
+      {
+        "stage": "validate",
+        "step": 2
+      },
+      {
+        "stage": "finalize",
+        "step": 2
+      }
+    ],
+    "budget": {
+      "steps": 2,
+      "tools": 6,
+      "modelCalls": 1,
+      "validationChecks": 6,
+      "observationBytes": 4119,
+      "githubRequests": 9,
+      "upstreamBytes": 134477,
+      "sourceFiles": 5,
+      "elapsedMs": 79
+    },
+    "publication": {
+      "status": "requires-human-approval",
+      "automaticPublication": false
+    },
+    "limitations": [
+      "SYNTHETIC ACCEPTANCE FIXTURE: GitHub responses and source links are fictional. Model decisions use the real native binding only when separately authorized.",
+      "Native Workers AI decisions; independently checked only against the three supported predicates. No automatic publication.",
+      "Only three supported claim kinds are independently checked. Novel claims and changed narratives are refused.",
+      "Backend validation certifies exact pinned added-line evidence and the supported predicate, not comprehensive security, runtime exposure or current PR state after capture.",
+      "Missing context, unobserved windows and uninventoried files have no safety assessment.",
+      "Model and repository content cannot authorize publication. Human approval permits only manual copy; there is no GitHub write capability.",
+      "One model response selected hypotheses only from supplied source windows. Omitted source and unproposed claims remain unreviewed; no comprehensive inspection is attested."
+    ],
+    "rateLimit": {
+      "limit": 60,
+      "remaining": 45,
+      "used": 15,
+      "resetAt": 2000000000,
+      "resource": "core"
+    },
+    "contextCoverage": {
+      "totalFiles": 8,
+      "inventoriedFiles": 8,
+      "knownAddedLines": 20,
+      "providedLines": 20,
+      "providedAddedLines": 20,
+      "omittedKnownAddedLines": 0,
+      "files": [
+        {
+          "path": "src/checkout/validate.ts",
+          "lines": [1, 2, 3, 4, 5, 6],
+          "addedLines": [1, 2, 3, 4, 5, 6]
+        },
+        {
+          "path": "src/auth/session.ts",
+          "lines": [1, 2, 3, 4],
+          "addedLines": [1, 2, 3, 4]
+        },
+        {
+          "path": "src/network/receipts.ts",
+          "lines": [1, 2, 3, 4],
+          "addedLines": [1, 2, 3, 4]
+        },
+        {
+          "path": "src/ui/format.ts",
+          "lines": [1, 2, 3],
+          "addedLines": [1, 2, 3]
+        },
+        {
+          "path": "src/docs/example.ts",
+          "lines": [1, 2, 3],
+          "addedLines": [1, 2, 3]
+        }
+      ],
+      "dispatch": "response-received"
+    }
+  },
+  "digest": "3ca12eedfa63eb8b10c97d9d6057e61cf804a0b61137911b368cf5d067afe061",
+  "approved": {
+    "status": "approved-for-manual-copy",
+    "markdown": "# PRISM — AI review draft\n\n**Native Workers AI proposals with backend evidence validation. Not a security clearance.**\n\n**Human-approved selection for manual copy only. Nothing has been published.**\n\nRun: 00000000-0000-4000-8000-000000000001 · Status: partial\n\nCapture: 453395bc-e49d-430f-b9b7-89621d862c7e · Head: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n\nPR: https://github.com/example/checkout/pull/42\n\nCoverage: 8 total; 8 inventoried; 5 files with prepared source windows; 3 files checked for supported predicates; 3 uninspected; 0 uninventoried. Observing a window is not reviewing an entire file.\n\nModel context: 20 supplied source lines; 20 supplied added lines; 0 known parsed added lines omitted. Dispatch: response-received. Supplied context is not an attestation of model comprehension.\n\n## MEDIUM — NaN comparison cannot test for NaN\n\nSource: MOCK model proposal; backend-validated pinned evidence · src/checkout/validate\\.ts:2\n\nComparing with the global NaN using === always yields false\\. This can select the wrong branch\\.\n\nRecommendation: Use Number\\.isNaN\\(value\\) to test the value explicitly\\.\n\nEvidence:   if \\(amount === NaN\\) \\{\n\nSource: https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/checkout/validate.ts#L2\n\n## MEDIUM — JWT exp claim validation disabled\n\nSource: MOCK model proposal; backend-validated pinned evidence · src/auth/session\\.ts:3\n\nThis jsonwebtoken\\.verify call explicitly ignores the exp claim\\. Other constraints may still apply; this is a manual\\-review warning, not proof of an authentication bypass\\.\n\nRecommendation: Remove ignoreExpiration: true unless a separately reviewed flow intentionally handles expired tokens\\.\n\nEvidence:   return jwt\\.verify\\(token, key, \\{ ignoreExpiration: true \\}\\);\n\nSource: https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/auth/session.ts#L3\n\n## MEDIUM — HTTPS certificate verification disabled\n\nSource: MOCK model proposal; backend-validated pinned evidence · src/network/receipts\\.ts:3\n\nThis HTTPS Agent explicitly disables server certificate verification\\. The diff alone does not establish exploitability or deployment exposure\\.\n\nRecommendation: Remove rejectUnauthorized: false; configure a trusted CA when private certificates are required\\.\n\nEvidence:   rejectUnauthorized: false,\n\nSource: https://github.com/example/checkout/blob/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/src/network/receipts.ts#L3\n\n## Explicit refusals\n\n## Limitations\n\n- SYNTHETIC ACCEPTANCE FIXTURE: GitHub responses and source links are fictional\\. Model decisions use the real native binding only when separately authorized\\.\n\n- Native Workers AI decisions; independently checked only against the three supported predicates\\. No automatic publication\\.\n\n- Only three supported claim kinds are independently checked\\. Novel claims and changed narratives are refused\\.\n\n- Backend validation certifies exact pinned added\\-line evidence and the supported predicate, not comprehensive security, runtime exposure or current PR state after capture\\.\n\n- Missing context, unobserved windows and uninventoried files have no safety assessment\\.\n\n- Model and repository content cannot authorize publication\\. Human approval permits only manual copy; there is no GitHub write capability\\.\n\n- One model response selected hypotheses only from supplied source windows\\. Omitted source and unproposed claims remain unreviewed; no comprehensive inspection is attested\\.\n\n## Investigation coverage\n\n- src/checkout/validate\\.ts: supported-predicates-checked; Only supplied source windows are available to the model; omitted lines remain unreviewed\\.\n\n- src/auth/session\\.ts: supported-predicates-checked; Only supplied source windows are available to the model; omitted lines remain unreviewed\\.\n\n- src/network/receipts\\.ts: supported-predicates-checked; Only supplied source windows are available to the model; omitted lines remain unreviewed\\.\n\n- src/ui/format\\.ts: not-requested; Only supplied source windows are available to the model; omitted lines remain unreviewed\\.\n\n- src/docs/example\\.ts: not-requested; Only supplied source windows are available to the model; omitted lines remain unreviewed\\.\n\n- public/receipt\\.png: not-requested; Language unsupported by the current JS/TS rules\\.\n\n- src/generated/catalog\\.ts: not-requested; Oversized patch\\.\n\n- src/legacy\\.ts: not-requested; Deleted file; no head source or added\\-line analysis\\.\n",
+    "publicationPerformed": false
+  }
+}

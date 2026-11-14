@@ -2,6 +2,148 @@ import { test, expect } from '@playwright/test';
 import { runAgentReview } from '../../src/server/agent/engine';
 import { mockProposals } from '../proposal-fixtures';
 import { fixtureTransport, PR_URL } from '../upstream-fixtures';
+import copyReplay from '../fixtures/approved-copy-replay.json' with { type: 'json' };
+import { verifyApprovedCopy } from '../../scripts/release/verify-copy';
+
+async function replayApprovedDraft(page: import('@playwright/test').Page) {
+  let reviews = 0,
+    approvals = 0;
+  await page.route('**/api/session', (route) =>
+    route.fulfill({ json: { authenticated: true } }),
+  );
+  await page.route('**/api/agent', (route) => {
+    reviews++;
+    return route.fulfill({
+      json: { result: copyReplay.result, digest: copyReplay.digest },
+    });
+  });
+  await page.route('**/api/agent/approve', (route) => {
+    approvals++;
+    expect(route.request().postDataJSON()).toEqual({
+      actor: 'human',
+      confirm: true,
+      runId: copyReplay.result.runId,
+      digest: copyReplay.digest,
+      selectedIndexes: [0, 1, 2],
+    });
+    return route.fulfill({ json: copyReplay.approved });
+  });
+  await page.goto('/');
+  await page.getByLabel('Public pull request URL').fill(PR_URL);
+  await page.getByRole('link', { name: 'Open AI review' }).click();
+  await page.getByLabel('Private review access code').fill('local-replay-only');
+  await page.getByRole('button', { name: 'Unlock live reviews' }).click();
+  await page
+    .getByRole('button', { name: 'Run AI review', exact: true })
+    .click();
+  const panel = page.locator('#ai-review');
+  await expect(panel.getByRole('link', { name: /pinned source/ })).toHaveCount(
+    3,
+  );
+  await expect(panel.getByLabel(/Human-approved Markdown/)).toHaveCount(0);
+  await panel
+    .getByRole('button', { name: /I reviewed these findings/ })
+    .click();
+  await expect(panel.getByLabel(/Human-approved Markdown/)).toHaveValue(
+    copyReplay.approved.markdown,
+  );
+  return () => {
+    expect(reviews).toBe(1);
+    expect(approvals).toBe(1);
+    expect(copyReplay.approved.publicationPerformed).toBe(false);
+  };
+}
+
+test('three-finding replay copies exact canonical content, with only OS CRLF conversion permitted', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'], {
+    origin: 'http://127.0.0.1:4174',
+  });
+  const verifyCounts = await replayApprovedDraft(page);
+  const checked = await verifyApprovedCopy(
+    page,
+    copyReplay.approved.markdown,
+    'http://127.0.0.1:4174',
+  );
+  expect(checked).toMatchObject({
+    passed: true,
+    environment: { secureContext: true, writeText: true, readText: true },
+    comparison: { canonicalExact: true },
+  });
+  verifyCounts();
+});
+
+test('copy completion awaits the Clipboard write promise before acceptance reads', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.addInitScript(() => {
+    const write = navigator.clipboard.writeText.bind(navigator.clipboard);
+    navigator.clipboard.writeText = async (text) => {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      await write(text);
+    };
+  });
+  const verifyCounts = await replayApprovedDraft(page);
+  const checked = await verifyApprovedCopy(
+    page,
+    copyReplay.approved.markdown,
+    'http://127.0.0.1:4174',
+  );
+  expect(checked.passed).toBe(true);
+  verifyCounts();
+});
+
+for (const unavailable of ['absent', 'rejected'] as const) {
+  test(`clipboard ${unavailable} offers selectable exact Markdown without an uncaught exception`, async ({
+    page,
+  }) => {
+    const exceptions: string[] = [];
+    page.on('pageerror', (error) => exceptions.push(error.name));
+    await page.addInitScript((mode) => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value:
+          mode === 'absent'
+            ? undefined
+            : {
+                writeText: async () => {
+                  throw new DOMException(
+                    'Permission denied',
+                    'NotAllowedError',
+                  );
+                },
+              },
+      });
+    }, unavailable);
+    const verifyCounts = await replayApprovedDraft(page);
+    const panel = page.locator('#ai-review');
+    await panel
+      .getByRole('button', { name: 'Copy approved AI report' })
+      .click();
+    await expect(panel.getByRole('alert')).toHaveText(
+      'Select and copy the report manually.',
+    );
+    await expect(
+      panel.getByText('Approved Markdown copied.', { exact: true }),
+    ).toHaveCount(0);
+    const textarea = panel.getByLabel(/Human-approved Markdown/);
+    await expect(textarea).toHaveValue(copyReplay.approved.markdown);
+    await expect(textarea).toHaveAttribute('readonly', '');
+    await textarea.focus();
+    await textarea.press('ControlOrMeta+A');
+    expect(
+      await textarea.evaluate((element: HTMLTextAreaElement) =>
+        element.value.slice(element.selectionStart, element.selectionEnd),
+      ),
+    ).toBe(copyReplay.approved.markdown);
+    expect(exceptions).toEqual([]);
+    verifyCounts();
+  });
+}
 
 test('PRISM launch metadata and local brand assets render without external requests', async ({
   page,

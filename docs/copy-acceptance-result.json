@@ -1,0 +1,72 @@
+{
+  "scope": "Local clipboard reproduction/correction only; no deployment or inference",
+  "historicalSourceSha": "d494bfd91d92fecf20dfde0b7bc0941d3628754c",
+  "fixture": "tests/fixtures/approved-copy-replay.json",
+  "fixtureProvenance": "Reconstruction using the three previously proven canonical findings. Original live draft/run ID/approved report body was removed during cleanup. This is not an original provider receipt.",
+  "historicalException": "Not retained; reproduction does not prove every cause of the historical failed run.",
+  "reproduction": {
+    "environment": {
+      "origin": "http://127.0.0.1:4174",
+      "secureContext": true,
+      "clipboard": true,
+      "writeText": "function",
+      "readText": "function",
+      "permission": "granted"
+    },
+    "clipboard": {
+      "exact": false,
+      "onlyWindowsNewlines": true,
+      "expectedBytes": 4471,
+      "actualBytes": 4558,
+      "expectedCRLF": 0,
+      "actualCRLF": 87,
+      "expectedSha256": "7ef3181b8e03c7eaed62b648c803cad94398328bb378ec50ff13eb7d1ed17b95",
+      "actualSha256": "afe7082739630f8a2da5c72c05c0410f8977b32f72f5e342d972dc1f8aea3040"
+    },
+    "failure": {
+      "stage": "clipboard-compare",
+      "exceptionName": "Error",
+      "sanitizedMessage": "Manual-copy integrity mismatch"
+    }
+  },
+  "correctedReplay": {
+    "passed": true,
+    "environment": {
+      "origin": "http://127.0.0.1:4174",
+      "secureContext": true,
+      "writeText": true,
+      "readText": true,
+      "writePermission": "granted",
+      "readPermission": "granted"
+    },
+    "comparison": {
+      "rawExact": false,
+      "canonicalExact": true,
+      "windowsCRLFPairs": 87,
+      "expectedBytes": 4471,
+      "clipboardBytes": 4558,
+      "expectedSha256": "7ef3181b8e03c7eaed62b648c803cad94398328bb378ec50ff13eb7d1ed17b95",
+      "clipboardSha256": "afe7082739630f8a2da5c72c05c0410f8977b32f72f5e342d972dc1f8aea3040",
+      "canonicalClipboardSha256": "7ef3181b8e03c7eaed62b648c803cad94398328bb378ec50ff13eb7d1ed17b95"
+    },
+    "replayOnly": true,
+    "nativeDispatches": 0,
+    "liveGitHubRequests": 0,
+    "publicationPerformed": false,
+    "reviews": 1,
+    "approvals": 1
+  },
+  "nativeDispatches": 0,
+  "liveGitHubRequests": 0,
+  "publicationPerformed": false,
+  "localVerification": {
+    "unitIntegrationTests": 450,
+    "desktopMobileBrowserTests": 40,
+    "browserRetries": 0,
+    "types": "PASS",
+    "lint": "PASS",
+    "format": "PASS",
+    "builds": "PASS",
+    "dependencyVulnerabilities": 0
+  }
+}

@@ -32,6 +32,9 @@ export function AIReviewPanel({ url }: { url: string }) {
   } | null>(null);
   const [selected, setSelected] = useState<string[]>([]),
     [report, setReport] = useState('');
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copying' | 'copied'>(
+    'idle',
+  );
   const controller = useRef<AbortController | null>(null),
     generation = useRef(0);
   useEffect(
@@ -47,6 +50,7 @@ export function AIReviewPanel({ url }: { url: string }) {
     setBusy(false);
     setDraft(null);
     setReport('');
+    setCopyStatus('idle');
     setError(
       'Cancelled. An already dispatched model call may still consume shared quota.',
     );
@@ -80,6 +84,7 @@ export function AIReviewPanel({ url }: { url: string }) {
     setDraft(null);
     setSelected([]);
     setReport('');
+    setCopyStatus('idle');
     try {
       const value = await api<{ result: AgentResult; digest: string }>(
         '/api/agent',
@@ -104,6 +109,7 @@ export function AIReviewPanel({ url }: { url: string }) {
     controller.current = abort;
     setBusy(true);
     setError('');
+    setCopyStatus('idle');
     try {
       const approved = await api<{ markdown: string }>(
         '/api/agent/approve',
@@ -124,6 +130,22 @@ export function AIReviewPanel({ url }: { url: string }) {
         setError(e instanceof Error ? e.message : 'Approval expired.');
     } finally {
       if (own === generation.current) setBusy(false);
+    }
+  }
+  async function copyReport() {
+    const own = generation.current;
+    setCopyStatus('copying');
+    setError('');
+    try {
+      if (typeof navigator.clipboard?.writeText !== 'function')
+        throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(report);
+      if (own === generation.current) setCopyStatus('copied');
+    } catch {
+      if (own === generation.current) {
+        setCopyStatus('idle');
+        setError('Select and copy the report manually.');
+      }
     }
   }
   return (
@@ -180,6 +202,7 @@ export function AIReviewPanel({ url }: { url: string }) {
               setAuthenticated(false);
               setDraft(null);
               setReport('');
+              setCopyStatus('idle');
             }}
           >
             Lock access
@@ -297,16 +320,18 @@ export function AIReviewPanel({ url }: { url: string }) {
               />
               <button
                 type="button"
-                onClick={() => {
-                  void navigator.clipboard
-                    .writeText(report)
-                    .catch(() =>
-                      setError('Select and copy the report manually.'),
-                    );
-                }}
+                disabled={copyStatus === 'copying'}
+                onClick={() => void copyReport()}
               >
                 Copy approved AI report
               </button>
+              {copyStatus !== 'idle' ? (
+                <p role="status">
+                  {copyStatus === 'copying'
+                    ? 'Copying approved Markdown…'
+                    : 'Approved Markdown copied.'}
+                </p>
+              ) : null}
             </div>
           ) : null}
         </div>
