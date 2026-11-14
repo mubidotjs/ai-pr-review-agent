@@ -1,8 +1,8 @@
 # PRISM architecture
 
-**Current release addition:** the deterministic split below is retained, with a separate Node agent Function and private native Workers AI relay. [RELEASE.md](RELEASE.md) supersedes the M5-only adapter/deployment descriptions below. The live adapter is implemented but not yet accepted on deployed infrastructure. Access-code sessions, shared admission counters, strictly parsed model decisions, independent Node evidence validation and one-use human approval are implemented. Canonical drafts stay in bounded expiring RAM; only counters and opaque grants are durable. No browser finding becomes server authority. No new live inference or release deployment was performed during local implementation.
+**Production:** [prism.mubashirhussain.dev](https://prism.mubashirhussain.dev), application SHA `16b9dbffce60b67548c0c5bb48346b363cf8480f`. Same-origin Vercel Hobby Node Functions own ingestion and AI evidence validation; browser Workers own deterministic analysis; the private Cloudflare native binding/SQLite coordinator owns inference and shared counters. Real synthetic/public-PR AI acceptance is preserved; deployed HTTPS approval/copy, custom origin, assets and responsive UI are verified. [Current production operation and evidence](PRODUCTION.md) supersedes historical deployment gates below. Runtime is retained; temporary access is revoked. No browser finding becomes server authority.
 
-## Retained deterministic architecture and historical M5 boundary
+## Retained deterministic architecture and historical implementation notes
 
 ## Selected split
 

@@ -1,8 +1,8 @@
 # Release implementation and acceptance authorization
 
-**Current release request:** [progress-aware decisions, bounded replacement acceptance, launch and exact DNS scope](AI-TOOL-PROGRESS.md). Historical scopes/results below do not authorize another run.
+**Current production status: LIVE.** [Verified production operation and exact-SHA receipt](PRODUCTION.md) · [safe final release evidence](production-live-result.json). The public frontend/demo is live; ingestion and real native AI remain access-code protected. Earlier real synthetic and public-PR acceptance is preserved. Final HTTPS approval/copy and custom-domain checks passed without any new inference/GitHub calls. Production resources are retained and temporary access revoked.
 
-**Latest bounded verification:** the separately authorized synthetic workflow on `11648bd88dcd82a94b760700e63a1b7b47c3d996` stopped with **`INVALID_MODEL_RESPONSE` on decision 2**, after one valid `getPullRequest` decision. The failing boundary is the Cloudflare relay's assistant content/decision validation, not an established provider outage. There were 2 native dispatches, no findings, no live GitHub requests and no production launch. Approval/copy was not reached. All temporary resources and CLI access were removed; Projects 1/2 remain unchanged. [Latest safe evidence](ai-agent-acceptance-result.json) · [Executed scope](AI-DECISION-ERRORS.md).
+The remaining text is historical implementation/authorization evidence. Its failed runs and consumed scopes do not describe current status or authorize new work.
 
 Historical full-release acceptance: **transport PASS; real-agent acceptance FAIL; release BLOCKED.** That run tested `30bb34baecf08ab0dbc13c9b86f66edc1dc38c06`, whose [exact-SHA CI passed](https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43477735935). Its outstanding maximum-transfer, controlled-error and cancellation checks passed. Its first synthetic real-agent workflow then stopped with `MODEL_ERROR`, one native dispatch and no validated decision/findings. No second workflow, real GitHub review or production app release followed. [Historical evidence](release-acceptance-result.json).
 

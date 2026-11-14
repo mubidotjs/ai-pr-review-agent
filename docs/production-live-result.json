@@ -1,0 +1,358 @@
+{
+  "status": "LIVE",
+  "url": "https://prism.mubashirhussain.dev",
+  "deployedSha": "16b9dbffce60b67548c0c5bb48346b363cf8480f",
+  "deployedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43609793842",
+  "httpsApprovalAndClipboard": "PASS",
+  "newNativeDispatches": 0,
+  "newLiveGitHubRequests": 0,
+  "newInferenceNeurons": 0,
+  "preservedRealAIProof": {
+    "syntheticThreeValidatedFindings": "ai-agent-acceptance-result.json",
+    "publicPRReview": "production-release-result.json",
+    "note": "Historical genuine native calls are preserved, not repeated or represented by the current mock replay."
+  },
+  "httpsReplay": [
+    {
+      "startedAt": "2026-11-14T16:17:50.271Z",
+      "nativeDispatchesAuthorized": 0,
+      "liveGitHubRequestsAuthorized": 0,
+      "result": {
+        "passed": true,
+        "label": "Explicit synthetic replay; not a new AI review",
+        "authenticatedApproval": true,
+        "canonicalMarkdownExact": true,
+        "backendValidationChecks": 6,
+        "syntheticFindings": 3,
+        "replayRequests": 1,
+        "nativeDispatches": 0,
+        "liveGitHubRequests": 0,
+        "publicationPerformed": false,
+        "markdownSha256": "e02afe26b34593d808a51070f552a4c0274669a293ef51857aa83daf444dc37b",
+        "copy": {
+          "passed": true,
+          "environment": {
+            "origin": "https://mubidotjs-prism-3qhyepvli-mubidotjs-projects.vercel.app",
+            "secureContext": true,
+            "writeText": true,
+            "readText": true,
+            "writePermission": "granted",
+            "readPermission": "granted"
+          },
+          "comparison": {
+            "rawExact": false,
+            "canonicalExact": true,
+            "windowsCRLFPairs": 87,
+            "expectedBytes": 4447,
+            "clipboardBytes": 4534,
+            "expectedSha256": "e02afe26b34593d808a51070f552a4c0274669a293ef51857aa83daf444dc37b",
+            "clipboardSha256": "cb5b6116c0149f46dbc2dd0f164b89596afd13999f32c3747058c719579305c9",
+            "canonicalClipboardSha256": "e02afe26b34593d808a51070f552a4c0274669a293ef51857aa83daf444dc37b"
+          }
+        }
+      },
+      "blockedReviewRequests": 0,
+      "countersBefore": {
+        "calls": 0,
+        "reservedNeurons": 0,
+        "reviews": 0,
+        "limits": {
+          "model": "@cf/google/gemma-4-26b-a4b-it",
+          "completionTokens": 2048,
+          "inputBytes": 49152,
+          "outputBytes": 32768,
+          "relayBytes": 655360,
+          "modelTimeoutMs": 18000,
+          "reviewMs": 30000,
+          "reviewsPerHour": 4,
+          "callsPerDay": 64,
+          "neuronsPerDay": 2000,
+          "draftMs": 300000
+        }
+      },
+      "countersAfter": {
+        "calls": 0,
+        "reservedNeurons": 0,
+        "reviews": 0,
+        "limits": {
+          "model": "@cf/google/gemma-4-26b-a4b-it",
+          "completionTokens": 2048,
+          "inputBytes": 49152,
+          "outputBytes": 32768,
+          "relayBytes": 655360,
+          "modelTimeoutMs": 18000,
+          "reviewMs": 30000,
+          "reviewsPerHour": 4,
+          "callsPerDay": 64,
+          "neuronsPerDay": 2000,
+          "draftMs": 300000
+        }
+      },
+      "finishedAt": "2026-11-14T16:17:58.564Z"
+    }
+  ],
+  "domain": {
+    "name": "prism.mubashirhussain.dev",
+    "projectId": "prj_JwPzV9XQcROMVXoWB5jw0FccPIwN",
+    "ownershipVerified": true,
+    "verificationTxtRequired": false,
+    "dnsPending": false,
+    "nameservers": ["ns2.dyna-ns.net", "ns1.dyna-ns.net"],
+    "record": {
+      "type": "CNAME",
+      "name": "prism",
+      "value": "31dce7aa9273dcb1.vercel-dns-017.com."
+    },
+    "source": "Vercel get_domain_config recommendedCNAME rank 1; add_project_domain verified:true",
+    "attachedAt": "2026-11-14T16:21:54.717Z",
+    "dnsVerified": true,
+    "dnsVerifiedAt": "2026-11-14T17:24:24.643Z",
+    "configuredBy": "CNAME",
+    "misconfigured": false,
+    "sslIssueAttempted": true,
+    "sslIssueStartedAt": "2026-11-14T17:29:56.277Z",
+    "initialVerification": {
+      "startedAt": "2026-11-14T17:24:28.726Z",
+      "status": "FAIL",
+      "checks": [],
+      "failure": {
+        "stage": "https-assets",
+        "code": "FINAL_BROWSER_OR_TRANSPORT_FAILED",
+        "exceptionName": "TypeError"
+      },
+      "transportDiagnostic": {
+        "systemResolver": "ENOTFOUND",
+        "publicCloudflareDns": "correct CNAME",
+        "publicGoogleDns": "correct CNAME",
+        "existingDomainCertificate": false
+      }
+    },
+    "certificate": {
+      "id": "cert_y6lE9ISNZiVyOlhUqZyaj5RZ",
+      "cns": ["prism.mubashirhussain.dev"],
+      "createdAt": 1794677413301,
+      "expiresAt": 1802449900000
+    },
+    "httpsVerified": true
+  },
+  "finalChecks": {
+    "startedAt": "2026-11-14T17:24:28.726Z",
+    "resumedAfterManagedCertificate": true,
+    "status": "PASS",
+    "checks": [
+      {
+        "check": "https-origin-and-brand-assets",
+        "passed": true,
+        "status": 200,
+        "origin": "https://prism.mubashirhussain.dev",
+        "assets": [
+          {
+            "path": "/prism-icon.svg",
+            "bytes": 310,
+            "sha256": "77608f0f06e64922203691a74febe609a6bbb9369a3ae252a6afafc1650efc00"
+          },
+          {
+            "path": "/favicon-32.png",
+            "bytes": 938,
+            "sha256": "f6db137bcc1535ac5af917dbd6e71f21bbcba08baf6c0ab17e2a4a9109248d77"
+          },
+          {
+            "path": "/apple-touch-icon.png",
+            "bytes": 3560,
+            "sha256": "4c86d93d50f717e124f859c8a3e3d5da48dfa32e6b402641eeb2c013f1733a86"
+          },
+          {
+            "path": "/icon-192.png",
+            "bytes": 3634,
+            "sha256": "66eded86f8df519b7a65df72cc489512af9e14985fa7b75bc37b5506eb9be62c"
+          },
+          {
+            "path": "/site.webmanifest",
+            "bytes": 633,
+            "sha256": "bfb14a3ae1d72dda39aeda0c75afa18e276719d65db6d1be0d6472cca6153df1"
+          },
+          {
+            "path": "/social-card.png",
+            "bytes": 36305,
+            "sha256": "456933e644b235e25a58c970af7e3617d2c496233c1dc451f7a5b9224c249aed"
+          }
+        ],
+        "httpRedirect": {
+          "status": 308,
+          "location": "https://prism.mubashirhussain.dev/"
+        }
+      },
+      {
+        "check": "desktop-responsive-ui",
+        "passed": true,
+        "canonical": "https://prism.mubashirhussain.dev/",
+        "layout": {
+          "viewport": 1440,
+          "scroll": 1440,
+          "localStorage": 0,
+          "sessionStorage": 0
+        },
+        "authenticated": true
+      },
+      {
+        "check": "mobile-responsive-ui",
+        "passed": true,
+        "canonical": "https://prism.mubashirhussain.dev/",
+        "layout": {
+          "viewport": 390,
+          "scroll": 390,
+          "localStorage": 0,
+          "sessionStorage": 0
+        },
+        "authenticated": false
+      },
+      {
+        "check": "protected-read-only-endpoints",
+        "passed": true,
+        "results": [
+          {
+            "path": "/api/agent",
+            "status": 401
+          },
+          {
+            "path": "/api/review",
+            "status": 401
+          }
+        ],
+        "privateRelayStatus": 401
+      },
+      {
+        "check": "zero-inference-and-review-requests",
+        "passed": true,
+        "counters": {
+          "calls": 0,
+          "reservedNeurons": 0,
+          "reviews": 0,
+          "limits": {
+            "model": "@cf/google/gemma-4-26b-a4b-it",
+            "completionTokens": 2048,
+            "inputBytes": 49152,
+            "outputBytes": 32768,
+            "relayBytes": 655360,
+            "modelTimeoutMs": 18000,
+            "reviewMs": 30000,
+            "reviewsPerHour": 4,
+            "callsPerDay": 64,
+            "neuronsPerDay": 2000,
+            "draftMs": 300000
+          }
+        },
+        "blockedReviewRequests": 0
+      }
+    ],
+    "finishedAt": "2026-11-14T17:31:10.162Z"
+  },
+  "runtime": {
+    "cloudflare": {
+      "worker": "prism-ai-review",
+      "origin": "https://prism-ai-review.mubikhan69.workers.dev",
+      "bindings": [
+        {
+          "name": "AI",
+          "type": "ai"
+        },
+        {
+          "name": "RELAY_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "REVIEW_BUDGET",
+          "type": "durable_object_namespace",
+          "class_name": "ReviewBudget",
+          "namespace_id": "d33ce87407f048e48b232b10412e7a14"
+        }
+      ],
+      "deploymentIds": [
+        {
+          "id": "6b4c2d0c-0d24-426d-9323-933cff4c1621",
+          "versions": [
+            {
+              "version_id": "5671db03-ed36-4dbb-b2e1-4ae60ec98038",
+              "percentage": 100
+            }
+          ]
+        }
+      ],
+      "cliSuccess": true
+    },
+    "vercelProject": {
+      "id": "prj_JwPzV9XQcROMVXoWB5jw0FccPIwN",
+      "name": "mubidotjs-prism",
+      "accountId": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
+      "nodeVersion": "24.x",
+      "autoExposeSystemEnvs": true
+    },
+    "vercelDeployment": {
+      "phase": "production",
+      "startedAt": "2026-11-14T16:16:38.593Z",
+      "id": "dpl_6E8yGswq2nG5xDsu7ZSjHn2oh4FP",
+      "url": "https://mubidotjs-prism-3qhyepvli-mubidotjs-projects.vercel.app",
+      "readyState": "READY",
+      "target": "production",
+      "nodeVersion": "24.x",
+      "metaSha": "16b9dbffce60b67548c0c5bb48346b363cf8480f"
+    },
+    "promotedDeployment": "dpl_6E8yGswq2nG5xDsu7ZSjHn2oh4FP"
+  },
+  "cleanup": {
+    "runtimeRetained": true,
+    "workerRetained": true,
+    "namespaceRetained": true,
+    "vercelProjectRetained": true,
+    "productionDeploymentRetained": true,
+    "managedCertificateRetained": true,
+    "temporaryTestAccessRevoked": true,
+    "replayDraftConsumed": true,
+    "localCredentialsRemoved": true,
+    "ownerAccessHandedOffPrivately": true,
+    "productionSha": "16b9dbffce60b67548c0c5bb48346b363cf8480f",
+    "finishedAt": "2026-11-14T17:39:31.938942+00:00",
+    "temporaryCliRevoked": true,
+    "wranglerLoggedIn": false,
+    "wranglerLogsRemoved": true,
+    "temporaryReplayArtifactsRemoved": true,
+    "localCredentialCleanupAt": "2026-11-14T17:32:35.130Z"
+  },
+  "unrelatedProjects": {
+    "vercel": [
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      },
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "mubashirhussain",
+        "unchanged": true
+      },
+      {
+        "name": "reliable-webhook-platform-receiver",
+        "unchanged": true
+      }
+    ],
+    "cloudflare": [
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      }
+    ]
+  },
+  "limitations": [
+    "Live ingestion/AI endpoints require the private owner access code; the frontend and synthetic demo are public.",
+    "Only three supported risk categories and bounded supplied source windows are assessed. Unknown/unreviewed code and empty proposals never establish security clearance.",
+    "HTTPS approval/copy used an explicitly labeled backend-validated mock replay with no native inference. It is not a new AI finding or a finding from the real public PR.",
+    "Windows clipboard converts LF to CRLF; exact canonical content was verified after only CRLF-to-LF conversion, with raw and canonical SHA-256 recorded separately.",
+    "The first custom-domain probe hit local negative DNS caching; the correct record was independently seen by Vercel/Cloudflare/Google. Vercel had no prism certificate yet; one managed certificate was issued only for prism, and normal DNS/TLS then returned 200. No system DNS or application code was changed."
+  ]
+}
