@@ -29,9 +29,9 @@ Focused regressions exercise the observed repeated-inventory sequence, different
 
 Local verification passed: **331 unit/integration tests**, **32 desktop/mobile Playwright tests**, types, ESLint, formatting, frontend/Node builds, Cloudflare dry compilation, packaged-artifact checks and the synthetic agent demonstration. Dependency audit reported **zero vulnerabilities**. No transport experiment, production deployment or model call was made for this offline correction. The existing three canonical findings, source links and honest coverage retain their mock-backed parity.
 
-## One replacement acceptance and release request — not yet authorized
+## Replacement scope — authorized and consumed
 
-The previous run's no-retry/failure-cleanup authorization is consumed. After the corrected commit passes exact-SHA CI, request **one** replacement execution of the remaining scope:
+The scope below was explicitly authorized for `5b5a559` after passing CI, then consumed by the failed replacement recorded here. It grants no additional calls or corrective deployment.
 
 1. Retain the supplied authenticated Free/Hobby/Dynadot evidence. Keep the older Function invocation/CPU/memory figures explicitly historical; do not block on unavailable paid Observability queries or request more usage screenshots without concrete exhaustion/billing evidence. Refresh model eligibility, native contract, shared Neuron usage and existing-project fingerprints through the scoped API where available. Stop on a real eligibility/quota failure. No transport benchmarks or basic provider probes.
 2. Create one `prism-ai-review` Worker with native Gemma and one counter-only SQLite Durable Object namespace; one `mubidotjs-prism` Hobby project and at most two deployments of the corrected, CI-verified SHA. Use the same backend-only secrets, access-code sessions, protected acceptance artifact, Node 24 and existing 40-second platform/30-second review bounds.
@@ -40,4 +40,14 @@ The previous run's no-retry/failure-cleanup authorization is consumed. After the
 5. Only on complete acceptance, retain the production services, make the frontend/demo public and keep live endpoints access-code protected. Attach only `prism.mubashirhussain.dev` and obtain Vercel's exact generated DNS target. If authenticated Dynadot editing remains unavailable, provide that exact record for the user to enter manually. Preserve `webhooks`, `release-notes`, `invoice` and all other records. Do not overwrite conflicts. Verify HTTPS, canonical URL, icons, desktop/mobile and same-origin functionality using at most five bounded final checks over 15 minutes, with no additional inference.
 6. Delete acceptance resources/operator secrets and revoke temporary CLI authorization. On failure, remove all newly created resources and only this run's DNS additions, verify cleanup and unchanged Projects 1/2, and report the concrete failing boundary. No paid services/upgrades, production launch on failed AI acceptance, or further automatic retry.
 
-This correction is not release completion. A genuinely AI-powered review and approval/copy must pass before a live production URL is claimed.
+## Executed replacement result on 5b5a559
+
+**FAIL — `PROVIDER_SHAPE` on native dispatch 6.** Five preceding native function decisions successfully executed `getPullRequest`, `listChangedFiles`, `readFileContext`, `createReviewFinding` and `validateReviewFinding`. There were two backend evidence checks and no tool refusal codes: a hypothesis was accepted and its issued fact card validated. The inventory loop did not recur. The sixth native response failed the relay's response-collection/envelope validation boundary before a final decision could be accepted. No raw provider output was retained, so the exact rejected field/body condition is unknown; the classification does not establish provider unavailability.
+
+The engine correctly suppressed final findings after the terminal error. Approval/manual copy was not reached. There were six actual dispatches, five adapter-validated responses, nine mocked GitHub reads and zero live GitHub reads. Engine time was **6,738 ms**; client time including CLI was **11,305 ms**. No further model call or corrective deployment followed.
+
+Worker version `73ac31b7-1595-4466-b402-66c34c31736a`, namespace `f4e9568eb7c34ef583650dec9525eb02`, Vercel deployment `dpl_Nhzaramv5J63N7oX6KQGjRTVukqa` and its isolated project were deleted. Authoritative API lookups confirm absence; former Vercel/Worker endpoints return **410/404**. Temporary OAuth is revoked and local secrets removed. Existing-project fingerprints, including Projects 1/2, match. No normal production deployment or DNS change occurred. [Latest safe evidence](ai-agent-acceptance-result.json); [previous inventory-loop run](ai-agent-acceptance-31d48d7-result.json).
+
+Shared daily usage was observed at **225.72 → 277.28 / 10,000 Neurons**. The coordinator balance of **227.468 estimated Neurons** includes the failed call's unknown-outcome reservation and is not billed usage. Shared/delayed account observations are not exact per-call receipts.
+
+The concrete remaining blocker is the final native response contract. Real investigation/hypothesis/evidence validation is established, but no final approved review or live production application is claimed. The no-retry scope is consumed; this report authorizes no further experiment.

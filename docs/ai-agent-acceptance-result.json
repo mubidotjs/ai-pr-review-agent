@@ -1,15 +1,17 @@
 {
-  "testedSha": "31d48d7bc78d3896b045d7cc251719a03ab77984",
+  "testedSha": "5b5a559e270b1bd5578fd1f58f2bddd05fd53c19",
   "result": "FAIL",
   "failure": {
-    "safeCode": "TOOL_LIMIT",
+    "safeCode": "PROVIDER_SHAPE",
     "classificationSource": "backend result",
-    "boundary": "bounded agent workflow finalization"
+    "boundary": "native binding return/envelope validation"
   },
-  "realNativeDispatches": 13,
-  "validatedNativeDecisions": 13,
-  "findings": 0,
-  "validationChecks": 0,
+  "realNativeDispatches": 6,
+  "validatedNativeDecisions": 5,
+  "backendValidationChecks": 2,
+  "acceptedHypothesisAndFactCardValidation": true,
+  "acceptanceAssertionBasis": "createReviewFinding and validateReviewFinding completed with no refusal codes before the terminal provider-shape error",
+  "finalFindings": 0,
   "humanApprovalManualCopy": "NOT_REACHED",
   "production": "NOT_DEPLOYED",
   "publicGitHubRequests": 0,
@@ -17,32 +19,32 @@
   "workflow": {
     "kind": "synthetic",
     "attempted": true,
-    "startedAt": "2026-11-14T07:36:04.816Z",
+    "startedAt": "2026-11-14T08:57:06.948Z",
     "maxDispatches": 16,
     "passed": false,
     "httpStatus": 200,
     "exitCode": 0,
-    "status": "partial",
+    "status": "failed",
     "ai": {
       "mode": "workers-ai",
       "realInference": true,
-      "attempts": 13,
-      "responses": 13
+      "attempts": 6,
+      "responses": 5
     },
     "budget": {
-      "steps": 13,
-      "tools": 12,
-      "modelCalls": 13,
-      "validationChecks": 0,
-      "observationBytes": 7804,
+      "steps": 6,
+      "tools": 5,
+      "modelCalls": 6,
+      "validationChecks": 2,
+      "observationBytes": 2093,
       "githubRequests": 9,
       "upstreamBytes": 134477,
       "sourceFiles": 5,
-      "elapsedMs": 15707
+      "elapsedMs": 6738
     },
     "rejected": [
       {
-        "code": "TOOL_LIMIT"
+        "code": "PROVIDER_SHAPE"
       }
     ],
     "trace": [
@@ -75,7 +77,7 @@
       {
         "stage": "observe",
         "step": 3,
-        "tool": "listChangedFiles"
+        "tool": "readFileContext"
       },
       {
         "stage": "select-read-only-tool",
@@ -84,7 +86,7 @@
       {
         "stage": "observe",
         "step": 4,
-        "tool": "listChangedFiles"
+        "tool": "createReviewFinding"
       },
       {
         "stage": "select-read-only-tool",
@@ -93,89 +95,26 @@
       {
         "stage": "observe",
         "step": 5,
-        "tool": "listChangedFiles"
+        "tool": "validateReviewFinding"
       },
       {
         "stage": "select-read-only-tool",
         "step": 6
       },
       {
-        "stage": "observe",
-        "step": 6,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 7
-      },
-      {
-        "stage": "observe",
-        "step": 7,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 8
-      },
-      {
-        "stage": "observe",
-        "step": 8,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 9
-      },
-      {
-        "stage": "observe",
-        "step": 9,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 10
-      },
-      {
-        "stage": "observe",
-        "step": 10,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 11
-      },
-      {
-        "stage": "observe",
-        "step": 11,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 12
-      },
-      {
-        "stage": "observe",
-        "step": 12,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 13
-      },
-      {
         "stage": "finalize",
-        "step": 13
+        "step": 6
       }
     ],
     "capture": {
-      "captureId": "ad3584d8-0ec6-49a8-8554-151063d5acaf",
+      "captureId": "00517d3e-f800-4973-b0fa-8e3f9a1c29ac",
       "url": "https://github.com/example/checkout/pull/42",
       "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "repository": "example/checkout"
     },
     "findings": [],
-    "clientElapsedMs": 20073
+    "clientElapsedMs": 11305
   },
   "cloudflare": {
     "worker": "prism-ai-review",
@@ -193,15 +132,15 @@
         "name": "REVIEW_BUDGET",
         "type": "durable_object_namespace",
         "class_name": "ReviewBudget",
-        "namespace_id": "c83a15c34896471099b07159c3906840"
+        "namespace_id": "f4e9568eb7c34ef583650dec9525eb02"
       }
     ],
     "deploymentIds": [
       {
-        "id": "37e777e1-d08a-4edc-907d-47e8d2e9dda0",
+        "id": "c8621dce-92cb-4161-926d-4f7796bbc20f",
         "versions": [
           {
-            "version_id": "98e980eb-102f-4a30-9d9f-2aa2674d3713",
+            "version_id": "73ac31b7-1595-4466-b402-66c34c31736a",
             "percentage": 100
           }
         ]
@@ -212,23 +151,24 @@
   "vercelDeployments": [
     {
       "phase": "acceptance",
-      "startedAt": "2026-11-14T07:34:52.446Z",
-      "id": "dpl_8fkzhhn2kyNFDv8XBsgAhViWDykG",
-      "url": "https://mubidotjs-prism-46sw5d767-mubidotjs-projects.vercel.app",
+      "startedAt": "2026-11-14T08:55:19.989Z",
+      "id": "dpl_Nhzaramv5J63N7oX6KQGjRTVukqa",
+      "url": "https://mubidotjs-prism-iddg0lbtf-mubidotjs-projects.vercel.app",
       "readyState": "READY",
       "target": "production",
       "nodeVersion": "24.x",
-      "metaSha": "31d48d7bc78d3896b045d7cc251719a03ab77984"
+      "metaSha": "5b5a559e270b1bd5578fd1f58f2bddd05fd53c19"
     }
   ],
   "sharedUsage": {
-    "dailyBefore": 16.936363220214844,
-    "dailyAfter": 225.71814918518066,
+    "dailyBefore": 225.71814918518066,
+    "dailyAfter": 277.2817850112915,
     "dailyAllowance": 10000,
-    "coordinatorEstimatedSettledNeurons": 224.63799999999992,
-    "caveat": "Shared/delayed account observations, not exact per-call billing receipts. Coordinator estimate is not billed usage or a provider-enforced per-call quota."
+    "coordinatorEstimatedReservationAndSettlement": 227.468,
+    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes an unknown-outcome reservation and is not billed usage."
   },
   "cleanup": {
+    "startedAt": "2026-11-14T08:59:37.904Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
     "cloudflareWorkerAbsent": true,
@@ -236,8 +176,8 @@
     "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-46sw5d767-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 404
+        "url": "https://mubidotjs-prism-iddg0lbtf-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 302
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
@@ -273,16 +213,18 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-14T08:12:08.477Z",
+    "finishedAt": "2026-11-14T09:00:23.275Z",
+    "vercelDeploymentNotFound": true,
+    "finalVercelEndpointStatus": 410,
     "temporaryCliRevoked": true,
     "wranglerLoggedIn": false,
     "noDnsChanges": true,
     "noProductionDeployment": true
   },
-  "previousEvidence": "ai-agent-acceptance-11648bd-result.json",
+  "previousEvidence": "ai-agent-acceptance-31d48d7-result.json",
   "limitations": [
-    "No raw model output or tool arguments were retained. Trace proves repeated inventory selections, not identical arguments.",
-    "All thirteen native decisions passed JSON/action/schema validation; this does not prove a completed AI review.",
-    "The progress-aware offline correction has not received a new live call."
+    "The sixth call failed at native response collection/envelope validation. The exact rejected field or body condition is unavailable because raw model/provider output was not retained.",
+    "Five native decisions completed metadata, inventory, source inspection, hypothesis creation and fact-card validation; they do not establish a completed or human-approved review.",
+    "The engine suppressed all final findings after the terminal error. No retry, corrective deployment, public-PR workflow, production release or DNS change followed."
   ]
 }
