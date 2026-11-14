@@ -3,6 +3,45 @@ import { ReviewBudget, type RelayEnvironment } from '../src/release/cloudflare';
 import { PrivateRelay } from '../src/server/release/relay';
 import type { ModelRequest } from '../src/server/agent/protocol';
 import { oneFindingModel } from './agent-fixtures';
+import type { AgentDecision } from '../src/server/agent/protocol';
+export function nativeOutput(decision: AgentDecision) {
+  const name =
+    decision.type === 'tool'
+      ? decision.call.name
+      : decision.type === 'generate'
+        ? 'finish_review'
+        : 'refuse_review';
+  const args =
+    decision.type === 'tool'
+      ? decision.call.arguments
+      : decision.type === 'generate'
+        ? { findingIds: decision.findingIds }
+        : { reason: decision.reason };
+  return Response.json({
+    object: 'chat.completion',
+    choices: [
+      {
+        finish_reason: 'tool_calls',
+        message: {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'synthetic-call',
+              type: 'function',
+              function: { name, arguments: JSON.stringify(args) },
+            },
+          ],
+        },
+      },
+    ],
+    usage: {
+      prompt_tokens: 1000,
+      completion_tokens: 100,
+      completion_tokens_details: { reasoning_tokens: 0 },
+    },
+  });
+}
 export const SERVER_SECRET = 'a'.repeat(64);
 export function releaseFixture(script = oneFindingModel()) {
   const values = new Map<string, unknown>();
@@ -17,23 +56,9 @@ export function releaseFixture(script = oneFindingModel()) {
   const run = vi.fn(async (_model: string, input: unknown) => {
     const messages = (input as { messages: { content: string }[] }).messages;
     const request = JSON.parse(messages[1].content) as ModelRequest;
-    return Response.json({
-      object: 'chat.completion',
-      choices: [
-        {
-          finish_reason: 'stop',
-          message: {
-            role: 'assistant',
-            content: await script.next(request, new AbortController().signal),
-          },
-        },
-      ],
-      usage: {
-        prompt_tokens: 1000,
-        completion_tokens: 100,
-        completion_tokens_details: { reasoning_tokens: 0 },
-      },
-    });
+    return nativeOutput(
+      JSON.parse(await script.next(request, new AbortController().signal)),
+    );
   });
   const env = {
     AI: { run },

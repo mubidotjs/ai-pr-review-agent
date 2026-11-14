@@ -109,7 +109,10 @@ describe('release integration with synthetic binding responses only', () => {
       n: 1,
       max_completion_tokens: 2048,
       chat_template_kwargs: { enable_thinking: false },
+      tool_choice: 'required',
+      parallel_tool_calls: false,
     });
+    expect(f.run.mock.calls[0][1]).not.toHaveProperty('response_format');
     const body = {
       actor: 'human',
       confirm: true,

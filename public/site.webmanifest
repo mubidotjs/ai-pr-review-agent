@@ -1,0 +1,29 @@
+{
+  "name": "PRISM — AI PR Review Agent",
+  "short_name": "PRISM",
+  "description": "Evidence-grounded AI pull request review with human approval.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#101714",
+  "theme_color": "#101714",
+  "icons": [
+    {
+      "src": "/prism-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

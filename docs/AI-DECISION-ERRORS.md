@@ -1,5 +1,7 @@
 # AI decision error classification
 
+**Historical protocol-1 investigation and consumed acceptance.** The current compact native-function protocol and separate JSON/action/schema classifications are documented in [AI-DECISIONS.md](AI-DECISIONS.md). No second live run has been made by that correction.
+
 Review baseline: `70e18b6e3f9c2f84e87456932a2dbb6806442223`. Transport acceptance remains **PASS**. The classification correction changed only safe AI/relay classification and response validation, with no deployment or inference during that implementation task. Its separately authorized live acceptance result is recorded below. No transport experiment, model/prompt change, review-limit change or risk-category expansion was performed.
 
 ## What the existing evidence establishes

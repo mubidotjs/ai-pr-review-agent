@@ -1,0 +1,80 @@
+[
+  {
+    "label": "inventory",
+    "name": "listChangedFiles",
+    "arguments": "{\"offset\":0,\"count\":5}",
+    "type": "tool"
+  },
+  {
+    "label": "pinned window",
+    "name": "readFileContext",
+    "arguments": "{\"path\":\"src/checkout/validate.ts\",\"startLine\":1,\"endLine\":5}",
+    "type": "tool"
+  },
+  {
+    "label": "minimal hypothesis",
+    "name": "createReviewFinding",
+    "arguments": "{\"kind\":\"nan-comparison\",\"path\":\"src/checkout/validate.ts\",\"line\":2}",
+    "type": "tool"
+  },
+  {
+    "label": "finish without evidence",
+    "name": "finish_review",
+    "arguments": "{\"findingIds\":[]}",
+    "type": "generate"
+  },
+  {
+    "label": "refusal",
+    "name": "refuse_review",
+    "arguments": "{\"reason\":\"INSUFFICIENT_EVIDENCE\"}",
+    "type": "refuse"
+  },
+  {
+    "label": "unknown capability",
+    "name": "postReview",
+    "arguments": "{}",
+    "error": "MODEL_ACTION_UNSUPPORTED"
+  },
+  {
+    "label": "truncated JSON",
+    "name": "readFileContext",
+    "arguments": "{\"path\":",
+    "error": "MODEL_JSON_INVALID"
+  },
+  {
+    "label": "Markdown fences",
+    "name": "finish_review",
+    "arguments": "```json\n{\"findingIds\":[]}\n```",
+    "error": "MODEL_JSON_INVALID"
+  },
+  {
+    "label": "wrong argument type",
+    "name": "listChangedFiles",
+    "arguments": "{\"offset\":\"0\",\"count\":5}",
+    "error": "MODEL_SCHEMA_INVALID"
+  },
+  {
+    "label": "arbitrary URL",
+    "name": "getPullRequest",
+    "arguments": "{\"url\":\"https://evil.example\"}",
+    "error": "MODEL_SCHEMA_INVALID"
+  },
+  {
+    "label": "invented narrative",
+    "name": "createReviewFinding",
+    "arguments": "{\"kind\":\"nan-comparison\",\"path\":\"src/checkout/validate.ts\",\"line\":2,\"severity\":\"high\"}",
+    "error": "MODEL_SCHEMA_INVALID"
+  },
+  {
+    "label": "canonical objects instead of IDs",
+    "name": "finish_review",
+    "arguments": "{\"findings\":[{\"severity\":\"high\"}]}",
+    "error": "MODEL_SCHEMA_INVALID"
+  },
+  {
+    "label": "action smuggling",
+    "name": "finish_review",
+    "arguments": "{\"type\":\"refuse\",\"reason\":\"UNSUPPORTED_CLAIM\"}",
+    "error": "MODEL_SCHEMA_INVALID"
+  }
+]

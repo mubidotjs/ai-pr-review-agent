@@ -3,6 +3,36 @@ import { runAgentReview } from '../../src/server/agent/engine';
 import { oneFindingModel } from '../agent-fixtures';
 import { fixtureTransport, PR_URL } from '../upstream-fixtures';
 
+test('PRISM launch metadata and local brand assets render without external requests', async ({
+  page,
+}) => {
+  const external: string[] = [];
+  page.on('request', (request) => {
+    if (!request.url().startsWith('http://127.0.0.1:4174'))
+      external.push(request.url());
+  });
+  await page.goto('/');
+  await expect(page).toHaveTitle('PRISM — AI PR Review Agent');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://prism.mubashirhussain.dev/',
+  );
+  const assets = await page.evaluate(async () => {
+    const image = new Image();
+    image.src = '/icon-192.png';
+    await image.decode();
+    const manifest = await (await fetch('/site.webmanifest')).json();
+    return {
+      width: image.naturalWidth,
+      height: image.naturalHeight,
+      name: manifest.short_name,
+      icons: manifest.icons.length,
+    };
+  });
+  expect(assets).toEqual({ width: 192, height: 192, name: 'PRISM', icons: 3 });
+  expect(external).toEqual([]);
+});
+
 test('mock-backed access, evidence inspection, human approval and manual copy', async ({
   page,
 }) => {

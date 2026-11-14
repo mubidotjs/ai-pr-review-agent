@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { releaseFixture } from './release-fixtures';
+import { nativeOutput, releaseFixture } from './release-fixtures';
 import {
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
@@ -8,7 +8,7 @@ import {
 import worker from '../src/release/cloudflare';
 const principal = 'd'.repeat(64);
 const request: ModelRequest = {
-  protocolVersion: 1,
+  protocolVersion: 2,
   system: SYSTEM_POLICY,
   tools: TOOL_CONTRACTS,
   factCards: [],
@@ -18,23 +18,7 @@ const request: ModelRequest = {
 describe('shared durable admission and native provider boundary', () => {
   it('reserves atomically before dispatch and rejects duplicate turns across restarts', async () => {
     const f = releaseFixture();
-    f.run.mockResolvedValue(
-      Response.json({
-        object: 'chat.completion',
-        choices: [
-          {
-            finish_reason: 'stop',
-            message: {
-              role: 'assistant',
-              content: '{"type":"generate","findings":[]}',
-              tool_calls: null,
-              reasoning_content: null,
-            },
-          },
-        ],
-        usage: { prompt_tokens: 1000, completion_tokens: 10 },
-      }),
-    );
+    f.run.mockResolvedValue(nativeOutput({ type: 'generate', findingIds: [] }));
     const { grant } = await f.relay.call<{ grant: string }>('/admit', {
       principal,
       kind: 'agent',

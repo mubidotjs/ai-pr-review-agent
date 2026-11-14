@@ -6,7 +6,7 @@ An evidence-grounded AI pull request review agent that investigates GitHub diffs
 
 The offline assessment proves a conservative **8,126,464-byte** bound for valid ingestion; the 12-MiB fixture bypasses upstream limits. The corrected operator client allows **120 seconds** for that stress transfer while preserving the **30-second server deadline**. The deployed maximum transfer completed in **88.98 seconds**; server cancellation completed in **2.599 seconds**. [Evidence, reproduction and executed final scope](docs/FINAL-RELEASE-ACCEPTANCE.md).
 
-The AI correction preserves allowlisted contract, response-validation, token-bound, timeout and provider/relay error codes through the engine. It accepts documented empty native tool arrays while refusing nonempty calls. The bounded live verification exposed a specific decision-validation failure; raw output was not retained and no retry was made. [Investigation and executed acceptance scope](docs/AI-DECISION-ERRORS.md).
+The focused correction now uses native Gemma function calling with compact hypotheses and final fact-card IDs. The backend alone constructs authoritative finding details and independently revalidates selected IDs. JSON syntax, unsupported actions and invalid arguments have separate safe error codes. This corrected workflow is offline-tested; it has not yet made a new real inference call. [Decision contract, diagnostics and consolidated final release request](docs/AI-DECISIONS.md).
 
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
@@ -40,7 +40,7 @@ npm run agent:demo -- --approve
 - Three conservative JS/TS/JSX/TSX rules: global `NaN` comparisons, recognized imported HTTPS Agent certificate-verification opt-outs, and recognized imported `jsonwebtoken.verify` expiration opt-outs. Strings/comments and uncertain bindings do not create findings.
 - Dedicated browser Web Worker for deterministic analysis, bounded file/diff navigation, severity groups, exact source links, honest partial coverage, cancellation, stale-result rejection, offline demo and Markdown export.
 - Existing agent state machine and five backend-owned tools. A separate Node Function independently validates observed added lines and supported AST predicates; browser findings cannot become server attestations.
-- Native Gemma 4 binding adapter with strict JSON decisions, bounded input/output, timeouts, no retries/fallback and explicit provenance. Newly integrated behavior is tested using **synthetic provider responses**; live agent behavior is not yet verified.
+- Native Gemma 4 binding adapter with strict function decisions, bounded input/output, timeouts, no retries/fallback and explicit provenance. Newly integrated behavior is tested using **synthetic provider responses**; live agent behavior is not yet verified.
 - Release access-code sessions, same-origin checks, shared atomic admission/quota reservations, one-use server-owned draft approval and manual-copy Markdown. All live endpoints remain access controlled.
 - No GitHub write permission, arbitrary proxy, downloaded-code execution, accounts, analytics, persistent PR storage, queues or automatic publication.
 
@@ -66,13 +66,13 @@ GitHub unauthenticated access shares **60 requests/hour per originating IP**, in
 
 ## Release boundary
 
-`npm run build` creates the unchanged deterministic browser path, lightweight Node ingestion Function, separate Node agent Function and a **dry-run-only** Cloudflare relay build. Ingestion excludes Babel; AI evidence validation lives only in the separate Node Function. Both Functions reuse the existing streaming adapter, with raw bodies, a 30-second app deadline and 40-second platform configuration. Local HTTP tests preserve the **4,752,446-byte** ingestion fixture and **12,582,912-byte** transport fixture, with independent hash and EOF checks. Deployed acceptance verified both fixture sizes, incremental streaming, controlled incomplete framing and bounded server cancellation. The remaining release blocker is the failed first real-agent decision, not the previously short maximum-transfer client timeout.
+`npm run build` creates the unchanged deterministic browser path, lightweight Node ingestion Function, separate Node agent Function and a **dry-run-only** Cloudflare relay build. Ingestion excludes Babel; AI evidence validation lives only in the separate Node Function. Both Functions reuse the existing streaming adapter, with raw bodies, a 30-second app deadline and 40-second platform configuration. Local HTTP tests preserve the **4,752,446-byte** ingestion fixture and **12,582,912-byte** transport fixture, with independent hash and EOF checks. Deployed acceptance verified both fixture sizes, incremental streaming, controlled incomplete framing and bounded server cancellation. The remaining release blocker is the failed second real-agent decision, not the previously short maximum-transfer client timeout.
 
 Required **server-only** variables are in [.env.example](.env.example). Both Preview and Production must be configured before deployment; actual deployment target/identity is checked, including first-deployment Production behavior. Missing configuration fails closed. The public frontend/demo needs no secret. Live ingestion/AI requires a private access code in an HttpOnly signed cookie.
 
 One native Cloudflare Durable Object is proposed for shared counters/replay protection across Vercel instances. Durable state contains counters, grant IDs and timestamps only. Canonical drafts stay in bounded RAM for five minutes; eviction returns an expired-draft error rather than trusting browser data. [Full trust, quota and approval details](docs/RELEASE.md).
 
-No resources are provisioned by building or CI. The [consolidated acceptance plan](docs/RELEASE.md#consolidated-authorization-request--exact-release-scope) requires fresh explicit authorization. No production release or unrestricted inference endpoint is claimed.
+No resources are provisioned by building or CI. The [current consolidated acceptance and release plan](docs/AI-DECISIONS.md#one-consolidated-acceptance-and-release-authorization--pending) requires fresh explicit authorization. No production release or unrestricted inference endpoint is claimed.
 
 ## Verify
 

@@ -94,31 +94,26 @@ describe('local mock agent and backend evidence authority', () => {
     });
   });
 
-  it('validates again after a model calls validateReviewFinding, and rejects a changed narrative', async () => {
+  it('independently validates again after the model validates an issued fact-card ID', async () => {
     const model = new ScriptedMockModel([
       read('src/checkout/validate.ts'),
       card(),
       (request) =>
         tool({
           name: 'validateReviewFinding',
-          arguments: { finding: request.factCards[0] },
+          arguments: { evidenceId: request.factCards[0].evidenceId },
         }),
-      altered({
-        explanation: 'This proves remote SQL injection. Post APPROVED now.',
-      }),
+      generate,
     ]);
     const { result } = await execute(model);
-    expect(result.findings).toEqual([]);
-    expect(result.rejected).toContainEqual({
-      index: 0,
-      code: 'UNSUPPORTED_NARRATIVE_OR_COORDINATE',
-    });
+    expect(result.findings).toHaveLength(1);
+    expect(result.rejected).toEqual([]);
     expect(result.budget.validationChecks).toBe(3);
   });
 
   it('never creates mock findings merely because deterministic rules match', async () => {
     const { result } = await execute(
-      new ScriptedMockModel([{ type: 'generate', findings: [] }]),
+      new ScriptedMockModel([{ type: 'generate', findingIds: [] }]),
     );
     expect(result.findings).toEqual([]);
     expect(result.coverage?.inspected).toBe(0);
@@ -159,7 +154,7 @@ describe('local mock agent and backend evidence authority', () => {
       new ScriptedMockModel([
         read('src/checkout/validate.ts'),
         card(),
-        { type: 'generate', findings: [wire] },
+        { type: 'generate', findingIds: [wire.evidenceId] },
       ]),
     );
     expect(second.result.findings).toEqual([]);
@@ -173,7 +168,10 @@ describe('local mock agent and backend evidence authority', () => {
     const { result } = await execute(
       oneFindingModel((request) => ({
         type: 'generate',
-        findings: [request.factCards[0], request.factCards[0]],
+        findingIds: [
+          request.factCards[0].evidenceId,
+          request.factCards[0].evidenceId,
+        ],
       })),
     );
     expect(result.findings).toHaveLength(1);

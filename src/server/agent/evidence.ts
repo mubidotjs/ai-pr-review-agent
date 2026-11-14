@@ -32,6 +32,12 @@ export interface EvidenceVerdict {
   finding?: Candidate;
 }
 const reject = (code: string): EvidenceVerdict => ({ accepted: false, code });
+const reference = ({ evidenceId, kind, path, line }: Candidate) => ({
+  evidenceId,
+  kind,
+  path,
+  line,
+});
 function preview(text: string, bytes: number) {
   const encoded = new TextEncoder().encode(text);
   return {
@@ -215,6 +221,12 @@ export class BackendEvidence {
       finding: structuredClone(verdict.finding),
     };
   }
+  validateFactCard(evidenceId: string): EvidenceVerdict {
+    const issued = this.cards.get(evidenceId);
+    return issued
+      ? this.validateReviewFinding(issued)
+      : reject('UNISSUED_EVIDENCE');
+  }
   execute(call: ToolCall): unknown {
     this.budget.tool();
     let data: unknown,
@@ -303,8 +315,18 @@ export class BackendEvidence {
         break;
       }
       case 'createReviewFinding': {
-        const verdict = this.resolve(call.arguments);
-        data = verdict;
+        const source = this.source(call.arguments.path);
+        const evidence =
+          source?.context.text.split(/\r?\n/)[call.arguments.line - 1];
+        const verdict = this.resolve({
+          ...call.arguments,
+          evidence: evidence ?? '',
+        });
+        data = {
+          accepted: verdict.accepted,
+          code: verdict.code,
+          ...(verdict.finding ? { factCard: reference(verdict.finding) } : {}),
+        };
         if (verdict.finding)
           commit = () => {
             this.cards.set(
@@ -314,9 +336,11 @@ export class BackendEvidence {
           };
         break;
       }
-      case 'validateReviewFinding':
-        data = this.validateReviewFinding(call.arguments.finding);
+      case 'validateReviewFinding': {
+        const verdict = this.validateFactCard(call.arguments.evidenceId);
+        data = { accepted: verdict.accepted, code: verdict.code };
         break;
+      }
     }
     this.budget.check();
     let bytes = byteLength(JSON.stringify(data));
@@ -377,6 +401,6 @@ export class BackendEvidence {
     };
   }
   factCards() {
-    return structuredClone([...this.cards.values()]);
+    return [...this.cards.values()].map(reference);
   }
 }

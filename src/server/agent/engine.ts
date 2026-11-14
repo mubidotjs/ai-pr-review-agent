@@ -8,7 +8,7 @@ import {
   AGENT_LIMITS,
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
-  decisionSchema,
+  parseDecision,
   type AgentLimits,
   type AgentModelAdapter,
   type ModelRequest,
@@ -133,7 +133,7 @@ export async function runAgentReview(
         stage('select-read-only-tool');
         budget.model();
         const request: ModelRequest = {
-          protocolVersion: 1,
+          protocolVersion: 2,
           system: SYSTEM_POLICY,
           tools: TOOL_CONTRACTS,
           factCards: evidence.factCards(),
@@ -164,14 +164,8 @@ export async function runAgentReview(
           byteLength(text) > budget.limits.modelOutputBytes
         )
           throw new AgentFailure('MODEL_OUTPUT_LIMIT');
-        let response: unknown;
-        try {
-          response = JSON.parse(text);
-        } catch {
-          throw new AgentFailure('INVALID_MODEL_RESPONSE');
-        }
-        const decision = decisionSchema.safeParse(response);
-        if (!decision.success) throw new AgentFailure('INVALID_MODEL_RESPONSE');
+        const decision = parseDecision(text);
+        if (!decision.success) throw new AgentFailure(decision.code);
         if (decision.data.type === 'refuse') {
           result.status = 'refused';
           result.rejected.push({ code: decision.data.reason });
@@ -196,12 +190,12 @@ export async function runAgentReview(
         }
         stage('generate-findings');
         stage('validate');
-        const proposed = decision.data.findings;
+        const proposed = decision.data.findingIds;
         if (proposed.length > budget.limits.findings)
           throw new AgentFailure('VALIDATION_LIMIT');
         const seen = new Set<string>();
-        for (const [index, candidate] of proposed.entries()) {
-          const verdict = evidence.validateReviewFinding(candidate);
+        for (const [index, evidenceId] of proposed.entries()) {
+          const verdict = evidence.validateFactCard(evidenceId);
           budget.check();
           if (!verdict.accepted || !verdict.finding) {
             result.rejected.push({ index, code: verdict.code });

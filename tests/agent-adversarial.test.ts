@@ -82,7 +82,7 @@ describe('agent host authority against adversarial model/repository data', () =>
       },
     },
     { type: 'approve', actor: 'human', confirm: true },
-    { type: 'generate', findings: [], serverAttested: true },
+    { type: 'generate', findingIds: [], serverAttested: true },
     { type: 'tool', call: { name: '__proto__', arguments: {} } },
   ])('refuses capability escalation from model JSON: %j', async (decision) => {
     const upstream = vi.fn(fixtureTransport());
@@ -91,7 +91,14 @@ describe('agent host authority against adversarial model/repository data', () =>
       { transport: upstream },
     );
     expect(result.findings).toEqual([]);
-    expect(result.rejected).toContainEqual({ code: 'INVALID_MODEL_RESPONSE' });
+    expect(result.rejected).toContainEqual({
+      code:
+        decision.type === 'approve' ||
+        (decision.type === 'tool' &&
+          ['postReview', 'shell', '__proto__'].includes(decision.call!.name))
+          ? 'MODEL_ACTION_UNSUPPORTED'
+          : 'MODEL_SCHEMA_INVALID',
+    });
     expect(upstream.mock.calls.every(([, init]) => init.method === 'GET')).toBe(
       true,
     );
@@ -123,7 +130,9 @@ describe('agent host authority against adversarial model/repository data', () =>
       },
     ]);
     const { result } = await execute(model, { transport: upstream });
-    expect(result.rejected).toContainEqual({ code: 'INVALID_MODEL_RESPONSE' });
+    expect(result.rejected).toContainEqual({
+      code: 'MODEL_ACTION_UNSUPPORTED',
+    });
     expect(result.findings).toEqual([]);
     expect(result.budget.tools).toBe(1);
     expect(upstream.mock.calls.every(([, init]) => init.method === 'GET')).toBe(
@@ -154,7 +163,7 @@ describe('agent host authority against adversarial model/repository data', () =>
           endLine: 100,
         },
       }),
-      { type: 'generate', findings: [] },
+      { type: 'generate', findingIds: [] },
     ]);
     const { result } = await execute(model, { transport: upstream });
     expect(result.rejected.map((r) => r.code)).toEqual([
@@ -262,7 +271,7 @@ describe('agent host authority against adversarial model/repository data', () =>
       const delegate = fixtureTransport();
       let reads = 0;
       const next = vi.fn(async () =>
-        JSON.stringify({ type: 'generate', findings: [] }),
+        JSON.stringify({ type: 'generate', findingIds: [] }),
       );
       const { result } = await execute(
         { mode: 'mock', next },
@@ -310,7 +319,7 @@ describe('agent host authority against adversarial model/repository data', () =>
     );
     const model = new ScriptedMockModel([
       read('src/file6.ts', 1),
-      { type: 'generate', findings: [] },
+      { type: 'generate', findingIds: [] },
     ]);
     const { result } = await execute(model, { transport: upstream });
     expect(result.budget.githubRequests).toBe(11);
@@ -511,7 +520,12 @@ describe('agent host authority against adversarial model/repository data', () =>
     await vi.waitFor(() => expect(finish).toBeTypeOf('function'));
     controller.abort();
     const { result, humanApproval } = await pending;
-    finish(JSON.stringify({ type: 'generate', findings: lateCards }));
+    finish(
+      JSON.stringify({
+        type: 'generate',
+        findingIds: lateCards.map((c) => c.evidenceId),
+      }),
+    );
     await Promise.resolve();
     expect(result.status).toBe('cancelled');
     expect(result.findings).toEqual([]);
@@ -531,7 +545,10 @@ describe('agent host authority against adversarial model/repository data', () =>
     async (text) => {
       const { result } = await execute(new ScriptedMockModel([text]));
       expect(result.rejected).toContainEqual({
-        code: 'INVALID_MODEL_RESPONSE',
+        code:
+          text === '[]' || text === 'null'
+            ? 'MODEL_SCHEMA_INVALID'
+            : 'MODEL_JSON_INVALID',
       });
       expect(result.findings).toEqual([]);
     },

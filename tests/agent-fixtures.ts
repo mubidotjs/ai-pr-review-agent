@@ -25,10 +25,13 @@ export const hypothesis = (
   evidence: sources[path].split('\n')[line - 1],
 });
 export const card = (value = hypothesis()) =>
-  tool({ name: 'createReviewFinding', arguments: value });
+  tool({
+    name: 'createReviewFinding',
+    arguments: { kind: value.kind, path: value.path, line: value.line },
+  });
 export const generate = (request: ModelRequest): AgentDecision => ({
   type: 'generate',
-  findings: request.factCards,
+  findingIds: request.factCards.map((c) => c.evidenceId),
 });
 export function oneFindingModel(final: MockStep = generate) {
   return new ScriptedMockModel([
@@ -56,7 +59,8 @@ export function fullInvestigationModel() {
 }
 export const altered =
   (change: Partial<Candidate>) =>
-  (request: ModelRequest): AgentDecision => ({
-    type: 'generate',
-    findings: [{ ...request.factCards[0], ...change }],
-  });
+  (request: ModelRequest): string =>
+    JSON.stringify({
+      type: 'generate',
+      findings: [{ ...request.factCards[0], ...change }],
+    });

@@ -11,8 +11,9 @@ import { relayErrorCode } from './errors';
 import {
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
-  candidateSchema,
-  decisionSchema,
+  factCardSchema,
+  nativeDecision,
+  NATIVE_TOOLS,
 } from '../server/agent/protocol';
 
 interface Storage {
@@ -63,12 +64,12 @@ const principal = z.string().regex(/^[a-f0-9]{64}$/);
 const grantId = z.string().uuid();
 const requestSchema = z
   .object({
-    protocolVersion: z.literal(1),
+    protocolVersion: z.literal(2),
     system: z.literal(SYSTEM_POLICY),
     tools: z
       .array(z.object({ name: z.string(), contract: z.string() }).strict())
       .length(5),
-    factCards: z.array(candidateSchema).max(100),
+    factCards: z.array(factCardSchema).max(100),
     untrusted: z
       .object({
         label: z.literal('UNTRUSTED_REPOSITORY_DATA'),
@@ -95,14 +96,27 @@ const nativeResponse = z
       .array(
         z
           .object({
-            finish_reason: z.literal('stop'),
+            finish_reason: z.enum(['tool_calls', 'stop']),
             message: z
               .object({
                 role: z.literal('assistant'),
-                content: z.string().min(1).max(RELEASE.outputBytes),
-                // The native contract allows [] as well as absent/null when
-                // there are no provider tools. Nonempty native calls stay refused.
-                tool_calls: z.array(z.unknown()).length(0).nullish(),
+                content: z.string().max(0).nullish(),
+                tool_calls: z
+                  .array(
+                    z
+                      .object({
+                        id: z.string().min(1).max(256),
+                        type: z.literal('function'),
+                        function: z
+                          .object({
+                            name: z.string().min(1).max(64),
+                            arguments: z.string().max(64 * 1024),
+                          })
+                          .passthrough(),
+                      })
+                      .passthrough(),
+                  )
+                  .length(1),
                 function_call: z.null().optional(),
                 refusal: z.string().max(0).nullish(),
                 reasoning_content: z.string().max(0).nullish(),
@@ -264,7 +278,10 @@ export class ReviewBudget {
         if (bytes > RELEASE.inputBytes)
           throw new ReleaseError('MODEL_INPUT_LIMIT', 413);
         const inputBound =
-          bytes + new TextEncoder().encode(SYSTEM_POLICY).length + 1024;
+          bytes +
+          new TextEncoder().encode(SYSTEM_POLICY + JSON.stringify(NATIVE_TOOLS))
+            .length +
+          1024;
         const reserved = neuronEstimate(inputBound, RELEASE.completionTokens);
         const reservedDay = new Date().toISOString().slice(0, 10);
         if (request.signal.aborted)
@@ -307,6 +324,9 @@ export class ReviewBudget {
                 stream: false,
                 n: 1,
                 temperature: 0,
+                tools: NATIVE_TOOLS,
+                tool_choice: 'required',
+                parallel_tool_calls: false,
               },
               { returnRawResponse: true, signal },
             ),
@@ -343,6 +363,12 @@ export class ReviewBudget {
             502,
           );
         }
+        // Length termination cannot be mistaken for a complete decision.
+        if (
+          (envelope as { choices?: { finish_reason?: string }[] })?.choices?.[0]
+            ?.finish_reason === 'length'
+        )
+          throw new ReleaseError('PROVIDER_TOKEN_BOUND', 502);
         const output = nativeResponse.safeParse(envelope);
         if (!output.success) throw new ReleaseError('PROVIDER_SHAPE', 502);
         const { prompt_tokens: prompt, completion_tokens: completion } =
@@ -355,18 +381,13 @@ export class ReviewBudget {
             0
         )
           throw new ReleaseError('PROVIDER_TOKEN_BOUND', 502);
-        let raw: unknown;
-        try {
-          const content = output.data.choices[0].message.content;
-          if (new TextEncoder().encode(content).length > RELEASE.outputBytes)
-            throw new Error();
-          raw = JSON.parse(content);
-        } catch {
-          throw new ReleaseError('INVALID_MODEL_RESPONSE', 502);
-        }
-        const decision = decisionSchema.safeParse(raw);
-        if (!decision.success)
-          throw new ReleaseError('INVALID_MODEL_RESPONSE', 502);
+        const call = output.data.choices[0].message.tool_calls[0].function;
+        if (
+          new TextEncoder().encode(call.arguments).length > RELEASE.outputBytes
+        )
+          throw new ReleaseError('MODEL_OUTPUT_LIMIT', 502);
+        const decision = nativeDecision(call.name, call.arguments);
+        if (!decision.success) throw new ReleaseError(decision.code, 502);
         await this.atomic((c) => {
           if (c.grants[decisionInput.grant])
             c.grants[decisionInput.grant].uncertain = false;

@@ -13,14 +13,37 @@ import { ReleaseError } from '../src/release/contract';
 
 // Synthetic provider envelopes only. Never invokes a remote binding or GitHub.
 const PRIVATE = 'PRIVATE_PROMPT_SOURCE_SECRET';
-const decision = '{"type":"generate","findings":[]}';
+const decision = '{"type":"generate","findingIds":[]}';
 function native(content = decision, message = {}, usage = {}) {
+  let name = 'finish_review',
+    args = content;
+  try {
+    const d = JSON.parse(content);
+    if (d.type === 'tool') {
+      name = d.call.name;
+      args = JSON.stringify(d.call.arguments);
+    } else if (d.type === 'generate')
+      args = JSON.stringify({ findingIds: d.findingIds });
+  } catch {
+    /* invalid JSON remains invalid function arguments */
+  }
   return Response.json({
     object: 'chat.completion',
     choices: [
       {
-        finish_reason: 'stop',
-        message: { role: 'assistant', content, ...message },
+        finish_reason: 'tool_calls',
+        message: {
+          role: 'assistant',
+          content: null,
+          tool_calls: [
+            {
+              id: 'synthetic-call',
+              type: 'function',
+              function: { name, arguments: args },
+            },
+          ],
+          ...message,
+        },
       },
     ],
     usage: { prompt_tokens: 1000, completion_tokens: 100, ...usage },
@@ -44,11 +67,11 @@ async function review(f: Awaited<ReturnType<typeof setup>>) {
 
 describe('safe native → relay → adapter → engine error provenance', () => {
   it.each([
-    ['invalid decision JSON', () => native(PRIVATE), 'INVALID_MODEL_RESPONSE'],
+    ['invalid decision JSON', () => native(PRIVATE), 'MODEL_JSON_INVALID'],
     [
       'Markdown-wrapped JSON',
       () => native('```json\n' + decision + '\n```'),
-      'INVALID_MODEL_RESPONSE',
+      'MODEL_JSON_INVALID',
     ],
     [
       'unsupported tool arguments',
@@ -62,7 +85,32 @@ describe('safe native → relay → adapter → engine error provenance', () => 
             },
           }),
         ),
-      'INVALID_MODEL_RESPONSE',
+      'MODEL_SCHEMA_INVALID',
+    ],
+    [
+      'unsupported native action',
+      () =>
+        native(
+          JSON.stringify({
+            type: 'tool',
+            call: { name: 'postReview', arguments: {} },
+          }),
+        ),
+      'MODEL_ACTION_UNSUPPORTED',
+    ],
+    [
+      'oversized native arguments',
+      () => native('x'.repeat(32769)),
+      'MODEL_OUTPUT_LIMIT',
+    ],
+    [
+      'completion truncated at the cap',
+      () =>
+        Response.json({
+          object: 'chat.completion',
+          choices: [{ finish_reason: 'length', message: { content: PRIVATE } }],
+        }),
+      'PROVIDER_TOKEN_BOUND',
     ],
     [
       'prompt-token bound',
@@ -214,7 +262,7 @@ describe('safe native → relay → adapter → engine error provenance', () => 
   );
 
   it.each([undefined, null, []])(
-    'accepts an absent/null/empty tool collection without enabling native tools (%j)',
+    'refuses an absent/null/empty required native tool collection (%j)',
     async (tool_calls) => {
       const f = await setup();
       f.run.mockResolvedValueOnce(
@@ -223,21 +271,24 @@ describe('safe native → relay → adapter → engine error provenance', () => 
       const result = await review(f);
       expect(result.ai).toMatchObject({
         attempts: 1,
-        responses: 1,
-        realInference: true,
+        responses: 0,
+        realInference: false,
       });
-      expect(result.rejected).toEqual([]);
+      expect(result.rejected).toEqual([{ code: 'PROVIDER_SHAPE' }]);
       expect(result.findings).toEqual([]); // Empty proposals never become safety clearance.
       expect(f.run).toHaveBeenCalledTimes(1);
     },
   );
 
-  it('keeps backend evidence validation when native responses contain empty tool arrays', async () => {
+  it('keeps backend evidence validation with nullable native assistant auxiliary fields', async () => {
     const f = await setup(),
       original = f.run.getMockImplementation()!;
     f.run.mockImplementation(async (...args) => {
       const body = await (await original(...args)).json();
-      body.choices[0].message.tool_calls = [];
+      body.choices[0].message.content = null;
+      body.choices[0].message.refusal = null;
+      body.choices[0].finish_reason = 'stop';
+      body.choices[0].message.tool_calls[0].index = 0;
       return Response.json(body);
     });
     const result = await review(f);
@@ -265,7 +316,7 @@ describe('safe native → relay → adapter → engine error provenance', () => 
       expect(response.headers.get('cache-control')).toBe('no-store');
       const body = await response.text();
       expect(JSON.parse(body).result.rejected).toEqual([
-        { code: 'INVALID_MODEL_RESPONSE' },
+        { code: 'MODEL_JSON_INVALID' },
       ]);
       expect(body).not.toContain(PRIVATE);
       expect(f.run).toHaveBeenCalledTimes(1);
