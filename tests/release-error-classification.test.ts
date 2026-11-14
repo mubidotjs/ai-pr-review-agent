@@ -174,7 +174,11 @@ describe('safe native → relay → adapter → engine error provenance', () => 
       f.run.mockImplementationOnce(async () => response());
       const result = await review(f);
       expect(result.status).toBe('failed');
-      expect(result.rejected).toContainEqual({ code });
+      expect(result.rejected).toContainEqual(
+        code === 'PROVIDER_SHAPE'
+          ? { code, diagnostic: expect.objectContaining({ version: 1 }) }
+          : { code },
+      );
       expect(result.ai).toMatchObject({
         attempts: 1,
         responses: 0,
@@ -230,7 +234,18 @@ describe('safe native → relay → adapter → engine error provenance', () => 
     const f = await setup();
     f.run.mockResolvedValueOnce({ response: PRIVATE } as never);
     const result = await review(f);
-    expect(result.rejected).toEqual([{ code: 'PROVIDER_SHAPE' }]);
+    expect(result.rejected).toEqual([
+      {
+        code: 'PROVIDER_SHAPE',
+        diagnostic: {
+          version: 1,
+          stage: 'return',
+          field: 'return',
+          issue: 'type',
+          received: 'object',
+        },
+      },
+    ]);
     expect(JSON.stringify(result)).not.toContain(PRIVATE);
     expect(f.run).toHaveBeenCalledTimes(1);
   });
@@ -275,7 +290,21 @@ describe('safe native → relay → adapter → engine error provenance', () => 
         responses: 0,
         realInference: false,
       });
-      expect(result.rejected).toEqual([{ code: 'PROVIDER_SHAPE' }]);
+      expect(result.rejected).toEqual([
+        {
+          code: 'PROVIDER_SHAPE',
+          diagnostic: expect.objectContaining({
+            stage: 'field',
+            field: 'message.tool_calls',
+            issue:
+              tool_calls === undefined
+                ? 'missing'
+                : Array.isArray(tool_calls)
+                  ? 'count'
+                  : 'type',
+          }),
+        },
+      ]);
       expect(result.findings).toEqual([]); // Empty proposals never become safety clearance.
       expect(f.run).toHaveBeenCalledTimes(1);
     },

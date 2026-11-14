@@ -5,6 +5,7 @@ import { byteLength } from '../../shared/source';
 import type { BackendEvidence } from './evidence';
 import type { RateLimit } from '../../shared/types';
 import type { Candidate, AgentStage } from './protocol';
+import type { ProviderDiagnostic } from '../../release/provider-diagnostics';
 
 export interface AgentResult {
   protocolVersion: 1;
@@ -23,7 +24,7 @@ export interface AgentResult {
     source: 'mock-model' | 'workers-ai';
     evidenceValidation: 'backend-pinned-supported-predicate';
   })[];
-  rejected: { index?: number; code: string }[];
+  rejected: { index?: number; code: string; diagnostic?: ProviderDiagnostic }[];
   trace: { stage: AgentStage; step: number; tool?: string; code?: string }[];
   budget: {
     steps: number;

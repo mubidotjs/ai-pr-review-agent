@@ -8,6 +8,7 @@ import {
   interrupted,
 } from './contract';
 import { relayErrorCode } from './errors';
+import { readNativeResponse } from './native-response';
 import {
   SYSTEM_POLICY,
   TOOL_CONTRACTS,
@@ -101,58 +102,6 @@ const requestSchema = z
       .strict(),
   })
   .strict();
-const nativeResponse = z
-  .object({
-    object: z.literal('chat.completion'),
-    choices: z
-      .array(
-        z
-          .object({
-            finish_reason: z.enum(['tool_calls', 'stop']),
-            message: z
-              .object({
-                role: z.literal('assistant'),
-                content: z.string().max(0).nullish(),
-                tool_calls: z
-                  .array(
-                    z
-                      .object({
-                        id: z.string().min(1).max(256),
-                        type: z.literal('function'),
-                        function: z
-                          .object({
-                            name: z.string().min(1).max(64),
-                            arguments: z.string().max(64 * 1024),
-                          })
-                          .passthrough(),
-                      })
-                      .passthrough(),
-                  )
-                  .length(1),
-                function_call: z.null().optional(),
-                refusal: z.string().max(0).nullish(),
-                reasoning_content: z.string().max(0).nullish(),
-              })
-              .passthrough(),
-          })
-          .passthrough(),
-      )
-      .length(1),
-    usage: z
-      .object({
-        prompt_tokens: z.number().int().nonnegative(),
-        completion_tokens: z.number().int().min(0),
-        completion_tokens_details: z
-          .object({
-            reasoning_tokens: z.number().int().nonnegative().optional(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough(),
-  })
-  .passthrough();
-
 /** Single global coordinator. Durable storage contains admission counters only.
  * Drafts remain in RAM, bounded and expiring; eviction means approval is unavailable. */
 export class ReviewBudget {
@@ -358,50 +307,7 @@ export class ReviewBudget {
             502,
           );
         }
-        if (!(response instanceof Response))
-          throw new ReleaseError('PROVIDER_SHAPE', 502);
-        if (!response.ok) {
-          await response.body?.cancel();
-          throw new ReleaseError(
-            response.status === 429 ? 'PROVIDER_QUOTA' : 'PROVIDER_ERROR',
-            502,
-          );
-        }
-        let envelope: unknown;
-        try {
-          envelope = await readJson(response, 64 * 1024, signal);
-        } catch (error) {
-          throw new ReleaseError(
-            signal.aborted ||
-              (error instanceof ReleaseError && error.code === 'TIMEOUT')
-              ? 'PROVIDER_TIMEOUT'
-              : 'PROVIDER_SHAPE',
-            502,
-          );
-        }
-        // Length termination cannot be mistaken for a complete decision.
-        if (
-          (envelope as { choices?: { finish_reason?: string }[] })?.choices?.[0]
-            ?.finish_reason === 'length'
-        )
-          throw new ReleaseError('PROVIDER_TOKEN_BOUND', 502);
-        const output = nativeResponse.safeParse(envelope);
-        if (!output.success) throw new ReleaseError('PROVIDER_SHAPE', 502);
-        const { prompt_tokens: prompt, completion_tokens: completion } =
-          output.data.usage;
-        // A cap violation fails closed and retains the full conservative reservation.
-        if (
-          prompt > inputBound ||
-          completion > RELEASE.completionTokens ||
-          (output.data.usage.completion_tokens_details?.reasoning_tokens ?? 0) >
-            0
-        )
-          throw new ReleaseError('PROVIDER_TOKEN_BOUND', 502);
-        const call = output.data.choices[0].message.tool_calls[0].function;
-        if (
-          new TextEncoder().encode(call.arguments).length > RELEASE.outputBytes
-        )
-          throw new ReleaseError('MODEL_OUTPUT_LIMIT', 502);
+        const call = await readNativeResponse(response, signal, inputBound);
         const decision = nativeDecision(call.name, call.arguments);
         if (!decision.success) throw new ReleaseError(decision.code, 502);
         if (
@@ -412,10 +318,12 @@ export class ReviewBudget {
         await this.atomic((c) => {
           if (c.grants[decisionInput.grant])
             c.grants[decisionInput.grant].uncertain = false;
-          if (c.day === reservedDay)
+          if (c.day === reservedDay && call.usage)
             c.neurons = Math.max(
               0,
-              c.neurons - reserved + neuronEstimate(prompt, completion),
+              c.neurons -
+                reserved +
+                neuronEstimate(call.usage.prompt, call.usage.completion),
             );
         });
         return safeJson({ decision: decision.data, bindingResponse: true });
@@ -471,6 +379,11 @@ export class ReviewBudget {
                 : error instanceof z.ZodError
                   ? 'INVALID_REQUEST'
                   : 'RELAY_UNAVAILABLE',
+            ...(error instanceof ReleaseError &&
+            error.code === 'PROVIDER_SHAPE' &&
+            error.diagnostic
+              ? { diagnostic: error.diagnostic }
+              : {}),
           },
         },
         error instanceof ReleaseError && relayErrorCode(error.code)

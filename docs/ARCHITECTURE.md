@@ -54,6 +54,8 @@ The model transport uses versioned compact actions and fact-card IDs. A configur
 
 Successful model-selected `validateReviewFinding({evidenceId})` intentionally selects one issued card for a partial draft. Node independently revalidates pinned source, the exact added coordinate and supported predicate again, checks cancellation/deadline and finalizes without another model decision. Card creation, rejected validation and unselected evidence cannot finalize findings through this transition. Explicit finish/refuse remains supported, and provider errors remain terminal. [Selection semantics, tests and remaining live gate](AI-SELECTION-FINALIZATION.md).
 
+The native response boundary accepts Gemma's documented single function envelope, discards accompanying prose and never derives actions from it. Absent optional usage retains the full quota reservation. Closed, bounded response-validation diagnostics survive Cloudflare → Node without provider values, body text or persistence. Argument/schema/capability and independent evidence checks are unchanged. [Native contract and diagnostic inventory](NATIVE-AI-COMPATIBILITY.md).
+
 ## Deployment boundary
 
 Local same-origin execution supports workerd and Node. M4 adds an undeployed Vercel Build Output API artifact with explicit streaming/body-helper configuration and a required exact public origin. No production origin or resource is provisioned. Separate origins would require allowlists, OPTIONS handling, origin checks, frontend API configuration, CSP updates, HTTPS and abuse controls. CORS is not authentication.

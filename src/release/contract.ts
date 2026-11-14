@@ -1,3 +1,8 @@
+import {
+  safeProviderDiagnostic,
+  type ProviderDiagnostic,
+} from './provider-diagnostics';
+
 /** Shared transport bounds. No provider credentials or repository content persist here. */
 export const RELEASE = {
   model: '@cf/google/gemma-4-26b-a4b-it',
@@ -22,11 +27,14 @@ export const safeJson = (value: unknown, status = 200) =>
     },
   });
 export class ReleaseError extends Error {
+  readonly diagnostic?: ProviderDiagnostic;
   constructor(
     readonly code: string,
     readonly status = 503,
+    diagnostic?: unknown,
   ) {
     super(code);
+    this.diagnostic = safeProviderDiagnostic(diagnostic);
   }
 }
 export async function interrupted<T>(

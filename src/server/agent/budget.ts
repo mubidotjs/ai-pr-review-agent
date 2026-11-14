@@ -1,7 +1,12 @@
 import { AGENT_LIMITS, type AgentLimits } from './protocol';
 import type { RelayErrorCode } from '../../release/errors';
+import {
+  safeProviderDiagnostic,
+  type ProviderDiagnostic,
+} from '../../release/provider-diagnostics';
 
 export class AgentFailure extends Error {
+  readonly diagnostic?: ProviderDiagnostic;
   constructor(
     readonly code:
       | RelayErrorCode
@@ -19,8 +24,10 @@ export class AgentFailure extends Error {
       | 'MODEL_ERROR'
       | 'SNAPSHOT_UNVERIFIED'
       | 'CAPTURE_FAILED',
+    diagnostic?: unknown,
   ) {
     super(code);
+    this.diagnostic = safeProviderDiagnostic(diagnostic);
   }
 }
 export class AgentBudget {

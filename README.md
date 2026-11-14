@@ -8,6 +8,8 @@ The offline assessment proves a conservative **8,126,464-byte** bound for valid 
 
 An earlier run established real source investigation and backend fact-card validation. The focused correction treats successful model-selected validation as intentional selection for a one-finding partial draft: Node independently revalidates it and finalizes without another model decision. Its 346 unit/integration tests and 32 browser tests passed. The authorized live run then failed earlier, before reaching that transition. The exact native response defect is unknown; no provider error is converted into success. No retry or production launch followed. [Correction and executed acceptance](docs/AI-SELECTION-FINALIZATION.md); [earlier live evidence](docs/AI-TOOL-PROGRESS.md).
 
+The subsequent offline native-contract correction accepts and discards documented assistant prose beside one strict tool call, retains full quota reservations when optional usage is absent, and preserves bounded field-specific diagnostics through the backend. It does not claim to identify the historical response defect or establish new live success. [Contract, compatibility tests and pending authorization](docs/NATIVE-AI-COMPATIBILITY.md).
+
 PRISM combines a responsive deterministic review workspace with a separate bounded AI investigation workflow. It reads public GitHub PRs, pins evidence to the head SHA, refuses unsupported claims and lets a human approve selected findings for manual copy. Nothing posts to GitHub.
 
 ![Synthetic desktop review workspace](docs/demo-desktop.png)

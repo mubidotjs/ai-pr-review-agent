@@ -37,7 +37,13 @@ export class WorkersAiAdapter implements AgentModelAdapter {
       )
         throw new AgentFailure('PROVIDER_TIMEOUT');
       const code = error instanceof ReleaseError && relayErrorCode(error.code);
-      if (code) throw new AgentFailure(code);
+      if (code)
+        throw new AgentFailure(
+          code,
+          code === 'PROVIDER_SHAPE'
+            ? (error as ReleaseError).diagnostic
+            : undefined,
+        );
       throw new AgentFailure('MODEL_ERROR');
     }
     const parsed = z

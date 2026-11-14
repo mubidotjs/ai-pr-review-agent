@@ -82,6 +82,15 @@ export class PrivateRelay implements Relay {
         response.status >= 400 && response.status <= 599
           ? response.status
           : 503,
+        code === 'PROVIDER_SHAPE' &&
+          value &&
+          typeof value === 'object' &&
+          'error' in value &&
+          value.error &&
+          typeof value.error === 'object' &&
+          'diagnostic' in value.error
+          ? value.error.diagnostic
+          : undefined,
       );
     }
     return value as T;

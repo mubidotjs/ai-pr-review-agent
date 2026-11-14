@@ -261,7 +261,12 @@ export async function runAgentReview(
       : error instanceof AgentFailure || error instanceof ReviewError
         ? error.code
         : 'CAPTURE_FAILED';
-    result.rejected.push({ code });
+    result.rejected.push({
+      code,
+      ...(error instanceof AgentFailure && error.diagnostic
+        ? { diagnostic: error.diagnostic }
+        : {}),
+    });
     result.status =
       code === 'CANCELLED'
         ? 'cancelled'
