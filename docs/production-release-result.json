@@ -1,0 +1,321 @@
+{
+  "testedSha": "2f4f43e439519cd72e2aea8776a22f938653bc4f",
+  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43607738569",
+  "release": "BLOCKED",
+  "realPublicPRReview": "PASS",
+  "nativeDispatches": 1,
+  "publicGitHubRequests": 8,
+  "httpsAuthentication": "PASS",
+  "httpsApprovalAndCopy": "NOT_REACHED",
+  "failure": {
+    "safeCode": "RELEASE_UI_STAGE_FAILED",
+    "boundary": "trusted-replay-preparation",
+    "exceptionName": "Error",
+    "sanitizedMessage": "Release stage failed; payload/exception details omitted.",
+    "offlineConfirmedDefect": {
+      "safeCode": "SESSION_COOKIE_UNAVAILABLE",
+      "boundary": "operator root URL lookup excludes Path=/api cookie",
+      "rootCookieCount": 0,
+      "apiCookieCount": 1,
+      "offlineReplayFindings": 3,
+      "offlineReplayValidationChecks": 6,
+      "applicationAuthenticationRejected": false,
+      "originalExceptionNotRetained": true
+    }
+  },
+  "workflow": {
+    "kind": "public-pr",
+    "url": "https://github.com/honojs/hono/pull/5620",
+    "attempted": true,
+    "maxDispatches": 1,
+    "startedAt": "2026-11-14T15:15:02.801Z",
+    "passed": true,
+    "httpStatus": 200,
+    "status": "partial",
+    "ai": {
+      "mode": "workers-ai",
+      "realInference": true,
+      "attempts": 1,
+      "responses": 1
+    },
+    "budget": {
+      "steps": 2,
+      "tools": 0,
+      "modelCalls": 1,
+      "validationChecks": 0,
+      "observationBytes": 18929,
+      "githubRequests": 8,
+      "upstreamBytes": 68548,
+      "sourceFiles": 4,
+      "elapsedMs": 2597
+    },
+    "capture": {
+      "captureId": "4e132afe-e5d8-458a-b0a7-1a77471661a4",
+      "url": "https://github.com/honojs/hono/pull/5620",
+      "headSha": "f9736d85b13dacb3225191b6f20f11c919a8c225",
+      "baseSha": "61f7c59e50244ab4d2dd83c151928cf7ea448510",
+      "repository": "honojs/hono"
+    },
+    "contextCoverage": {
+      "totalFiles": 4,
+      "inventoriedFiles": 4,
+      "knownAddedLines": 196,
+      "providedLines": 268,
+      "providedAddedLines": 196,
+      "omittedKnownAddedLines": 0,
+      "files": [
+        {
+          "path": "adapters/bun/src/websocket.test.ts",
+          "lines": [
+            1, 2, 3, 4, 5, 6, 7, 8, 157, 158, 159, 160, 161, 162, 163, 164, 165,
+            166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178,
+            179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191,
+            192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204,
+            205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217,
+            218, 219, 220, 221, 222, 223
+          ],
+          "addedLines": [
+            159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171,
+            172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
+            185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197,
+            198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+            211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221
+          ]
+        },
+        {
+          "path": "adapters/bun/src/websocket.ts",
+          "lines": [
+            1, 2, 3, 4, 5, 6, 7, 8, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
+            39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 98, 99, 100,
+            101, 102, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,
+            115, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130
+          ],
+          "addedLines": [
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
+            47, 48, 49, 100, 106, 107, 108, 109, 110, 111, 112, 113, 123, 124,
+            125, 126, 127, 128
+          ]
+        },
+        {
+          "path": "src/adapter/bun/websocket.test.ts",
+          "lines": [
+            1, 2, 3, 4, 5, 6, 7, 8, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+            165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177,
+            178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190,
+            191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203,
+            204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216,
+            217, 218, 219, 220, 221, 222
+          ],
+          "addedLines": [
+            158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170,
+            171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183,
+            184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
+            197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209,
+            210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220
+          ]
+        },
+        {
+          "path": "src/adapter/bun/websocket.ts",
+          "lines": [
+            1, 2, 3, 4, 5, 6, 7, 8, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+            96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 112,
+            113, 114, 115, 116, 118, 119, 120, 121, 122, 123, 124, 125, 126,
+            127, 128, 129, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144
+          ],
+          "addedLines": [
+            87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102,
+            103, 104, 105, 106, 114, 120, 121, 122, 123, 124, 125, 126, 127,
+            137, 138, 139, 140, 141, 142
+          ]
+        }
+      ],
+      "dispatch": "response-received"
+    },
+    "rejected": [],
+    "trace": [
+      {
+        "stage": "investigate",
+        "step": 0
+      },
+      {
+        "stage": "prepare-evidence",
+        "step": 1
+      },
+      {
+        "stage": "propose-once",
+        "step": 2
+      },
+      {
+        "stage": "validate",
+        "step": 2
+      },
+      {
+        "stage": "finalize",
+        "step": 2
+      }
+    ],
+    "findings": []
+  },
+  "replay": {
+    "nativeDispatches": 0,
+    "liveGitHubRequests": 0,
+    "backendValidationChecks": 6,
+    "registeredPrivately": false,
+    "explanation": "Trusted mock replay preparation passed canonical checks. Operator root-URL cookie lookup could not retrieve the Path=/api session. No relay draft registration or deployed approval/copy followed."
+  },
+  "sharedQuota": {
+    "before": {
+      "checkedAt": "2026-11-14T15:10:54.483Z",
+      "dailyNeurons": 446.1454162597656,
+      "quota": 10000
+    },
+    "after": {
+      "checkedAt": "2026-11-14T15:16:48.461Z",
+      "dailyNeurons": 446.1454162597656,
+      "quota": 10000
+    },
+    "coordinator": {
+      "calls": 1,
+      "reservedNeurons": 55.601,
+      "reviews": 1,
+      "limits": {
+        "model": "@cf/google/gemma-4-26b-a4b-it",
+        "completionTokens": 2048,
+        "inputBytes": 49152,
+        "outputBytes": 32768,
+        "relayBytes": 655360,
+        "modelTimeoutMs": 18000,
+        "reviewMs": 30000,
+        "reviewsPerHour": 4,
+        "callsPerDay": 64,
+        "neuronsPerDay": 2000,
+        "draftMs": 300000
+      }
+    },
+    "authorizedEstimatedCeiling": 600,
+    "explanation": "Coordinator settled 55.601 estimated Neurons from native usage. Shared account analytics are delayed and are not a per-call receipt."
+  },
+  "resources": {
+    "cloudflare": {
+      "worker": "prism-ai-review",
+      "origin": "https://prism-ai-review.mubikhan69.workers.dev",
+      "bindings": [
+        {
+          "name": "AI",
+          "type": "ai"
+        },
+        {
+          "name": "RELAY_SECRET",
+          "type": "secret_text"
+        },
+        {
+          "name": "REVIEW_BUDGET",
+          "type": "durable_object_namespace",
+          "class_name": "ReviewBudget",
+          "namespace_id": "b941843e18294d8a93c92f7c1e3d18f3"
+        }
+      ],
+      "deploymentIds": [
+        {
+          "id": "3ae49c22-e747-4ff8-9c18-d727a5870f51",
+          "versions": [
+            {
+              "version_id": "8d9c11a0-c9c0-442c-9ea4-84abcce30af8",
+              "percentage": 100
+            }
+          ]
+        }
+      ],
+      "cliSuccess": true
+    },
+    "vercelProject": {
+      "id": "prj_I5Pd9dxp6TSln2p5sxfxfHd0Ur8Q",
+      "name": "mubidotjs-prism",
+      "accountId": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
+      "nodeVersion": "24.x",
+      "autoExposeSystemEnvs": true
+    },
+    "vercelDeployments": [
+      {
+        "phase": "production",
+        "startedAt": "2026-11-14T15:13:52.727Z",
+        "id": "dpl_8aFyM97RpS6BwH4T1EoQSAhnN1Y4",
+        "url": "https://mubidotjs-prism-jsijl14ps-mubidotjs-projects.vercel.app",
+        "readyState": "READY",
+        "target": "production",
+        "nodeVersion": "24.x",
+        "metaSha": "2f4f43e439519cd72e2aea8776a22f938653bc4f"
+      }
+    ]
+  },
+  "cleanup": {
+    "startedAt": "2026-11-14T15:17:36.730Z",
+    "vercelProjectDeleted": true,
+    "vercelProjectNotFound": true,
+    "cloudflareWorkerAbsent": true,
+    "cloudflareNamespaceAbsent": true,
+    "cloudflareDeployments": 1,
+    "endpointChecks": [
+      {
+        "url": "https://mubidotjs-prism-jsijl14ps-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 302
+      },
+      {
+        "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
+        "status": 404
+      }
+    ],
+    "unrelatedVercel": [
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      },
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "mubashirhussain",
+        "unchanged": true
+      },
+      {
+        "name": "reliable-webhook-platform-receiver",
+        "unchanged": true
+      }
+    ],
+    "unrelatedCloudflare": [
+      {
+        "name": "ai-release-notes-generator",
+        "unchanged": true
+      },
+      {
+        "name": "ai-invoice-receipt-processor",
+        "unchanged": true
+      }
+    ],
+    "localAppSecretsRemoved": true,
+    "finishedAt": "2026-11-14T15:18:22.031Z",
+    "vercelDeploymentNotFound": true,
+    "finalVercelEndpointStatus": 410,
+    "temporaryCliRevoked": true,
+    "wranglerLoggedIn": false,
+    "noDnsChanges": true,
+    "noRetainedProduction": true,
+    "productionPromoted": false
+  },
+  "operatorCorrection": {
+    "helper": "scripts/release/session-cookie.ts",
+    "browserRegression": "tests/e2e/ai-release.spec.ts",
+    "offlineOnly": true,
+    "rootLookupCookieCount": 0,
+    "apiLookupCookieCount": 1,
+    "focusedDesktopMobileTestsPassed": 2
+  },
+  "preservedSyntheticAIProof": "ai-agent-acceptance-result.json",
+  "limitations": [
+    "The public PR returned no supported hypotheses. This is honest bounded three-category coverage, not a comprehensive security clearance.",
+    "The generic operator catch did not retain the original exception. An offline identical cookie-jar check proves the root/API path defect and the deterministic SESSION_COOKIE_UNAVAILABLE branch; this is not evidence of provider or application authentication failure.",
+    "The consumed stop-on-first-failure scope was followed: no further native dispatch, retry, repair call, corrective deployment, promotion or DNS change. The deployed app and all runtime resources were deleted.",
+    "HTTPS clipboard verification was not reached. Prior real synthetic findings/server approval and corrected local clipboard verification remain established."
+  ]
+}

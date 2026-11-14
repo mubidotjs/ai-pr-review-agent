@@ -4,6 +4,30 @@ import { mockProposals } from '../proposal-fixtures';
 import { fixtureTransport, PR_URL } from '../upstream-fixtures';
 import copyReplay from '../fixtures/approved-copy-replay.json' with { type: 'json' };
 import { verifyApprovedCopy } from '../../scripts/release/verify-copy';
+import { apiSessionCookie } from '../../scripts/release/session-cookie';
+
+test('release operator retrieves the Path=/api session using an API URL, without network access', async ({
+  context,
+}) => {
+  await context.addCookies([
+    {
+      name: 'prism_session',
+      value: 'synthetic-local-cookie',
+      domain: 'prism-cookie.invalid',
+      path: '/api',
+      secure: true,
+      httpOnly: true,
+      sameSite: 'Strict',
+    },
+  ]);
+  expect(await context.cookies('https://prism-cookie.invalid')).toEqual([]);
+  expect(await apiSessionCookie(context, 'https://prism-cookie.invalid')).toBe(
+    'synthetic-local-cookie',
+  );
+  await expect(
+    apiSessionCookie(context, 'https://other-cookie.invalid'),
+  ).rejects.toThrow('SESSION_COOKIE_UNAVAILABLE');
+});
 
 async function replayApprovedDraft(page: import('@playwright/test').Page) {
   let reviews = 0,
