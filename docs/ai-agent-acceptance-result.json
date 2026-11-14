@@ -1,16 +1,17 @@
 {
-  "testedSha": "fddaf0ac611aa1bb4ad95c81b934e5b0d9bcb6d5",
-  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43581241161",
+  "testedSha": "b47c5f31e31ea8734ba6293269ea98432f283cd0",
+  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43595143698",
   "result": "FAIL",
   "failure": {
-    "safeCode": "PROVIDER_SHAPE",
+    "safeCode": "PROVIDER_TIMEOUT",
     "classificationSource": "backend result",
-    "boundary": "native binding return/envelope validation"
+    "boundary": "native/relay invocation timeout; exact timeout source not established"
   },
-  "realNativeDispatches": 3,
-  "validatedNativeDecisions": 2,
+  "realNativeDispatches": 4,
+  "validatedNativeDecisions": 3,
   "backendValidationChecks": 0,
   "acceptedHypothesisAndFactCardValidation": false,
+  "providerShapeObserved": false,
   "finalFindings": 0,
   "humanApprovalManualCopy": "NOT_REACHED",
   "production": "NOT_DEPLOYED",
@@ -19,7 +20,7 @@
   "workflow": {
     "kind": "synthetic",
     "attempted": true,
-    "startedAt": "2026-11-14T09:50:20.541Z",
+    "startedAt": "2026-11-14T12:53:07.503Z",
     "maxDispatches": 16,
     "passed": false,
     "httpStatus": 200,
@@ -28,23 +29,23 @@
     "ai": {
       "mode": "workers-ai",
       "realInference": true,
-      "attempts": 3,
-      "responses": 2
+      "attempts": 4,
+      "responses": 3
     },
     "budget": {
-      "steps": 3,
-      "tools": 2,
-      "modelCalls": 3,
+      "steps": 4,
+      "tools": 3,
+      "modelCalls": 4,
       "validationChecks": 0,
-      "observationBytes": 1314,
+      "observationBytes": 1861,
       "githubRequests": 9,
       "upstreamBytes": 134477,
       "sourceFiles": 5,
-      "elapsedMs": 6165
+      "elapsedMs": 22020
     },
     "rejected": [
       {
-        "code": "PROVIDER_SHAPE"
+        "code": "PROVIDER_TIMEOUT"
       }
     ],
     "trace": [
@@ -75,19 +76,36 @@
         "step": 3
       },
       {
+        "stage": "observe",
+        "step": 3,
+        "tool": "readFileContext"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 4
+      },
+      {
         "stage": "finalize",
-        "step": 3
+        "step": 4
       }
     ],
     "capture": {
-      "captureId": "82a1c0a9-4b8a-4623-8dbb-6583f4d5a024",
+      "captureId": "103f57c3-6b89-4bbc-a408-b918d067c36e",
       "url": "https://github.com/example/checkout/pull/42",
       "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "repository": "example/checkout"
     },
     "findings": [],
-    "clientElapsedMs": 11032
+    "clientElapsedMs": 26798
+  },
+  "timeoutBounds": {
+    "nativeDecisionMs": 18000,
+    "nodeRelayMs": 20000,
+    "applicationReviewMs": 30000,
+    "clientSeconds": 35,
+    "observedEngineMs": 22020,
+    "observedClientMs": 26798
   },
   "resources": {
     "cloudflare": {
@@ -106,15 +124,15 @@
           "name": "REVIEW_BUDGET",
           "type": "durable_object_namespace",
           "class_name": "ReviewBudget",
-          "namespace_id": "0c4445d2c2834182b1aaf17d98e538cf"
+          "namespace_id": "a8ca773527d249489a6c6a66b586426c"
         }
       ],
       "deploymentIds": [
         {
-          "id": "e7b30daa-5e79-4dea-aca2-80f752bdf6de",
+          "id": "5815dead-ffec-4bb9-98a3-346fda84770a",
           "versions": [
             {
-              "version_id": "89feee67-59d2-4e36-85f2-a2d3c81a28bf",
+              "version_id": "bb77f323-5540-4d5c-94fc-6ec8d6a9246a",
               "percentage": 100
             }
           ]
@@ -122,21 +140,21 @@
       ],
       "cliSuccess": true
     },
-    "namespaceId": "0c4445d2c2834182b1aaf17d98e538cf",
+    "namespaceId": "a8ca773527d249489a6c6a66b586426c",
     "vercelProject": {
-      "id": "prj_XpNe4hog4RFYAAO3jg9vRPKqn5LN",
+      "id": "prj_llvnOtM5fceQ0pGRXY3AOxpKinIt",
       "name": "mubidotjs-prism"
     },
     "vercelDeployments": [
       {
         "phase": "acceptance",
-        "startedAt": "2026-11-14T09:47:54.929Z",
-        "id": "dpl_ADcSZc7HHMvi3wCzm9PeVSSPfQUE",
-        "url": "https://mubidotjs-prism-ks232uqje-mubidotjs-projects.vercel.app",
+        "startedAt": "2026-11-14T12:52:20.915Z",
+        "id": "dpl_DLszt3LiJbSgomhMytfBkg6mjML5",
+        "url": "https://mubidotjs-prism-2hqshcrya-mubidotjs-projects.vercel.app",
         "readyState": "READY",
         "target": "production",
         "nodeVersion": "24.x",
-        "metaSha": "fddaf0ac611aa1bb4ad95c81b934e5b0d9bcb6d5"
+        "metaSha": "b47c5f31e31ea8734ba6293269ea98432f283cd0"
       }
     ]
   },
@@ -147,19 +165,19 @@
     "model": "@cf/google/gemma-4-26b-a4b-it",
     "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
     "passed": true,
-    "completedAt": "2026-11-14T09:45:25.11Z"
+    "completedAt": "2026-11-14T12:49:33.927Z"
   },
   "freeQuota": {
-    "sharedDailyBefore": 330.363600730896,
-    "beforeCheckedAt": "2026-11-14T09:45:17.237Z",
-    "sharedDailyAfter": 346.01814556121826,
-    "afterCheckedAt": "2026-11-14T09:51:08.756Z",
+    "sharedDailyBefore": 382.0999631881714,
+    "beforeCheckedAt": "2026-11-14T12:49:26.016Z",
+    "sharedDailyAfter": 399.02723598480225,
+    "afterCheckedAt": "2026-11-14T12:54:16.982Z",
     "dailyAllowance": 10000,
-    "coordinatorEstimatedReservationAndSettlement": 183.994,
-    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes the failed dispatch unknown-outcome reservation and is not billed usage or a provider-enforced per-call cap."
+    "coordinatorEstimatedReservationAndSettlement": 207.649,
+    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes the timed-out dispatch unknown-outcome reservation and is not billed usage or a provider-enforced per-call cap."
   },
   "cleanup": {
-    "startedAt": "2026-11-14T09:51:11.880Z",
+    "startedAt": "2026-11-14T12:54:19.911Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
     "cloudflareWorkerAbsent": true,
@@ -167,8 +185,8 @@
     "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-ks232uqje-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 404
+        "url": "https://mubidotjs-prism-2hqshcrya-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 302
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
@@ -204,7 +222,7 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-14T09:51:57.373Z",
+    "finishedAt": "2026-11-14T12:55:05.920Z",
     "vercelDeploymentNotFound": true,
     "finalVercelEndpointStatus": 410,
     "temporaryCliRevoked": true,
@@ -212,10 +230,11 @@
     "noDnsChanges": true,
     "noProductionDeployment": true
   },
-  "previousEvidence": "ai-agent-acceptance-5b5a559-result.json",
+  "previousEvidence": "ai-agent-acceptance-fddaf0a-result.json",
   "limitations": [
-    "Native dispatch 3 failed at binding return/collection/envelope validation before a source tool decision could be accepted. Raw output was not retained; the exact rejected field/body condition is unknown.",
-    "Only metadata and inventory completed. The corrected successful-selection finalization branch was not reached; this run cannot establish or disprove its live behavior.",
+    "Dispatch four ended with PROVIDER_TIMEOUT after three valid native decisions completed metadata, inventory and source context. No hypothesis or fact card was accepted.",
+    "The engine ended at 22,020 ms, below the 30-second logical review deadline. The safe category does not establish whether the native 18-second path, relay 20-second path or another recognized abort/timeout branch produced it; no provider receipt or raw output is available for that attempt.",
+    "PROVIDER_SHAPE did not occur in the three accepted responses. This is not evidence that all future provider outputs are compatible or that the historical shape defect has been identified.",
     "The terminal failure suppressed findings. Approval/copy, the public-PR workflow, normal production deployment and DNS were not reached. No retry, repair inference or corrective deployment followed."
   ]
 }

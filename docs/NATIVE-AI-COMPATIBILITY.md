@@ -23,7 +23,7 @@ At tested commit `fddaf0a`, three sites in `src/release/cloudflare.ts` collapsed
 
 Length termination and over-bound prompt/completion/reasoning counts already had `PROVIDER_TOKEN_BOUND`. Oversized argument bytes, malformed argument JSON, unsupported actions and invalid tool arguments had their own existing codes. HTTP failures/quota responses and timeouts were separate. Unknown metadata was ignored.
 
-The latest live failure was dispatch three on `fddaf0a`, before source inspection. Raw output was deliberately not retained, so its specific rejected condition remains **unknown**. The documented nonempty-content and absent-usage mismatches are demonstrated offline; neither is claimed as the proven cause of that live failure. [Immutable safe live evidence](ai-agent-acceptance-result.json).
+Before this correction, the live failure was dispatch three on `fddaf0a`, before source inspection. Raw output was deliberately not retained, so its specific rejected condition remains **unknown**. The documented nonempty-content and absent-usage mismatches are demonstrated offline; neither is claimed as the proven cause of that live failure. [Archived safe live evidence](ai-agent-acceptance-fddaf0a-result.json).
 
 ## Focused normalization and diagnostics
 
@@ -57,9 +57,9 @@ Mock binding integration runs the five investigation/selection decisions with no
 
 Local verification passed: **414 unit/integration tests**, **32 desktop/mobile Playwright tests**, types, ESLint, formatting, frontend/Node builds, Cloudflare dry compilation, mock agent demonstration and isolated acceptance-artifact preparation. Dependency audit: **zero vulnerabilities**. The unchanged full mock workflow retains its three canonical findings and coverage. No deployment, account/usage/DNS work or inference occurred in this correction; external reads were limited to public official contract references and repository publication/CI.
 
-## One bounded acceptance and release request — not yet authorized
+## Bounded acceptance and release scope — authorized and consumed
 
-Request approval once after this correction is published with passing exact-SHA CI. The prior failed authorization is consumed; this document grants no cloud operation or inference.
+The user authorized this scope for `b47c5f31e31ea8734ba6293269ea98432f283cd0` after [exact-SHA CI passed](https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43595143698). It was consumed by the failure below; there is no permission for another call, corrective deployment or retry.
 
 1. Reuse accepted Free/Hobby/Dynadot evidence and keep historical usage labeled historical. Refresh only model availability/native contract, shared Neuron quota and existing-project ownership/configuration through supported read-only APIs. No usage-screenshot gate, repeated transport benchmarks or basic Gemma probe. Stop on a concrete eligibility/quota failure.
 2. Create one `prism-ai-review` Cloudflare Worker with native `@cf/google/gemma-4-26b-a4b-it` binding and one counter-only SQLite Durable Object namespace; one `mubidotjs-prism` Vercel Hobby project with **at most two deployments of the same corrected, CI-verified SHA**. Preserve backend-only secrets, access-code protection, same-origin checks, atomic admission, Node 24, 40-second platform and 30-second review limits. No paid changes or modifications to Projects 1/2.
@@ -67,3 +67,15 @@ Request approval once after this correction is published with passing exact-SHA 
 4. Only after synthetic success, use deployment two for the full app and verify **one public-PR AI review**, plus at most one deterministic ingestion. Combined caps: **two workflows, 32 dispatches, 2,000 additional estimated shared Neurons and 24 public GitHub GETs**, preserving all per-review limits. Neuron estimates are not provider-enforced per-call quotas and share allowance with Projects 1/2. A real PR without supported claims must finish/refuse honestly.
 5. Only on complete acceptance retain production, expose the frontend/demo with live endpoints access-code protected, and attach only `prism.mubashirhussain.dev` using Vercel's exact generated CNAME/required TXT. Supply exact records for manual Dynadot entry if authenticated editing is unavailable; preserve all existing records. Verify HTTPS, prepared favicon/metadata, desktop/mobile and same-origin UI with at most five final checks over 15 minutes, without more inference.
 6. Remove acceptance/operator resources and secrets and revoke temporary CLI authorization. On failure remove every newly created resource and only this run's DNS additions, verify cleanup and unchanged Projects 1/2, and report the concrete boundary. No automatic subsequent experiment, public launch after failed acceptance or new infrastructure.
+
+## Executed acceptance result on b47c5f3
+
+**FAIL — `PROVIDER_TIMEOUT` on dispatch four.** Three validated native Gemma decisions executed `getPullRequest`, `listChangedFiles` and `readFileContext`. No hypothesis or fact card was accepted. The engine ended after **22,020 ms**, within the **30,000-ms review deadline**; client time including CLI was **26,798 ms**. The configured native/relay decision bounds are 18/20 seconds. The returned safe category does not establish which native, relay or recognized abort/timeout branch produced it, and no provider receipt/raw output exists for the timed-out attempt. Do not label this a response-shape failure or assert an unmeasured provider-side cause.
+
+There were **four dispatch attempts, three validated responses, zero evidence checks and zero final findings**. `PROVIDER_SHAPE` did not occur in the accepted responses; that limited observation does not establish general provider compatibility or identify the prior defect. Nine GitHub reads were mocked; **zero live GitHub requests** occurred. Human approval/manual copy, the public-PR workflow, normal production and DNS were not reached. The operator stopped immediately without any retry, repair inference, alternate model or corrective deployment.
+
+Worker version `bb77f323-5540-4d5c-94fc-6ec8d6a9246a`, namespace `a8ca773527d249489a6c6a66b586426c`, Vercel deployment `dpl_DLszt3LiJbSgomhMytfBkg6mjML5` and project `prj_llvnOtM5fceQ0pGRXY3AOxpKinIt` were deleted. API reads confirm absence; former Vercel/Worker URLs return **410/404**. Temporary CLI authorization was revoked (`loggedIn: false`), local secrets and this run's Wrangler logs removed, and unrelated-project fingerprints, including Projects 1/2, match. No DNS record changed. [Safe result and cleanup evidence](ai-agent-acceptance-result.json).
+
+Observed daily account usage moved **382.10 → 399.03 / 10,000 Neurons**. These potentially delayed shared observations are not exact per-call receipts. The coordinator retained **207.649 estimated Neurons**, including the timed-out attempt's unknown-outcome reservation; this is not billed usage or a provider-enforced per-call quota.
+
+The concrete blocker is accepting the next native model decision within the existing bounds after source investigation. Offline compatibility, independent validation and approval/copy tests pass; a completed real-AI review and production release remain unverified. The approved scope is consumed. No further experiment or new architecture is proposed by this report.
