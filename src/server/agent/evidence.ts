@@ -55,6 +55,12 @@ export class BackendEvidence {
   private readonly snapshot: ReviewInputSnapshot;
   private readonly files = new Map<string, RecordFile>();
   private readonly cards = new Map<string, Candidate>();
+  private metadataObserved = false;
+  private readonly listed = new Set<string>();
+  private progressRevision = 0;
+  get revision() {
+    return this.progressRevision;
+  }
   private constructor(
     snapshot: ReviewInputSnapshot,
     private readonly runId: string,
@@ -227,6 +233,27 @@ export class BackendEvidence {
       ? this.validateReviewFinding(issued)
       : reject('UNISSUED_EVIDENCE');
   }
+  allowedTools(): ToolCall['name'][] {
+    const pendingSource = [...this.listed].some((path) => {
+      const source = this.source(path);
+      return (
+        source &&
+        !source.record.file.rows.some(
+          (row) =>
+            row.kind === 'add' && source.record.observed.has(row.newLine!),
+        )
+      );
+    });
+    return [
+      ...(!this.metadataObserved ? ['getPullRequest' as const] : []),
+      ...(!pendingSource && this.listed.size < this.files.size
+        ? ['listChangedFiles' as const]
+        : []),
+      'readFileContext',
+      'createReviewFinding',
+      'validateReviewFinding',
+    ];
+  }
   execute(call: ToolCall): unknown {
     this.budget.tool();
     let data: unknown,
@@ -245,6 +272,10 @@ export class BackendEvidence {
           headRepository: pr.headRepo?.fullName ?? null,
           changedFiles: pr.changedFiles,
           snapshotVerified: !!this.snapshot.verification.after,
+        };
+        commit = () => {
+          if (!this.metadataObserved) this.progressRevision++;
+          this.metadataObserved = true;
         };
         break;
       }
@@ -271,6 +302,15 @@ export class BackendEvidence {
                 (!raw.context ? 'Pinned context unavailable.' : undefined),
             })),
           nextOffset: offset + count < this.files.size ? offset + count : null,
+        };
+        commit = () => {
+          for (const path of [...this.files.keys()].slice(
+            offset,
+            offset + count,
+          )) {
+            if (!this.listed.has(path)) this.progressRevision++;
+            this.listed.add(path);
+          }
         };
         break;
       }
@@ -309,8 +349,10 @@ export class BackendEvidence {
           })),
         };
         commit = () => {
-          for (let line = startLine; line <= endLine; line++)
+          for (let line = startLine; line <= endLine; line++) {
+            if (!source.record.observed.has(line)) this.progressRevision++;
             source.record.observed.add(line);
+          }
         };
         break;
       }
@@ -329,6 +371,8 @@ export class BackendEvidence {
         };
         if (verdict.finding)
           commit = () => {
+            if (!this.cards.has(verdict.finding!.evidenceId))
+              this.progressRevision++;
             this.cards.set(
               verdict.finding!.evidenceId,
               structuredClone(verdict.finding!),

@@ -9,6 +9,7 @@ export class AgentFailure extends Error {
       | 'TIME_LIMIT'
       | 'STEP_LIMIT'
       | 'TOOL_LIMIT'
+      | 'TOOL_NO_PROGRESS'
       | 'MODEL_CALL_LIMIT'
       | 'MODEL_INPUT_LIMIT'
       | 'MODEL_OUTPUT_LIMIT'

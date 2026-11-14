@@ -1,4 +1,6 @@
-# Compact AI decisions and final release scope
+# Compact AI decisions and original release scope
+
+**Protocol-2 implementation history.** The authorized run on this protocol produced 13 valid native decisions, then failed on an inventory loop. Current model protocol 3 adds backend-owned progress capabilities. See [actual result and focused correction](AI-TOOL-PROGRESS.md).
 
 ## Implemented correction
 
@@ -38,9 +40,9 @@ Offline evidence: `tests/fixtures/native-decisions.json` is explicitly synthetic
 
 Local verification: **320 unit/integration tests and 32 desktop/mobile Playwright tests passed**, along with types, ESLint, formatting, frontend/Node builds, Cloudflare dry compilation, packaged-artifact checks and synthetic agent demonstration. Dependency audit: **zero vulnerabilities**. The mock investigation retained all three canonical findings, five inspected/semantically checked files of eight, two benign/unsupported refusals, 12 tool calls and nine mocked GitHub reads. Windows Playwright web-server teardown required terminating its verified loopback child after all cases completed; the runner then exited successfully. No live GitHub/model calls or cloud/DNS changes occurred during implementation.
 
-## One consolidated acceptance and release authorization — pending
+## Original consolidated scope — authorized and consumed
 
-This is a concrete release request, not an authorization to execute. Previous experiment permissions are consumed. Do not provision, infer or edit DNS until the user approves this scope for the final verified commit and exact-SHA CI.
+This scope was authorized for `31d48d7` and consumed by the failed synthetic acceptance. It grants no retry. The original scope is preserved below for audit; [the corrected replacement scope](AI-TOOL-PROGRESS.md) needs fresh approval after exact-SHA CI.
 
 1. Read-only preflight: confirm Workers Free, SQLite Durable Objects Free eligibility, Vercel Hobby/noncommercial personal-portfolio eligibility and available allowances; native Gemma availability/contract; current shared Neuron usage with at least **2,000 remaining**; and unchanged Projects 1/2 fingerprints. Start more than 60 seconds before UTC reset. Stop if any mandatory check fails. Estimated Neurons are not enforceable provider per-call quotas and this experiment can consume allowance shared with Projects 1/2.
 2. Create **one** `prism-ai-review` Worker/native Gemma binding and its **one counter-only Durable Object namespace**, and **one** `mubidotjs-prism` Hobby project with **at most two deployments of the verified SHA**. No paid changes, unrelated resources or GitHub credentials. Use fresh backend-only secrets, protected staged-Production acceptance, explicit environment values in both Preview/Production, Node 24, the existing 40-second platform duration and 30-second review deadline. The first artifact exposes only the secret/expiry-protected fixed synthetic workflow, session and approval; live review/ingestion and transport fixture routes are absent.

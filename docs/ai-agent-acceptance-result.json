@@ -1,206 +1,234 @@
 {
-  "schemaVersion": 1,
-  "testedSha": "11648bd88dcd82a94b760700e63a1b7b47c3d996",
-  "baselineCi": {
-    "runId": 43551120261,
-    "conclusion": "success"
+  "testedSha": "31d48d7bc78d3896b045d7cc251719a03ab77984",
+  "result": "FAIL",
+  "failure": {
+    "safeCode": "TOOL_LIMIT",
+    "classificationSource": "backend result",
+    "boundary": "bounded agent workflow finalization"
   },
-  "authorization": {
-    "syntheticWorkflows": 1,
-    "maxNativeDispatches": 16,
-    "maxWorkflowMs": 30000,
-    "maxEstimatedSharedNeurons": 2000,
-    "liveGithubRequests": 0,
-    "productionLaunch": false,
-    "retries": false
-  },
-  "acceptance": "FAIL",
-  "safeError": "INVALID_MODEL_RESPONSE",
-  "failingBoundary": "native assistant content/decision JSON/schema validation in Cloudflare relay",
-  "firstValidatedDecision": {
-    "type": "tool",
-    "name": "getPullRequest"
-  },
-  "failedDecisionNumber": 2,
-  "nativeDispatches": 2,
-  "adapterValidatedDecisions": 1,
-  "validatedFindings": [],
-  "approval": {
-    "status": "NOT_REACHED",
-    "reason": "No validated findings"
-  },
-  "liveGithubRequests": 0,
-  "mockedGithubRequests": 9,
-  "budget": {
-    "steps": 2,
-    "tools": 1,
-    "modelCalls": 2,
-    "validationChecks": 0,
-    "observationBytes": 555,
-    "upstreamBytes": 134477,
-    "sourceFiles": 5,
-    "elapsedMs": 2412
-  },
-  "engineStatus": "failed",
-  "rejected": [
-    {
-      "code": "INVALID_MODEL_RESPONSE"
-    }
-  ],
-  "trace": [
-    {
-      "stage": "investigate",
-      "step": 0
-    },
-    {
-      "stage": "select-read-only-tool",
-      "step": 1
-    },
-    {
-      "stage": "observe",
-      "step": 1,
-      "tool": "getPullRequest"
-    },
-    {
-      "stage": "select-read-only-tool",
-      "step": 2
-    },
-    {
-      "stage": "finalize",
-      "step": 2
-    }
-  ],
-  "ai": {
-    "mode": "workers-ai",
-    "realInference": true,
-    "attempts": 2,
-    "responses": 1
-  },
-  "clientElapsedMs": 7598,
-  "usage": {
-    "dailyNeuronsBefore": 0,
-    "dailyNeuronsAfter": 16.94,
-    "dailyQuota": 10000,
-    "rolling24HourBefore": 7.78,
-    "rolling24HourAfter": 24.72,
-    "estimatedReservationAfter": 111.302,
-    "note": "Shared account observations may include concurrent use; reservation includes unknown-outcome hold and is not billed usage.",
-    "observedAt": "2026-11-14T03:58:32.826Z"
-  },
-  "initialRelayStatus": {
+  "realNativeDispatches": 13,
+  "validatedNativeDecisions": 13,
+  "findings": 0,
+  "validationChecks": 0,
+  "humanApprovalManualCopy": "NOT_REACHED",
+  "production": "NOT_DEPLOYED",
+  "publicGitHubRequests": 0,
+  "mockedGitHubRequests": 9,
+  "workflow": {
+    "kind": "synthetic",
+    "attempted": true,
+    "startedAt": "2026-11-14T07:36:04.816Z",
+    "maxDispatches": 16,
+    "passed": false,
     "httpStatus": 200,
-    "calls": 0,
-    "reservedNeurons": 0,
-    "reviews": 0
-  },
-  "finalRelayStatus": {
-    "httpStatus": 200,
-    "calls": 2,
-    "reservedNeurons": 111.30199999999999,
-    "reviews": 1
-  },
-  "preflight": {
-    "passed": true,
-    "cloudflarePlan": "free",
-    "durableObjectsFree": true,
-    "sharedDailyNeurons": 0,
-    "sharedDailyQuota": 10000,
-    "rolling24HourNeurons": 7.78,
-    "remainingSharedNeuronsObserved": 10000,
-    "browserCheckedAt": "2026-11-14T03:31:58.533Z",
-    "vercelPlan": "hobby",
-    "vercelBillingStatus": "active",
-    "model": "@cf/google/gemma-4-26b-a4b-it",
-    "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
-    "usage": {
-      "fastDataTransferMB": 662.84,
-      "fastDataTransferIncludedGB": 100,
-      "fastOriginTransferMB": 302.68,
-      "fastOriginTransferIncludedGB": 10,
-      "invocations": 33293,
-      "invocationsIncluded": 1000000,
-      "fluidMemoryGBh": 13.6,
-      "fluidMemoryIncludedGBh": 360,
-      "fluidCpu": "17m 15s",
-      "fluidCpuIncluded": "4h"
+    "exitCode": 0,
+    "status": "partial",
+    "ai": {
+      "mode": "workers-ai",
+      "realInference": true,
+      "attempts": 13,
+      "responses": 13
     },
-    "modelContract": true,
-    "requestParameters": {
-      "maxCompletionTokens": 2048,
-      "thinking": false,
-      "stream": false,
-      "n": 1,
-      "temperature": 0
+    "budget": {
+      "steps": 13,
+      "tools": 12,
+      "modelCalls": 13,
+      "validationChecks": 0,
+      "observationBytes": 7804,
+      "githubRequests": 9,
+      "upstreamBytes": 134477,
+      "sourceFiles": 5,
+      "elapsedMs": 15707
     },
-    "maxPerDecisionNeuronEstimate": 523.633,
-    "estimatedExperimentCeiling": 2000,
-    "checkedAt": "2026-11-14T03:45:31.322Z",
-    "quotaCheckedAt": "2026-11-14T03:47:23.027Z",
-    "personalNoncommercialPortfolio": true
-  },
-  "resources": {
-    "vercelProject": {
-      "id": "prj_IdHB8sDL6G1thuY0ih4RneBgRsp5",
-      "name": "mubidotjs-prism",
-      "team": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
-      "nodeVersion": "24.x",
-      "autoExposeSystemEnvs": true
-    },
-    "vercelDeployments": [
+    "rejected": [
       {
-        "phase": "acceptance",
-        "startedAt": "2026-11-14T03:51:36.413Z",
-        "id": "dpl_72usfbe5LaDYxKJTsmwVeVvank79",
-        "url": "https://mubidotjs-prism-iasi765p8-mubidotjs-projects.vercel.app",
-        "readyState": "READY",
-        "target": "production",
-        "nodeVersion": "24.x",
-        "metaSha": "11648bd88dcd82a94b760700e63a1b7b47c3d996"
+        "code": "TOOL_LIMIT"
       }
     ],
-    "cloudflare": {
-      "worker": "prism-ai-review",
-      "origin": "https://prism-ai-review.mubikhan69.workers.dev",
-      "bindings": [
-        {
-          "name": "AI",
-          "type": "ai"
-        },
-        {
-          "name": "RELAY_SECRET",
-          "type": "secret_text"
-        },
-        {
-          "name": "REVIEW_BUDGET",
-          "type": "durable_object_namespace",
-          "class_name": "ReviewBudget",
-          "namespace_id": "e57db35875274ef684b30eb92f5d9b80"
-        }
-      ],
-      "deploymentIds": [
-        {
-          "id": "9bb37348-0301-47eb-9cdb-b06a77f21eb3",
-          "versions": [
-            {
-              "version_id": "3c70b27e-fecc-4096-8d16-e7961adcb0ac",
-              "percentage": 100
-            }
-          ]
-        }
-      ],
-      "cliSuccess": true
+    "trace": [
+      {
+        "stage": "investigate",
+        "step": 0
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 1
+      },
+      {
+        "stage": "observe",
+        "step": 1,
+        "tool": "getPullRequest"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 2
+      },
+      {
+        "stage": "observe",
+        "step": 2,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 3
+      },
+      {
+        "stage": "observe",
+        "step": 3,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 4
+      },
+      {
+        "stage": "observe",
+        "step": 4,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 5
+      },
+      {
+        "stage": "observe",
+        "step": 5,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 6
+      },
+      {
+        "stage": "observe",
+        "step": 6,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 7
+      },
+      {
+        "stage": "observe",
+        "step": 7,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 8
+      },
+      {
+        "stage": "observe",
+        "step": 8,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 9
+      },
+      {
+        "stage": "observe",
+        "step": 9,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 10
+      },
+      {
+        "stage": "observe",
+        "step": 10,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 11
+      },
+      {
+        "stage": "observe",
+        "step": 11,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 12
+      },
+      {
+        "stage": "observe",
+        "step": 12,
+        "tool": "listChangedFiles"
+      },
+      {
+        "stage": "select-read-only-tool",
+        "step": 13
+      },
+      {
+        "stage": "finalize",
+        "step": 13
+      }
+    ],
+    "capture": {
+      "captureId": "ad3584d8-0ec6-49a8-8554-151063d5acaf",
+      "url": "https://github.com/example/checkout/pull/42",
+      "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "repository": "example/checkout"
     },
-    "namespaceId": "e57db35875274ef684b30eb92f5d9b80"
+    "findings": [],
+    "clientElapsedMs": 20073
   },
-  "routeBoundary": {
-    "syntheticOnly": true,
-    "livePrIngestionRoute": false,
-    "normalAgentRoute": false,
-    "transportFixtureRoute": false,
-    "protectedByVercelAuthentication": true
+  "cloudflare": {
+    "worker": "prism-ai-review",
+    "origin": "https://prism-ai-review.mubikhan69.workers.dev",
+    "bindings": [
+      {
+        "name": "AI",
+        "type": "ai"
+      },
+      {
+        "name": "RELAY_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "REVIEW_BUDGET",
+        "type": "durable_object_namespace",
+        "class_name": "ReviewBudget",
+        "namespace_id": "c83a15c34896471099b07159c3906840"
+      }
+    ],
+    "deploymentIds": [
+      {
+        "id": "37e777e1-d08a-4edc-907d-47e8d2e9dda0",
+        "versions": [
+          {
+            "version_id": "98e980eb-102f-4a30-9d9f-2aa2674d3713",
+            "percentage": 100
+          }
+        ]
+      }
+    ],
+    "cliSuccess": true
+  },
+  "vercelDeployments": [
+    {
+      "phase": "acceptance",
+      "startedAt": "2026-11-14T07:34:52.446Z",
+      "id": "dpl_8fkzhhn2kyNFDv8XBsgAhViWDykG",
+      "url": "https://mubidotjs-prism-46sw5d767-mubidotjs-projects.vercel.app",
+      "readyState": "READY",
+      "target": "production",
+      "nodeVersion": "24.x",
+      "metaSha": "31d48d7bc78d3896b045d7cc251719a03ab77984"
+    }
+  ],
+  "sharedUsage": {
+    "dailyBefore": 16.936363220214844,
+    "dailyAfter": 225.71814918518066,
+    "dailyAllowance": 10000,
+    "coordinatorEstimatedSettledNeurons": 224.63799999999992,
+    "caveat": "Shared/delayed account observations, not exact per-call billing receipts. Coordinator estimate is not billed usage or a provider-enforced per-call quota."
   },
   "cleanup": {
-    "startedAt": "2026-11-14T03:54:36.320Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
     "cloudflareWorkerAbsent": true,
@@ -208,8 +236,8 @@
     "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-iasi765p8-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 302
+        "url": "https://mubidotjs-prism-46sw5d767-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 404
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
@@ -245,31 +273,16 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-14T04:00:46.213Z",
-    "vercelDeploymentNotFound": true,
-    "vercelPlanAfter": "hobby",
-    "finalEndpointChecks": [
-      {
-        "url": "https://mubidotjs-prism-iasi765p8-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 410
-      },
-      {
-        "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
-        "status": 404
-      }
-    ],
-    "actualNativeDispatches": 2,
-    "wranglerLoggedOut": true,
-    "wranglerWhoami": "NOT_AUTHENTICATED",
-    "localSecretFilesAbsent": true,
-    "cloudflarePlanAfter": "free",
-    "temporaryCliLogsRemoved": true
+    "finishedAt": "2026-11-14T08:12:08.477Z",
+    "temporaryCliRevoked": true,
+    "wranglerLoggedIn": false,
+    "noDnsChanges": true,
+    "noProductionDeployment": true
   },
-  "limitsOfEvidence": [
-    "INVALID_MODEL_RESPONSE localizes the failure to native assistant content/decision validation in the Cloudflare relay, not provider unavailability.",
-    "Raw model output was not retained, so the evidence cannot distinguish JSON parsing, decision-schema/argument rejection or the content-byte check.",
-    "One getPullRequest decision was validated; no source investigation or finding validation completed.",
-    "Shared daily/rolling usage observations are delayed and may include concurrent account activity; reservation totals are estimates with an unknown-outcome hold, not billed usage.",
-    "Transport acceptance and the basic Gemma probe were not repeated."
+  "previousEvidence": "ai-agent-acceptance-11648bd-result.json",
+  "limitations": [
+    "No raw model output or tool arguments were retained. Trace proves repeated inventory selections, not identical arguments.",
+    "All thirteen native decisions passed JSON/action/schema validation; this does not prove a completed AI review.",
+    "The progress-aware offline correction has not received a new live call."
   ]
 }

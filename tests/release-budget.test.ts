@@ -8,9 +8,10 @@ import {
 import worker from '../src/release/cloudflare';
 const principal = 'd'.repeat(64);
 const request: ModelRequest = {
-  protocolVersion: 2,
+  protocolVersion: 3,
   system: SYSTEM_POLICY,
   tools: TOOL_CONTRACTS,
+  allowedTools: TOOL_CONTRACTS.map((t) => t.name),
   factCards: [],
   untrusted: { label: 'UNTRUSTED_REPOSITORY_DATA', observations: [] },
   remaining: { steps: 15, toolCalls: 12, modelCalls: 15 },

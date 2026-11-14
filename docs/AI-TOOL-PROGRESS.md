@@ -1,0 +1,42 @@
+# Real acceptance result and focused progress correction
+
+## Observed failure
+
+The authorized run on `31d48d7bc78d3896b045d7cc251719a03ab77984` made **13 actual native Gemma dispatches and received 13 valid native function decisions**. It used one `getPullRequest` and eleven `listChangedFiles` tool calls, then attempted another inventory action after exhausting the 12-tool budget. It never requested source, proposed a hypothesis or reached evidence validation. The terminal code was **`TOOL_LIMIT`**, with zero findings and approval/manual copy not reached. Engine time: **15,707 ms**; client time including CLI: **20,073 ms**. Nine GitHub reads were mocked; zero live GitHub requests occurred.
+
+`INVALID_MODEL_RESPONSE` did not occur in this run. This establishes successful native decision parsing, not a reliable completed review. Only safe tool names/counts were retained, so the evidence does not establish whether every inventory call had identical arguments. [Safe result, identities and cleanup](ai-agent-acceptance-result.json). [Earlier decision-2 parsing failure](ai-agent-acceptance-11648bd-result.json).
+
+The private relay was version `98e980eb-102f-4a30-9d9f-2aa2674d3713`, with namespace `c83a15c34896471099b07159c3906840`. The protected Vercel acceptance deployment was `dpl_8fkzhhn2kyNFDv8XBsgAhViWDykG`, on the exact tested SHA. These resources were deleted after failure; both former endpoints return 404. The temporary OAuth grant was revoked and local experiment secrets removed. All existing-project fingerprints, including Projects 1/2, match. No normal production deployment, DNS change, retry or corrective cloud deployment followed.
+
+Shared daily usage moved **16.94 → 225.72 / 10,000 Neurons**. These are account-wide, potentially delayed observations, not exact per-call receipts. The coordinator settled an estimated **224.638 Neurons**, not billed usage or an enforceable provider quota.
+
+## Necessary correction, implemented offline
+
+The previous model request advertised every tool on every turn, including metadata and inventory that had already been obtained. The static instruction to start by listing files also appeared on each stateless model dispatch. The trace establishes an inventory loop; it cannot establish the model's internal reason for choosing it.
+
+The existing state machine now sends **model protocol 3** with a backend-owned `allowedTools` set:
+
+- Successful metadata observation removes `getPullRequest` for the remaining review.
+- A bounded inventory that exposes retrievable, uninspected source removes `listChangedFiles` until the listed files have an actual added source line observed. Unchanged context alone does not satisfy this gate. Unavailable/binary files do not strand pagination.
+- Later inventory remains available when those source windows have been investigated and unlisted files remain. No ingestion, context, finding, request or time limit is reduced. Coverage continues to describe only observed windows and supported checks.
+- Cloudflare advertises only the current named native investigation functions, plus finish/refuse. It independently refuses a model choosing a function outside that set. Node enforces the same set. Exhausted tool budgets advertise only terminal native actions.
+- Node refuses an identical normalized tool call without intervening backend progress as `TOOL_NO_PROGRESS` before executing it again. A private revision advances only for newly observed metadata, inventory paths/source lines or issued fact cards; a refused hypothesis may be reconsidered after new source evidence. This bounds metadata, inventory, source and hypothesis repetition without a provider retry. Terminal failures still suppress all findings and approval.
+
+The model can still finish honestly with no findings or refuse insufficient evidence. The backend does not manufacture hypotheses or auto-select deterministic matches. The three supported predicates, exact pinned-SHA evidence, independent final AST validation, budgets, human approval and existing UI remain intact. Public result protocol 1 is unchanged. Repository content cannot alter capabilities; only the private Node capture/state selects them, and the relay is authenticated server-to-server.
+
+Focused regressions exercise the observed repeated-inventory sequence, different-argument inventory attempts while source is pending, added versus unchanged coordinates, unavailable files, pagination recovery, terminal actions at the budget boundary, native function filtering and producer-side refusal. Existing integrated three-finding/coverage parity remains required. These are synthetic tests, not a new live result.
+
+Local verification passed: **331 unit/integration tests**, **32 desktop/mobile Playwright tests**, types, ESLint, formatting, frontend/Node builds, Cloudflare dry compilation, packaged-artifact checks and the synthetic agent demonstration. Dependency audit reported **zero vulnerabilities**. No transport experiment, production deployment or model call was made for this offline correction. The existing three canonical findings, source links and honest coverage retain their mock-backed parity.
+
+## One replacement acceptance and release request — not yet authorized
+
+The previous run's no-retry/failure-cleanup authorization is consumed. After the corrected commit passes exact-SHA CI, request **one** replacement execution of the remaining scope:
+
+1. Retain the supplied authenticated Free/Hobby/Dynadot evidence. Keep the older Function invocation/CPU/memory figures explicitly historical; do not block on unavailable paid Observability queries or request more usage screenshots without concrete exhaustion/billing evidence. Refresh model eligibility, native contract, shared Neuron usage and existing-project fingerprints through the scoped API where available. Stop on a real eligibility/quota failure. No transport benchmarks or basic provider probes.
+2. Create one `prism-ai-review` Worker with native Gemma and one counter-only SQLite Durable Object namespace; one `mubidotjs-prism` Hobby project and at most two deployments of the corrected, CI-verified SHA. Use the same backend-only secrets, access-code sessions, protected acceptance artifact, Node 24 and existing 40-second platform/30-second review bounds.
+3. Run one protected synthetic workflow: at most **16 native dispatches/30 seconds**, requiring real source investigation, a supported hypothesis, selection of an issued ID, independent backend validation and human approval/manual-copy verification. No live GitHub access in that workflow. Stop on the first failed criterion; no repair call, fallback, retry or corrective redeployment.
+4. Only on success, deploy the normal application as deployment two, run one real public-PR AI workflow and at most one deterministic ingestion. Across the replacement run: at most **two workflows, 32 native dispatches, 2,000 estimated shared Neurons and 24 public GitHub GETs**, preserving every existing per-review limit. The Neuron estimate is not a provider-enforced cap and shares account allowance with Projects 1/2.
+5. Only on complete acceptance, retain the production services, make the frontend/demo public and keep live endpoints access-code protected. Attach only `prism.mubashirhussain.dev` and obtain Vercel's exact generated DNS target. If authenticated Dynadot editing remains unavailable, provide that exact record for the user to enter manually. Preserve `webhooks`, `release-notes`, `invoice` and all other records. Do not overwrite conflicts. Verify HTTPS, canonical URL, icons, desktop/mobile and same-origin functionality using at most five bounded final checks over 15 minutes, with no additional inference.
+6. Delete acceptance resources/operator secrets and revoke temporary CLI authorization. On failure, remove all newly created resources and only this run's DNS additions, verify cleanup and unchanged Projects 1/2, and report the concrete failing boundary. No paid services/upgrades, production launch on failed AI acceptance, or further automatic retry.
+
+This correction is not release completion. A genuinely AI-powered review and approval/copy must pass before a live production URL is claimed.

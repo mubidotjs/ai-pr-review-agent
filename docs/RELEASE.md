@@ -1,6 +1,6 @@
 # Release implementation and acceptance authorization
 
-**Current release request:** [compact decisions, pending bounded acceptance, launch and exact DNS scope](AI-DECISIONS.md). Historical scopes/results below do not authorize another run.
+**Current release request:** [progress-aware decisions, bounded replacement acceptance, launch and exact DNS scope](AI-TOOL-PROGRESS.md). Historical scopes/results below do not authorize another run.
 
 **Latest bounded verification:** the separately authorized synthetic workflow on `11648bd88dcd82a94b760700e63a1b7b47c3d996` stopped with **`INVALID_MODEL_RESPONSE` on decision 2**, after one valid `getPullRequest` decision. The failing boundary is the Cloudflare relay's assistant content/decision validation, not an established provider outage. There were 2 native dispatches, no findings, no live GitHub requests and no production launch. Approval/copy was not reached. All temporary resources and CLI access were removed; Projects 1/2 remain unchanged. [Latest safe evidence](ai-agent-acceptance-result.json) · [Executed scope](AI-DECISION-ERRORS.md).
 

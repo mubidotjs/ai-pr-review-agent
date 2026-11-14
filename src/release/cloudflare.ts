@@ -13,7 +13,7 @@ import {
   TOOL_CONTRACTS,
   factCardSchema,
   nativeDecision,
-  NATIVE_TOOLS,
+  nativeToolsFor,
 } from '../server/agent/protocol';
 
 interface Storage {
@@ -64,11 +64,23 @@ const principal = z.string().regex(/^[a-f0-9]{64}$/);
 const grantId = z.string().uuid();
 const requestSchema = z
   .object({
-    protocolVersion: z.literal(2),
+    protocolVersion: z.literal(3),
     system: z.literal(SYSTEM_POLICY),
     tools: z
       .array(z.object({ name: z.string(), contract: z.string() }).strict())
       .length(5),
+    allowedTools: z
+      .array(
+        z.enum([
+          'getPullRequest',
+          'listChangedFiles',
+          'readFileContext',
+          'createReviewFinding',
+          'validateReviewFinding',
+        ]),
+      )
+      .max(5)
+      .refine((names) => new Set(names).size === names.length),
     factCards: z.array(factCardSchema).max(100),
     untrusted: z
       .object({
@@ -277,10 +289,14 @@ export class ReviewBudget {
           bytes = new TextEncoder().encode(text).length;
         if (bytes > RELEASE.inputBytes)
           throw new ReleaseError('MODEL_INPUT_LIMIT', 413);
+        const availableTools = nativeToolsFor(
+          decisionInput.request.allowedTools,
+        );
         const inputBound =
           bytes +
-          new TextEncoder().encode(SYSTEM_POLICY + JSON.stringify(NATIVE_TOOLS))
-            .length +
+          new TextEncoder().encode(
+            SYSTEM_POLICY + JSON.stringify(availableTools),
+          ).length +
           1024;
         const reserved = neuronEstimate(inputBound, RELEASE.completionTokens);
         const reservedDay = new Date().toISOString().slice(0, 10);
@@ -324,7 +340,7 @@ export class ReviewBudget {
                 stream: false,
                 n: 1,
                 temperature: 0,
-                tools: NATIVE_TOOLS,
+                tools: availableTools,
                 tool_choice: 'required',
                 parallel_tool_calls: false,
               },
@@ -388,6 +404,11 @@ export class ReviewBudget {
           throw new ReleaseError('MODEL_OUTPUT_LIMIT', 502);
         const decision = nativeDecision(call.name, call.arguments);
         if (!decision.success) throw new ReleaseError(decision.code, 502);
+        if (
+          decision.data.type === 'tool' &&
+          !decisionInput.request.allowedTools.includes(decision.data.call.name)
+        )
+          throw new ReleaseError('MODEL_ACTION_UNSUPPORTED', 502);
         await this.atomic((c) => {
           if (c.grants[decisionInput.grant])
             c.grants[decisionInput.grant].uncertain = false;

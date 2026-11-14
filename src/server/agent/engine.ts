@@ -128,14 +128,19 @@ export async function runAgentReview(
       result.capture = evidence.identity();
       if (!evidence.verified) throw new AgentFailure('SNAPSHOT_UNVERIFIED');
       const observations: Observation[] = [];
+      const executed = new Map<string, number>();
       for (;;) {
         budget.step();
         stage('select-read-only-tool');
         budget.model();
         const request: ModelRequest = {
-          protocolVersion: 2,
+          protocolVersion: 3,
           system: SYSTEM_POLICY,
           tools: TOOL_CONTRACTS,
+          allowedTools:
+            budget.toolCalls < budget.limits.toolCalls
+              ? evidence.allowedTools()
+              : [],
           factCards: evidence.factCards(),
           untrusted: {
             label: 'UNTRUSTED_REPOSITORY_DATA',
@@ -173,7 +178,15 @@ export async function runAgentReview(
         }
         if (decision.data.type === 'tool') {
           const call = decision.data.call;
+          if (budget.toolCalls >= budget.limits.toolCalls)
+            throw new AgentFailure('TOOL_LIMIT');
+          const key = JSON.stringify(call);
+          if (executed.get(key) === evidence.revision)
+            throw new AgentFailure('TOOL_NO_PROGRESS');
+          if (!request.allowedTools.includes(call.name))
+            throw new AgentFailure('MODEL_ACTION_UNSUPPORTED');
           const data = evidence.execute(call);
+          executed.set(key, evidence.revision);
           observations.push({ tool: call.name, data });
           const refused = data as {
             ok?: boolean;
@@ -239,6 +252,7 @@ export async function runAgentReview(
         : [
               'STEP_LIMIT',
               'TOOL_LIMIT',
+              'TOOL_NO_PROGRESS',
               'MODEL_CALL_LIMIT',
               'VALIDATION_LIMIT',
               'TIME_LIMIT',

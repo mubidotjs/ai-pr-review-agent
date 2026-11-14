@@ -235,7 +235,7 @@ describe('safe native → relay → adapter → engine error provenance', () => 
     expect(f.run).toHaveBeenCalledTimes(1);
   });
 
-  it.each(['system', 'tools'] as const)(
+  it.each(['system', 'tools', 'allowedTools'] as const)(
     'reports a %s contract failure before native dispatch',
     async (field) => {
       const f = await setup();
@@ -244,7 +244,8 @@ describe('safe native → relay → adapter → engine error provenance', () => 
         if (new URL(String(input)).pathname === '/decide') {
           const body = JSON.parse(String(init?.body));
           if (field === 'system') body.request.system = PRIVATE;
-          else body.request.tools[0].contract = PRIVATE;
+          else if (field === 'tools') body.request.tools[0].contract = PRIVATE;
+          else body.request.allowedTools = [PRIVATE];
           return original(input, { ...init, body: JSON.stringify(body) });
         }
         return original(input, init);
