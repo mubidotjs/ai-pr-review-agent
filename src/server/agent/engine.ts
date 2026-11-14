@@ -176,6 +176,8 @@ export async function runAgentReview(
           result.rejected.push({ code: decision.data.reason });
           break;
         }
+        let proposed: string[];
+        let selectedByValidation = false;
         if (decision.data.type === 'tool') {
           const call = decision.data.call;
           if (budget.toolCalls >= budget.limits.toolCalls)
@@ -199,11 +201,20 @@ export async function runAgentReview(
               : undefined;
           if (code) result.rejected.push({ code });
           stage('observe', call.name, code);
-          continue;
+          if (
+            call.name !== 'validateReviewFinding' ||
+            refused.accepted !== true
+          )
+            continue;
+          // Successful model-selected validation intentionally ends investigation.
+          // Finalization below independently resolves the issued card again.
+          proposed = [call.arguments.evidenceId];
+          selectedByValidation = true;
+        } else {
+          proposed = decision.data.findingIds;
         }
         stage('generate-findings');
         stage('validate');
-        const proposed = decision.data.findingIds;
         if (proposed.length > budget.limits.findings)
           throw new AgentFailure('VALIDATION_LIMIT');
         const seen = new Set<string>();
@@ -230,7 +241,12 @@ export async function runAgentReview(
           });
         }
         const coverage = evidence.summary();
+        if (selectedByValidation)
+          result.limitations.push(
+            'Investigation stopped after one explicit AI selection. Remaining findings and uninspected source are unreviewed.',
+          );
         result.status =
+          selectedByValidation ||
           result.rejected.length ||
           coverage.inspected < coverage.total ||
           coverage.semanticChecksCompleted < coverage.total

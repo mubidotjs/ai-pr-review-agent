@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { runAgentReview } from '../../src/server/agent/engine';
-import { oneFindingModel } from '../agent-fixtures';
+import { oneFindingModel, tool } from '../agent-fixtures';
 import { fixtureTransport, PR_URL } from '../upstream-fixtures';
 
 test('PRISM launch metadata and local brand assets render without external requests', async ({
@@ -33,13 +33,27 @@ test('PRISM launch metadata and local brand assets render without external reque
   expect(external).toEqual([]);
 });
 
-test('mock-backed access, evidence inspection, human approval and manual copy', async ({
+test('mock-backed selected-validation draft, human approval and manual copy without another decision', async ({
   page,
+  context,
 }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   const { result, humanApproval } = await runAgentReview(
     { url: PR_URL },
-    { model: oneFindingModel(), transport: fixtureTransport() },
+    {
+      model: oneFindingModel((request) =>
+        tool({
+          name: 'validateReviewFinding',
+          arguments: { evidenceId: request.factCards[0].evidenceId },
+        }),
+      ),
+      transport: fixtureTransport(),
+    },
   );
+  expect(result.status).toBe('partial');
+  expect(result.budget.modelCalls).toBe(3);
+  expect(result.budget.validationChecks).toBe(3);
+  expect(result.findings).toHaveLength(1);
   await page.route('**/api/session', (route) =>
     route.fulfill({ json: { authenticated: true } }),
   );
@@ -79,12 +93,24 @@ test('mock-backed access, evidence inspection, human approval and manual copy', 
   ).toHaveAttribute('href', result.findings[0].sourceUrl);
   await expect(panel.getByRole('checkbox')).toBeChecked();
   await expect(panel.getByLabel(/Human-approved Markdown/)).toHaveCount(0);
+  await expect(
+    panel.getByRole('button', { name: 'Copy approved AI report' }),
+  ).toHaveCount(0);
   await panel
     .getByRole('button', { name: /I reviewed these findings/ })
     .click();
   await expect(panel.getByLabel(/Human-approved Markdown/)).toContainText(
     'Human-approved selection',
   );
+  await panel.getByRole('button', { name: 'Copy approved AI report' }).click();
+  const clipboard = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboard).toContain('Human-approved selection');
+  expect(clipboard).toContain('Status: partial');
+  expect(clipboard).toContain(result.findings[0].sourceUrl);
+  expect(clipboard).toContain(
+    'Investigation stopped after one explicit AI selection',
+  );
+  expect(clipboard).toContain('7 uninspected');
   expect(
     await page.evaluate(() => ({
       local: localStorage.length,
