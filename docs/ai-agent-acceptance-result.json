@@ -1,111 +1,185 @@
 {
-  "testedSha": "b47c5f31e31ea8734ba6293269ea98432f283cd0",
-  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43595143698",
+  "testedSha": "d494bfd91d92fecf20dfde0b7bc0941d3628754c",
+  "testedCommitCI": "https://github.com/mubidotjs/ai-pr-review-agent/actions/runs/43602472066",
   "result": "FAIL",
-  "failure": {
-    "safeCode": "PROVIDER_TIMEOUT",
-    "classificationSource": "backend result",
-    "boundary": "native/relay invocation timeout; exact timeout source not established"
+  "criteria": {
+    "realAIReview": "PASS",
+    "backendIndependentValidation": "PASS",
+    "authenticatedServerApproval": "PASS",
+    "manualCopyUI": "FAIL",
+    "production": "NOT_DEPLOYED",
+    "customDomain": "PENDING"
   },
-  "realNativeDispatches": 4,
-  "validatedNativeDecisions": 3,
-  "backendValidationChecks": 0,
-  "acceptedHypothesisAndFactCardValidation": false,
-  "providerShapeObserved": false,
-  "finalFindings": 0,
-  "humanApprovalManualCopy": "NOT_REACHED",
-  "production": "NOT_DEPLOYED",
+  "failure": {
+    "safeCode": "COPY_UI_FAILED",
+    "boundary": "manual-copy UI verification after authenticated approval"
+  },
+  "realNativeDispatches": 1,
+  "validatedNativeResponses": 1,
+  "backendValidationChecks": 6,
+  "finalFindings": 3,
   "publicGitHubRequests": 0,
   "mockedGitHubRequests": 9,
   "workflow": {
     "kind": "synthetic",
     "attempted": true,
-    "startedAt": "2026-11-14T12:53:07.503Z",
-    "maxDispatches": 16,
-    "passed": false,
+    "startedAt": "2026-11-14T14:26:22.383Z",
+    "maxDispatches": 1,
+    "passed": true,
     "httpStatus": 200,
     "exitCode": 0,
-    "status": "failed",
+    "status": "partial",
     "ai": {
       "mode": "workers-ai",
       "realInference": true,
-      "attempts": 4,
-      "responses": 3
+      "attempts": 1,
+      "responses": 1
     },
     "budget": {
-      "steps": 4,
-      "tools": 3,
-      "modelCalls": 4,
-      "validationChecks": 0,
-      "observationBytes": 1861,
+      "steps": 2,
+      "tools": 6,
+      "modelCalls": 1,
+      "validationChecks": 6,
+      "observationBytes": 4119,
       "githubRequests": 9,
       "upstreamBytes": 134477,
       "sourceFiles": 5,
-      "elapsedMs": 22020
+      "elapsedMs": 3225
     },
-    "rejected": [
-      {
-        "code": "PROVIDER_TIMEOUT"
-      }
-    ],
+    "rejected": [],
     "trace": [
       {
         "stage": "investigate",
         "step": 0
       },
       {
-        "stage": "select-read-only-tool",
+        "stage": "prepare-evidence",
         "step": 1
       },
       {
-        "stage": "observe",
-        "step": 1,
-        "tool": "getPullRequest"
-      },
-      {
-        "stage": "select-read-only-tool",
+        "stage": "propose-once",
         "step": 2
       },
       {
-        "stage": "observe",
-        "step": 2,
-        "tool": "listChangedFiles"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 3
-      },
-      {
-        "stage": "observe",
-        "step": 3,
-        "tool": "readFileContext"
-      },
-      {
-        "stage": "select-read-only-tool",
-        "step": 4
+        "stage": "validate",
+        "step": 2
       },
       {
         "stage": "finalize",
-        "step": 4
+        "step": 2
       }
     ],
     "capture": {
-      "captureId": "103f57c3-6b89-4bbc-a408-b918d067c36e",
+      "captureId": "453395bc-e49d-430f-b9b7-89621d862c7e",
       "url": "https://github.com/example/checkout/pull/42",
       "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "baseSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
       "repository": "example/checkout"
     },
-    "findings": [],
-    "clientElapsedMs": 26798
+    "contextCoverage": {
+      "totalFiles": 8,
+      "inventoriedFiles": 8,
+      "knownAddedLines": 20,
+      "providedLines": 20,
+      "providedAddedLines": 20,
+      "omittedKnownAddedLines": 0,
+      "files": [
+        {
+          "path": "src/checkout/validate.ts",
+          "lines": [1, 2, 3, 4, 5, 6],
+          "addedLines": [1, 2, 3, 4, 5, 6]
+        },
+        {
+          "path": "src/auth/session.ts",
+          "lines": [1, 2, 3, 4],
+          "addedLines": [1, 2, 3, 4]
+        },
+        {
+          "path": "src/network/receipts.ts",
+          "lines": [1, 2, 3, 4],
+          "addedLines": [1, 2, 3, 4]
+        },
+        {
+          "path": "src/ui/format.ts",
+          "lines": [1, 2, 3],
+          "addedLines": [1, 2, 3]
+        },
+        {
+          "path": "src/docs/example.ts",
+          "lines": [1, 2, 3],
+          "addedLines": [1, 2, 3]
+        }
+      ],
+      "dispatch": "response-received"
+    },
+    "findings": [
+      {
+        "kind": "nan-comparison",
+        "path": "src/checkout/validate.ts",
+        "line": 2,
+        "severity": "medium",
+        "evidenceValidation": "backend-pinned-supported-predicate",
+        "source": "workers-ai"
+      },
+      {
+        "kind": "jwt-expiration-disabled",
+        "path": "src/auth/session.ts",
+        "line": 3,
+        "severity": "medium",
+        "evidenceValidation": "backend-pinned-supported-predicate",
+        "source": "workers-ai"
+      },
+      {
+        "kind": "tls-verification-disabled",
+        "path": "src/network/receipts.ts",
+        "line": 3,
+        "severity": "medium",
+        "evidenceValidation": "backend-pinned-supported-predicate",
+        "source": "workers-ai"
+      }
+    ],
+    "clientElapsedMs": 8051
   },
-  "timeoutBounds": {
-    "nativeDecisionMs": 18000,
-    "nodeRelayMs": 20000,
-    "applicationReviewMs": 30000,
-    "clientSeconds": 35,
-    "observedEngineMs": 22020,
-    "observedClientMs": 26798
+  "approval": {
+    "authenticatedServerApproval": "PASS",
+    "httpStatus": 200,
+    "selectedIndexes": [0, 1, 2],
+    "canonicalMarkdownComparison": "PASS",
+    "publicationPerformed": false,
+    "manualCopyUI": "FAIL",
+    "evidence": "The operator passed the deployed approval status, exact canonical Markdown and no-publication guards, then entered the separate local React clipboard replay. Its catch classified that later failure as COPY_UI_FAILED. The underlying UI exception was not retained; the exact failed assertion is unknown. No approval, UI or inference retry occurred."
+  },
+  "sharedQuota": {
+    "before": {
+      "checkedAt": "2026-11-14T14:21:56.593Z",
+      "dailyNeurons": 433.0545072555542,
+      "quota": 10000
+    },
+    "after": {
+      "checkedAt": "2026-11-14T14:27:18.399Z",
+      "dailyNeurons": 433.0545072555542,
+      "quota": 10000
+    },
+    "coordinator": {
+      "calls": 1,
+      "reservedNeurons": 13.092,
+      "reviews": 1,
+      "limits": {
+        "model": "@cf/google/gemma-4-26b-a4b-it",
+        "completionTokens": 2048,
+        "inputBytes": 49152,
+        "outputBytes": 32768,
+        "relayBytes": 655360,
+        "modelTimeoutMs": 18000,
+        "reviewMs": 30000,
+        "reviewsPerHour": 4,
+        "callsPerDay": 64,
+        "neuronsPerDay": 2000,
+        "draftMs": 300000
+      }
+    },
+    "authorizedRunEstimatedCeiling": 1200,
+    "explanation": "Coordinator settled balance is 13.092 estimated Neurons derived from native token usage. Account analytics returned the same 433.0545072555542 before/after; shared, delayed analytics are not an exact per-call receipt."
   },
   "resources": {
     "cloudflare": {
@@ -124,15 +198,15 @@
           "name": "REVIEW_BUDGET",
           "type": "durable_object_namespace",
           "class_name": "ReviewBudget",
-          "namespace_id": "a8ca773527d249489a6c6a66b586426c"
+          "namespace_id": "a0572745dcc84df8a0d33d4091369cdd"
         }
       ],
       "deploymentIds": [
         {
-          "id": "5815dead-ffec-4bb9-98a3-346fda84770a",
+          "id": "899b9b7e-4c3a-4216-bbbf-3d905afa7f54",
           "versions": [
             {
-              "version_id": "bb77f323-5540-4d5c-94fc-6ec8d6a9246a",
+              "version_id": "e8c48928-0915-4631-89f3-26a8e5bc60c8",
               "percentage": 100
             }
           ]
@@ -140,44 +214,28 @@
       ],
       "cliSuccess": true
     },
-    "namespaceId": "a8ca773527d249489a6c6a66b586426c",
     "vercelProject": {
-      "id": "prj_llvnOtM5fceQ0pGRXY3AOxpKinIt",
-      "name": "mubidotjs-prism"
+      "id": "prj_2pXpmk1TMZa3ifyHmmwLDbLm8H1L",
+      "name": "mubidotjs-prism",
+      "accountId": "team_YxkjSyqiyTtrcBTA8pfTNhpD",
+      "nodeVersion": "24.x",
+      "autoExposeSystemEnvs": true
     },
     "vercelDeployments": [
       {
         "phase": "acceptance",
-        "startedAt": "2026-11-14T12:52:20.915Z",
-        "id": "dpl_DLszt3LiJbSgomhMytfBkg6mjML5",
-        "url": "https://mubidotjs-prism-2hqshcrya-mubidotjs-projects.vercel.app",
+        "startedAt": "2026-11-14T14:25:31.522Z",
+        "id": "dpl_JCEMxZU18Ax4goDWTfMQ31AnR2My",
+        "url": "https://mubidotjs-prism-5wrp1phdf-mubidotjs-projects.vercel.app",
         "readyState": "READY",
         "target": "production",
         "nodeVersion": "24.x",
-        "metaSha": "b47c5f31e31ea8734ba6293269ea98432f283cd0"
+        "metaSha": "d494bfd91d92fecf20dfde0b7bc0941d3628754c"
       }
     ]
   },
-  "preflight": {
-    "workersFreeEvidence": "Accepted user-supplied authenticated dashboard screenshot; no billing operations or billing-write permission.",
-    "vercelPlan": "hobby",
-    "vercelPlanStatus": "active",
-    "model": "@cf/google/gemma-4-26b-a4b-it",
-    "contractSha256": "6ddfbdfeec740b2d74faf7d2311262945f1b4bb3ca1b55258c823f69b56605d4",
-    "passed": true,
-    "completedAt": "2026-11-14T12:49:33.927Z"
-  },
-  "freeQuota": {
-    "sharedDailyBefore": 382.0999631881714,
-    "beforeCheckedAt": "2026-11-14T12:49:26.016Z",
-    "sharedDailyAfter": 399.02723598480225,
-    "afterCheckedAt": "2026-11-14T12:54:16.982Z",
-    "dailyAllowance": 10000,
-    "coordinatorEstimatedReservationAndSettlement": 207.649,
-    "caveat": "Shared/delayed account observations are not exact per-call receipts. Coordinator balance includes the timed-out dispatch unknown-outcome reservation and is not billed usage or a provider-enforced per-call cap."
-  },
   "cleanup": {
-    "startedAt": "2026-11-14T12:54:19.911Z",
+    "startedAt": "2026-11-14T14:27:41.967Z",
     "vercelProjectDeleted": true,
     "vercelProjectNotFound": true,
     "cloudflareWorkerAbsent": true,
@@ -185,8 +243,8 @@
     "cloudflareDeployments": 1,
     "endpointChecks": [
       {
-        "url": "https://mubidotjs-prism-2hqshcrya-mubidotjs-projects.vercel.app/api/acceptance-agent",
-        "status": 302
+        "url": "https://mubidotjs-prism-5wrp1phdf-mubidotjs-projects.vercel.app/api/acceptance-agent",
+        "status": 404
       },
       {
         "url": "https://prism-ai-review.mubikhan69.workers.dev/status",
@@ -222,7 +280,7 @@
       }
     ],
     "localAppSecretsRemoved": true,
-    "finishedAt": "2026-11-14T12:55:05.920Z",
+    "finishedAt": "2026-11-14T14:28:31.872Z",
     "vercelDeploymentNotFound": true,
     "finalVercelEndpointStatus": 410,
     "temporaryCliRevoked": true,
@@ -230,11 +288,11 @@
     "noDnsChanges": true,
     "noProductionDeployment": true
   },
-  "previousEvidence": "ai-agent-acceptance-fddaf0a-result.json",
+  "previousEvidence": "ai-agent-acceptance-b47c5f3-result.json",
   "limitations": [
-    "Dispatch four ended with PROVIDER_TIMEOUT after three valid native decisions completed metadata, inventory and source context. No hypothesis or fact card was accepted.",
-    "The engine ended at 22,020 ms, below the 30-second logical review deadline. The safe category does not establish whether the native 18-second path, relay 20-second path or another recognized abort/timeout branch produced it; no provider receipt or raw output is available for that attempt.",
-    "PROVIDER_SHAPE did not occur in the three accepted responses. This is not evidence that all future provider outputs are compatible or that the historical shape defect has been identified.",
-    "The terminal failure suppressed findings. Approval/copy, the public-PR workflow, normal production deployment and DNS were not reached. No retry, repair inference or corrective deployment followed."
+    "Real native Gemma returned all three supported synthetic hypotheses in one response. Node independently validated all three canonical findings; no native response-shape or timeout error occurred in this run. This one response does not establish general model reliability.",
+    "Authenticated server approval and exact canonical Markdown succeeded. Clipboard/UI verification did not complete. No full human-approval/manual-copy end-to-end PASS is claimed.",
+    "The operator harness caught the UI exception without retaining an allowlisted stage/cause. COPY_UI_FAILED identifies the failed acceptance boundary, not a proven application defect or clipboard-specific root cause.",
+    "The approved stop-on-first-failure rule was followed. No second workflow, live GitHub GET, production deployment, DNS change, retry or corrective deployment occurred. All newly created resources and temporary authorization were removed."
   ]
 }
